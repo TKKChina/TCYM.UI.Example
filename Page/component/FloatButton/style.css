@@ -1,0 +1,114 @@
+.float-button-demo-view {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  padding-right: 10px;
+  padding-bottom: 20px;
+}
+
+.float-button-demo-view .float-button-demo-title {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.float-button-demo-view .float-button-demo-title-sub {
+  width: 100%;
+  height: 20px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.8);
+  margin-top: 4px;
+}
+
+.float-button-demo-view .float-button-demo-desc {
+  width: 100%;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 10px 16px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.float-button-demo-view .float-button-demo-card {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  margin-top: 10px;
+  padding: 16px;
+  padding-bottom: 14px;
+  background: #ffffff;
+}
+
+.float-button-demo-view .float-button-card-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.88);
+  margin-bottom: 4px;
+}
+
+.float-button-demo-view .float-button-card-desc {
+  width: calc(100% - 20px);
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+  margin-bottom: 12px;
+}
+
+.float-button-showcase {
+  width: 100%;
+  height:500px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 14px;
+  /* align-items: center; */
+}
+
+.float-button-item-card {
+  width: 116px;
+  height: 116px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(248, 250, 255, 1), rgba(255, 255, 255, 1));
+}
+
+.float-button-group-stage {
+  width: 100%;
+  height: 500px;
+  border-radius: 12px;
+  border: 1px dashed rgba(22, 119, 255, 0.22);
+  background: linear-gradient(180deg, rgba(230, 244, 255, 0.55), rgba(255, 255, 255, 0.9));
+  padding: 18px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.float-button-fixed-note {
+  width: 100%;
+  min-height: 96px;
+  border-radius: 12px;
+  border: 1px dashed rgba(114, 46, 209, 0.25);
+  background: linear-gradient(180deg, rgba(249, 240, 255, 0.7), rgba(255, 255, 255, 0.92));
+  padding: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.float-button-fixed-note-text {
+  width: 100%;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+}

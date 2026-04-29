@@ -1,0 +1,131 @@
+.file-picker-demo-view {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  padding-right: 10px;
+  padding-bottom: 20px;
+}
+
+.file-picker-demo-view .file-picker-demo-title {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.file-picker-demo-view .file-picker-demo-title-sub {
+  width: 100%;
+  height: 20px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.8);
+  margin-top: 4px;
+}
+
+.file-picker-demo-view .file-picker-demo-desc {
+  width: 100%;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 10px 16px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.file-picker-demo-view .file-picker-demo-card {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  margin-top: 10px;
+  padding: 16px;
+  padding-bottom: 14px;
+  background: #ffffff;
+}
+
+.file-picker-demo-view .file-picker-card-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.88);
+  margin-bottom: 4px;
+}
+
+.file-picker-demo-view .file-picker-card-desc {
+  width: calc(100% - 20px);
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+  margin-bottom: 12px;
+}
+
+.file-picker-showcase {
+  width: 100%;
+  background: #fcfcfd;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.file-picker-button-row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.file-picker-action-btn {
+  height: 34px;
+  padding-left: 14px;
+  padding-right: 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #ffffff;
+  color: rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+}
+
+.file-picker-btn-primary {
+  background: #1677ff;
+  border-color: #1677ff;
+  color: #ffffff;
+}
+
+.file-picker-btn-secondary {
+  background: #f0f5ff;
+  border-color: #adc6ff;
+  color: #1d39c4;
+}
+
+.file-picker-btn-soft {
+  background: #fff7e6;
+  border-color: #ffd591;
+  color: #ad4e00;
+}
+
+.file-picker-result {
+  width: 100%;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.7);
+  line-height: 1.7;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(22, 119, 255, 0.05);
+  border: 1px solid rgba(22, 119, 255, 0.14);
+}
+
+.file-picker-result-folder {
+  background: rgba(82, 196, 26, 0.06);
+  border-color: rgba(82, 196, 26, 0.18);
+}
+
+.file-picker-demo-hint {
+  width: 100%;
+  margin-top: 10px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.48);
+}

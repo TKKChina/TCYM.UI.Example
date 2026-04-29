@@ -1,0 +1,50 @@
+@keyframes estroboscopico {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    51% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes estroboscopico1 {
+    0%, 50%, 100% {
+        fill: rgb(255, 95, 74);
+    }
+
+    25%, 75% {
+        fill: rgb(16, 53, 115);
+    }
+}
+
+@keyframes estroboscopico2 {
+    0%, 50%, 100% {
+        fill: #17e300;
+    }
+
+    25%, 75% {
+        fill: rgba(23, 227, 0, 0.706);
+    }
+}
+
+.strobe_led1 {
+    animation: estroboscopico 0.5s infinite;
+}
+
+.strobe_color1 {
+    animation: estroboscopico2 0.8s infinite;
+}
+
+.strobe_color3 {
+    animation: estroboscopico1 0.8s infinite;
+    animation-delay: 3s;
+}

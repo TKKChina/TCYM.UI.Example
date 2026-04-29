@@ -1,0 +1,37 @@
+TCYM.UI Binary License
+
+Copyright (c) 2026 Tian. All rights reserved.
+
+TCYM.UI.dll is provided as a binary-only library. This license applies to TCYM.UI.dll and related TCYM.UI binary distribution files located in this directory.
+
+You may:
+- Use TCYM.UI.dll for free in personal, internal, educational, and commercial applications.
+- Reference TCYM.UI.dll from your own applications.
+- Distribute TCYM.UI.dll only as a required runtime dependency bundled with your compiled application.
+
+You may not:
+- Reverse engineer, decompile, disassemble, or otherwise attempt to derive the source code of TCYM.UI.dll, except where such restriction is prohibited by applicable law.
+- Modify, patch, tamper with, or create derivative binary versions of TCYM.UI.dll.
+- Redistribute, repackage, sell, rent, lease, sublicense, or publish TCYM.UI.dll as a standalone file, SDK, framework, component library, NuGet package, development toolkit, or competing product.
+- Remove, obscure, or alter copyright, license, or attribution notices.
+- Claim ownership of TCYM.UI.dll or its underlying implementation.
+
+TCYM.UI.dll is provided "as is", without warranty of any kind, express or implied. The author is not liable for any claim, damages, or other liability arising from the use of this library.
+
+中文说明
+
+TCYM.UI.dll 以二进制库形式提供。本授权适用于本目录中的 TCYM.UI.dll 及相关 TCYM.UI 二进制分发文件。
+
+你可以：
+- 免费用于个人、内部、教育和商业应用。
+- 在自己的应用程序中引用 TCYM.UI.dll。
+- 仅作为已编译应用程序运行所必需的依赖文件，随你的应用程序一起分发 TCYM.UI.dll。
+
+你不可以：
+- 对 TCYM.UI.dll 进行反向工程、反编译、反汇编，或以其他方式尝试还原源代码，除非适用法律明确禁止此类限制。
+- 修改、修补、篡改 TCYM.UI.dll，或创建其衍生二进制版本。
+- 将 TCYM.UI.dll 作为独立文件、SDK、框架、组件库、NuGet 包、开发工具包或竞争产品进行二次分发、重新打包、出售、出租、转授权或公开发布。
+- 删除、隐藏或修改版权、授权或署名信息。
+- 声称拥有 TCYM.UI.dll 或其底层实现的所有权。
+
+TCYM.UI.dll 按“现状”提供，不提供任何明示或暗示担保。作者不对因使用本库产生的任何索赔、损害或其他责任负责。

@@ -1,0 +1,167 @@
+﻿:root{
+  --box-background: linear-gradient( 180deg, rgba(255,255,255,0.5) 0%, #EFF7FA 100%);
+  --box-shadow: 0px 10px 30px 0px rgba(140,154,159,0.3), inset 0px 0px 20px 0px rgba(30,171,227,0.2);
+}
+.label-title {
+    color: #8b8989;
+    display: flex;
+    width: 100%;
+    height: 25px;
+    border-bottom-width: 1px;
+    border-color: rgba(5,5,5,0.2);
+    position: relative;
+    padding: 0 0 5px 10px;
+    margin-top: 14px;
+    font-size: 13px;
+}
+
+.label-title::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    border-radius: 3px;
+    background-color: #1677ff;
+}
+
+.label-green {
+    color: #8b8989;
+    display: flex;
+    width: 100%;
+    height: 25px;
+    border-bottom-width: 1px;
+    border-color: rgba(5,5,5,0.2);
+    position: relative;
+    padding: 0 0 5px 10px;
+    margin-top: 10px;
+}
+.label-green::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    border-radius: 3px;
+    background-color: #4caf50;
+}
+
+.label-orange {
+    color: #8b8989;
+    display: flex;
+    width: 100%;
+    height: 25px;
+    border-bottom-width: 1px;
+    border-color: rgba(5,5,5,0.2);
+    position: relative;
+    padding: 0 0 5px 10px;
+    margin-top: 10px;
+}
+.label-orange::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    border-radius: 3px;
+    background-color: #f8a118;
+}
+
+.label-red {
+    color: #8b8989;
+    display: flex;
+    width: 100%;
+    height: 25px;
+    border-bottom-width: 1px;
+    border-color: rgba(5,5,5,0.2);
+    position: relative;
+    padding: 0 0 5px 10px;
+    margin-top: 10px;
+}
+
+.label-red::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    border-radius: 3px;
+    background-color: #f44336;
+}
+
+.label-cany {
+    color: #8b8989;
+    display: flex;
+    width: 100%;
+    height: 25px;
+    border-bottom-width: 1px;
+    border-color: rgba(5,5,5,0.2);
+    position: relative;
+    padding: 0 0 5px 10px;
+    margin-top: 10px;
+}
+
+.label-cany::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    border-radius: 3px;
+    background-color: #ffeb3b;
+}
+
+.label-gray {
+    color: #8b8989;
+    display: flex;
+    width: 100%;
+    height: 25px;
+    border-bottom-width: 1px;
+    border-color: rgba(5,5,5,0.2);
+    position: relative;
+    padding: 0 0 5px 10px;
+    margin-top: 10px;
+}
+
+.label-gray::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    border-radius: 3px;
+    background-color: #9e9e9e;
+}
+
+.label-purple {
+    color: #8b8989;
+    display: flex;
+    width: 100%;
+    height: 25px;
+    border-bottom-width: 1px;
+    border-color: rgba(5,5,5,0.2);
+    position: relative;
+    padding: 0 0 5px 10px;
+    margin-top: 10px;
+}
+.label-purple::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    border-radius: 3px;
+    background-color: #9c27b0;
+}
+
+@font-face {
+  font-family: 'IconFontExample';
+  src: url('res://TCYM.UI.Example/Assets.Fonts.iconfont.ttf') format('truetype');
+}

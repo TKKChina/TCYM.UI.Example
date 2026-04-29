@@ -1,0 +1,130 @@
+.code-editor-demo-view {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  padding-right: 10px;
+  padding-bottom: 20px;
+}
+
+.code-editor-demo-view .code-editor-demo-title {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.code-editor-demo-view .code-editor-demo-title-sub {
+  width: 100%;
+  height: 20px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.8);
+  margin-top: 4px;
+}
+
+.code-editor-demo-view .code-editor-demo-desc {
+  width: 100%;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.72);
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 10px 16px;
+  background: rgba(17, 24, 39, 0.03);
+  border-radius: 6px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.code-editor-demo-view .code-editor-demo-card {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  margin-top: 10px;
+  padding: 16px;
+  padding-bottom: 14px;
+  background: #ffffff;
+}
+
+.code-editor-demo-view .code-editor-card-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.88);
+  margin-bottom: 4px;
+}
+
+.code-editor-demo-view .code-editor-card-desc {
+  width: calc(100% - 20px);
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+  margin-bottom: 12px;
+}
+
+.code-editor-toolbar {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.code-editor-action-button {
+  height: 34px;
+  padding-left: 14px;
+  padding-right: 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #ffffff;
+  color: rgba(15, 23, 42, 0.88);
+  cursor: pointer;
+}
+
+.code-editor-lang-button {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+}
+
+.code-editor-toggle-button {
+  background: #ecfeff;
+  border-color: #a5f3fc;
+  color: #155e75;
+}
+
+.code-editor-status {
+  width: 100%;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.65);
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.code-editor-shell {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: #0b1220;
+  border: 1px solid rgba(15, 23, 42, 0.24);
+}
+
+.code-editor-shell-light {
+  background: #fff8e7;
+  border-color: #f2d6a2;
+}
+
+.code-editor-inline-note {
+  width: 100%;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.52);
+  margin-bottom: 10px;
+}
+
+.code-editor-hint-item {
+  width: 100%;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.78);
+  margin-top: 8px;
+}

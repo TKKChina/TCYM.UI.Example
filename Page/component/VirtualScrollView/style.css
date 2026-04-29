@@ -1,0 +1,152 @@
+.virtual-scroll-demo-view {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  padding-right: 10px;
+  padding-bottom: 20px;
+}
+
+.virtual-scroll-demo-view .virtual-scroll-demo-title {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.virtual-scroll-demo-view .virtual-scroll-demo-title-sub {
+  width: 100%;
+  height: 20px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.8);
+  margin-top: 4px;
+}
+
+.virtual-scroll-demo-view .virtual-scroll-demo-desc {
+  width: 100%;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 10px 16px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.virtual-scroll-demo-view .virtual-scroll-demo-card {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  margin-top: 10px;
+  padding: 16px;
+  padding-bottom: 14px;
+  background: #ffffff;
+}
+
+.virtual-scroll-demo-view .virtual-scroll-card-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.88);
+  margin-bottom: 4px;
+}
+
+.virtual-scroll-demo-view .virtual-scroll-card-desc {
+  width: calc(100% - 20px);
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+  margin-bottom: 12px;
+}
+
+.virtual-scroll-showcase {
+  width: 100%;
+  background: #fcfcfd;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.virtual-scroll-status {
+  width: 100%;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.65);
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(22, 119, 255, 0.06);
+  border: 1px solid rgba(22, 119, 255, 0.14);
+}
+
+.virtual-scroll-status-accent {
+  background: rgba(250, 173, 20, 0.1);
+  border-color: rgba(250, 173, 20, 0.2);
+}
+
+.virtual-scroll-host {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  background: #ffffff;
+  overflow-x: hidden;
+}
+
+.virtual-scroll-host-soft {
+  background: linear-gradient(180deg, #ffffff 0%, #fffdf7 100%);
+}
+
+.virtual-scroll-demo-hint {
+  width: 100%;
+  margin-top: 10px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.48);
+}
+
+.virtual-scroll-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 12px;
+  padding-right: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.76);
+  cursor: pointer;
+}
+
+.virtual-scroll-row-highlight {
+  background: rgba(22, 119, 255, 0.06);
+  color: #0958d9;
+}
+
+.virtual-scroll-row-compact {
+  background: rgba(0, 0, 0, 0.01);
+}
+
+.virtual-scroll-mixed-card {
+  width: 100%;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.virtual-scroll-mixed-card-warning {
+  background: linear-gradient(90deg, rgba(255, 247, 230, 1) 0%, rgba(255, 255, 255, 1) 100%);
+}
+
+.virtual-scroll-mixed-card-title {
+  width: 100%;
+  font-size: 13px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.88);
+}
+
+.virtual-scroll-mixed-card-desc {
+  width: 100%;
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.52);
+}

@@ -1,0 +1,52 @@
+.icon-demo-view{
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+.icon-demo-view .icon-card-title {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.icon-demo-view .icon-card-subtitle {
+  width: 100%;
+  height: 20px;
+  font-size: 14px;
+  color: rgba(0,0,0,0.8);
+  margin-top: 4px;
+}
+
+.icon-demo-view .icon-card-desc {
+  width: 100%;
+  font-size: 13px;
+  color: rgba(0,0,0,0.7);
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 10px 16px;
+  background: rgba(0,0,0,0.02);
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.icon-demo-view .icon-demo-card {
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
+.icon-demo-view .icon-code-panel {
+    width: 100%;
+    height: 500px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    padding: 5px;
+    display: none;
+}

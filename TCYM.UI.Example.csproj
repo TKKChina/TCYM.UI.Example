@@ -1,0 +1,148 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PublishAot>true</PublishAot>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- Windows EXE 图标（写入可执行文件资源） -->
+    <ApplicationIcon>Assets\Images\app.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Page\component\UILabel\**" />
+    <EmbeddedResource Remove="Page\component\UILabel\**" />
+    <None Remove="Page\component\UILabel\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\Fonts\iconfont.ttf" />
+    <None Remove="Assets\Images\gif.gif" />
+    <None Remove="Assets\Images\tu.png" />
+    <None Remove="Page\com.css" />
+    <None Remove="Page\component\Badge\style.css" />
+    <None Remove="Page\component\Button\style.css" />
+    <None Remove="Page\component\Checkbox\style.css" />
+    <None Remove="Page\component\CodeEditor\style.css" />
+    <None Remove="Page\component\DatePicker\style.css" />
+    <None Remove="Page\component\Dropdown\style.css" />
+    <None Remove="Page\component\FilePicker\style.css" />
+    <None Remove="Page\component\FloatButton\style.css" />
+    <None Remove="Page\component\Icon\iconfont.json" />
+    <None Remove="Page\component\Icon\style.css" />
+    <None Remove="Page\component\Image\style.css" />
+    <None Remove="Page\component\Input\style.css" />
+    <None Remove="Page\component\Label\style.css" />
+    <None Remove="Page\component\Menu\style.css" />
+    <None Remove="Page\component\Message\style.css" />
+    <None Remove="Page\component\Radio\style.css" />
+    <None Remove="Page\component\Select\style.css" />
+    <None Remove="Page\component\Slider\style.css" />
+    <None Remove="Page\component\Svg\style.css" />
+    <None Remove="Page\component\Svg\svg-animation.css" />
+    <None Remove="Page\component\Switch\style.css" />
+    <None Remove="Page\component\Table\style.css" />
+    <None Remove="Page\component\Tabs\style.css" />
+    <None Remove="Page\component\Pagination\style.css" />
+    <None Remove="Page\component\Tag\style.css" />
+    <None Remove="Page\component\Tooltip\style.css" />
+    <None Remove="Page\component\VirtualScrollView\style.css" />
+    <None Remove="style.css" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="Assets\Images\gif.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Assets\Images\tu.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+  
+  <!-- 根据不同的运行时标识符复制相应的SDL2本地库 -->
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\Fonts\iconfont.ttf" />
+    <EmbeddedResource Include="Page\com.css">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Page\component\Button\style.css">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Assets\Images\vsg.svg" />
+    <EmbeddedResource Include="Assets\Images\work.svg" />
+    <EmbeddedResource Include="Page\component\Badge\style.css" />
+    <EmbeddedResource Include="Page\component\FilePicker\style.css" />
+    <EmbeddedResource Include="Page\component\Label\style.css" />
+    <EmbeddedResource Include="Page\component\Message\style.css" />
+    <EmbeddedResource Include="Page\component\FloatButton\style.css" />
+    <EmbeddedResource Include="Page\component\Svg\style.css" />
+    <EmbeddedResource Include="Page\component\Svg\svg-animation.css" />
+    <EmbeddedResource Include="Page\component\Table\style.css" />
+    <EmbeddedResource Include="Page\component\Tag\style.css" />
+    <EmbeddedResource Include="Page\component\Tooltip\style.css" />
+    <EmbeddedResource Include="Page\component\Tree\style.css" />
+    <EmbeddedResource Include="Page\component\Checkbox\style.css" />
+    <EmbeddedResource Include="Page\component\CodeEditor\style.css" />
+    <EmbeddedResource Include="Page\component\DatePicker\style.css" />
+    <EmbeddedResource Include="Page\component\Dropdown\style.css" />
+    <EmbeddedResource Include="Page\component\Icon\iconfont.json" />
+    <EmbeddedResource Include="Page\component\Icon\style.css" />
+    <EmbeddedResource Include="Page\component\Image\style.css" />
+    <EmbeddedResource Include="Page\component\Input\style.css" />
+    <EmbeddedResource Include="Page\component\Menu\style.css" />
+    <EmbeddedResource Include="Page\component\Radio\style.css" />
+    <EmbeddedResource Include="Page\component\Select\style.css" />
+    <EmbeddedResource Include="Page\component\Slider\style.css" />
+    <EmbeddedResource Include="Page\component\Switch\style.css" />
+    <EmbeddedResource Include="Page\component\Tabs\style.css" />
+    <EmbeddedResource Include="Page\component\Pagination\style.css" />
+    <EmbeddedResource Include="Page\component\VirtualScrollView\style.css" />
+    <EmbeddedResource Include="Page\Layout\style.css">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="3.119.2" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="TCYM.FFmpeg">
+      <HintPath>Libs\TCYM.FFmpeg.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="TCYM.UI">
+      <HintPath>Libs\TCYM.UI.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Analyzer Include="Libs\TCYM.UI.Generator.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Libs\TCYM.FFmpeg.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Libs\TCYM.UI.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Libs\Linux\libSDL2-2.0.so.0">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Libs\Win\SDL2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <!--<ItemGroup>-->
+    <!--发布时候使用 -->
+  <!--<Analyzer Include="Libs\TCYM.UI.Generator.dll" />-->
+  <!--</ItemGroup>-->
+
+</Project>

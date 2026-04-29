@@ -1,0 +1,12 @@
+﻿.main-view {
+    width: 100%;
+    height: calc(100% - 30px);
+    display: flex;
+    padding: 10px;
+}
+
+.router-view {
+    width: calc(100% - 260px);
+    height: 100%;
+    padding: 0 5px;
+}
