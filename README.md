@@ -14,7 +14,7 @@ TCYM.UI.Example 是一个可独立构建和运行的 TCYM.UI 示例工程。
 
 - Assets：示例所需图片、字体等资源
 - Page：示例页面与组件演示代码
-- Libs：独立运行所需的 TCYM.UI、TCYM.FFmpeg、SDL2 等二进制依赖
+- Libs：独立运行所需的 TCYM.UI、SDL2 等二进制依赖
 - Program.cs：示例程序入口
 
 ## 构建与运行

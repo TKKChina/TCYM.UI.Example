@@ -114,10 +114,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="TCYM.FFmpeg">
-      <HintPath>Libs\TCYM.FFmpeg.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
     <Reference Include="TCYM.UI">
       <HintPath>Libs\TCYM.UI.dll</HintPath>
       <Private>true</Private>
@@ -126,9 +122,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Libs\TCYM.FFmpeg.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Libs\TCYM.UI.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
