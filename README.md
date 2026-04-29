@@ -4,6 +4,10 @@ TCYM.UI.Example 是一个可独立构建和运行的 TCYM.UI 示例工程。
 
 这个仓库不再依赖上级源码目录中的 TCYM.UI 和 TCYM.UI.Generator 项目，而是直接引用 Libs 目录中的已编译二进制文件，因此可以单独复制、单独构建、单独发布。
 
+## 文档地址
+
+[https://tcym.top:8035/tcym/UI/Doc/index.html](https://tcym.top:8035/tcym/UI/Doc/index.html)
+
 ## 演示视频
 
 [![TCYM.UI.Example 演示视频](Assets/Images/demo-video-preview.gif)](demovideo.mp4)
