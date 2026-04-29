@@ -6,9 +6,9 @@ TCYM.UI.Example 是一个可独立构建和运行的 TCYM.UI 示例工程。
 
 ## 演示视频
 
-<video src="demovideo.mp4" controls width="100%"></video>
+[![TCYM.UI.Example 演示视频](Assets/Images/demo-video-preview.svg)](demovideo.mp4)
 
-如果当前平台无法直接播放视频，可以下载 [demovideo.mp4](demovideo.mp4) 查看。
+点击上方预览图打开演示视频，或下载 [demovideo.mp4](demovideo.mp4) 查看。
 
 ## 环境要求
 

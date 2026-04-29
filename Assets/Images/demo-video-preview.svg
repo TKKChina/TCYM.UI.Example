@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">TCYM.UI.Example demo video</title>
+  <desc id="desc">A clickable cover image for the TCYM.UI.Example demo video.</desc>
+  <rect width="960" height="540" fill="#111827"/>
+  <rect x="56" y="56" width="848" height="428" rx="18" fill="#f8fafc" opacity="0.98"/>
+  <rect x="88" y="92" width="792" height="48" rx="8" fill="#e5e7eb"/>
+  <circle cx="120" cy="116" r="8" fill="#ef4444"/>
+  <circle cx="148" cy="116" r="8" fill="#f59e0b"/>
+  <circle cx="176" cy="116" r="8" fill="#22c55e"/>
+  <rect x="88" y="164" width="220" height="276" rx="10" fill="#e2e8f0"/>
+  <rect x="332" y="164" width="548" height="72" rx="10" fill="#dbeafe"/>
+  <rect x="332" y="260" width="256" height="64" rx="10" fill="#dcfce7"/>
+  <rect x="616" y="260" width="264" height="64" rx="10" fill="#fee2e2"/>
+  <rect x="332" y="348" width="548" height="92" rx="10" fill="#ede9fe"/>
+  <circle cx="480" cy="270" r="86" fill="#2563eb"/>
+  <path d="M456 224 L456 316 L530 270 Z" fill="#ffffff"/>
+  <text x="480" y="374" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="700" fill="#0f172a">TCYM.UI.Example</text>
+  <text x="480" y="414" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="20" fill="#475569">点击查看演示视频</text>
+</svg>
