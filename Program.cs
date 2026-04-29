@@ -20,7 +20,6 @@ internal class Program
         var manager = UISystem.Manager;
         if (manager == null) return;
         // 支持AOT 环境下的属性访问
-        TCYM.UI.Binding.Generated.GeneratedBindingAccessors_TCYM_UI.InitGenerated();
         TCYM.UI.Binding.Generated.GeneratedBindingAccessors_TCYM_UI_Example.InitGenerated();
 
         // === 全局通配符默认样式：字体16px，颜色 #000000 ===
