@@ -41,6 +41,7 @@
     <None Remove="Page\component\Radio\style.css" />
     <None Remove="Page\component\Select\style.css" />
     <None Remove="Page\component\Slider\style.css" />
+    <None Remove="Page\component\Splitter\style.css" />
     <None Remove="Page\component\Svg\style.css" />
     <None Remove="Page\component\Svg\svg-animation.css" />
     <None Remove="Page\component\Switch\style.css" />
@@ -99,6 +100,7 @@
     <EmbeddedResource Include="Page\component\Radio\style.css" />
     <EmbeddedResource Include="Page\component\Select\style.css" />
     <EmbeddedResource Include="Page\component\Slider\style.css" />
+    <EmbeddedResource Include="Page\component\Splitter\style.css" />
     <EmbeddedResource Include="Page\component\Switch\style.css" />
     <EmbeddedResource Include="Page\component\Tabs\style.css" />
     <EmbeddedResource Include="Page\component\Pagination\style.css" />

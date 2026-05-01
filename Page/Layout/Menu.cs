@@ -37,6 +37,11 @@ namespace TCYM.UI.Example.Page.Layout
                             new("icon", "Icon 图标") { Icon = "&#xe60a;" },
                             new("label", "文本") { Icon = "&#xe651;"},
                         }),
+                        MenuItem.Group("group-layout", "布局", new List<MenuItem>
+                        {
+                            MenuItem.Divider("group-layout-divider-top"),
+                            new("splitter", "分隔面板") { Icon = "&#xe6cc;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
+                        }),
                         MenuItem.Group("group-navigation", "导航", new List<MenuItem>
                         {
                             MenuItem.Divider("group-navigation-divider-top"),

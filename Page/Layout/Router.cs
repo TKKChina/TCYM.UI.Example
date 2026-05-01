@@ -26,6 +26,7 @@ using TCYM.UI.Example.Page.component.VirtualScrollView;
 using TCYM.UI.Example.Page.component.FilePicker;
 using TCYM.UI.Example.Page.component.Image;
 using TCYM.UI.Example.Page.component.CodeEditor;
+using TCYM.UI.Example.Page.component.Splitter;
 
 namespace TCYM.UI.Example.Page.Layout
 {
@@ -41,6 +42,7 @@ namespace TCYM.UI.Example.Page.Layout
             .Register("/demo/image", () => new UIImageDemo())
             .Register("/demo/menu", () => new UIMenuDemo())
             .Register("/demo/slider", () => new UISliderDemo())
+            .Register("/demo/splitter", () => new UISplitterDemo())
             .Register("/demo/tabs", () => new UITabsDemo())
             .Register("/demo/pagination", () => new UIPaginationDemo())
             .Register("/demo/select", () => new UISelectDemo())

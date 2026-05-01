@@ -25,6 +25,7 @@ namespace TCYM.UI.Example.Page.Layout
                             "image" => "/demo/image",
                             "menu" => "/demo/menu",
                             "slider" => "/demo/slider",
+                            "splitter" => "/demo/splitter",
                             "tabs" => "/demo/tabs",
                             "pagination" => "/demo/pagination",
                             "dropdown" => "/demo/dropdown",

@@ -452,7 +452,7 @@
             特性：
             1. 支持 push / replace / back / forward。
             2. 支持页面缓存（keep-alive）。
-            3. 缓存页不移除节点，仅切换 display:none / 原始 display。
+            3. 缓存页不移除节点，仅切换 display:none / 原始 display；非缓存页离开时移除并释放。
             </summary>
         </member>
         <member name="P:TCYM.UI.Core.Routing.UIRouter.CurrentPath">
@@ -1290,6 +1290,16 @@
             元素相对于父级的 Y 坐标。
             </summary>
         </member>
+        <member name="F:TCYM.UI.Core.UIElement._widthExplicit">
+            <summary>
+            指示当前元素宽度是否由样式或属性显式设置。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Core.UIElement._heightExplicit">
+            <summary>
+            指示当前元素高度是否由样式或属性显式设置。
+            </summary>
+        </member>
         <member name="P:TCYM.UI.Core.UIElement.Width">
             <summary>
             元素宽度。设置后视为显式宽度，布局不会覆盖。
@@ -1298,6 +1308,16 @@
         <member name="P:TCYM.UI.Core.UIElement.Height">
             <summary>
             元素高度。设置后视视为显式高度，布局不会覆盖。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.SetMeasuredWidth(System.Single)">
+            <summary>
+            在宽度未显式设置时写入测量宽度。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.SetMeasuredHeight(System.Single)">
+            <summary>
+            在高度未显式设置时写入测量高度。
             </summary>
         </member>
         <member name="M:TCYM.UI.Core.UIElement.ClearExplicitWidth">
@@ -1447,6 +1467,11 @@
         <member name="P:TCYM.UI.Core.UIElement.BorderBoxSizing">
             <summary>
             边框占位策略：border-box（边框在内）或 outside（边框在外）。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Core.UIElement.CornerCurve">
+            <summary>
+            圆角曲线类型：circular（普通圆角）或 continuous（iOS 风格连续圆角）。
             </summary>
         </member>
         <member name="P:TCYM.UI.Core.UIElement.Font">
@@ -2550,6 +2575,9 @@
         </member>
         <member name="P:TCYM.UI.Core.UIStyle.BorderBoxSizing">
             <summary>边框盒模型："border-box"（边框占用元素内尺寸）或 "outside"（边框绘制在元素外侧）</summary>
+        </member>
+        <member name="P:TCYM.UI.Core.UIStyle.CornerCurve">
+            <summary>圆角曲线类型：circular（普通圆角）或 continuous（iOS 风格连续圆角）。</summary>
         </member>
         <member name="P:TCYM.UI.Core.UIStyle.BorderLeft">
             <summary>是否绘制左侧边框（有时需要禁用单侧边框）</summary>
@@ -3865,6 +3893,9 @@
         </member>
         <member name="P:TCYM.UI.Core.UpdateUIStyle.BorderBottomLeftRadius">
             <summary>更新左下角圆角。</summary>
+        </member>
+        <member name="P:TCYM.UI.Core.UpdateUIStyle.CornerCurve">
+            <summary>更新圆角曲线类型（circular/continuous）。</summary>
         </member>
         <member name="P:TCYM.UI.Core.UpdateUIStyle.BorderTopWidth">
             <summary>更新上边框宽度。</summary>
@@ -7692,202 +7723,6 @@
             向后跳页。
             </summary>
         </member>
-        <member name="T:TCYM.UI.Elements.Player.StretchMode">
-            <summary>
-            缩放模式枚举：
-            - Contain：按比例缩放以完整显示，可能留边（信箱/柱箱）。
-            - Cover：按比例缩放以铺满容器，可能裁剪超出部分。
-            - Fill：不保持比例，直接拉伸填满容器。
-            - None：不缩放，按原始分辨率绘制（可能超出或留边）。
-            </summary>
-        </member>
-        <member name="F:TCYM.UI.Elements.Player.StretchMode.Contain">
-            <summary>
-            按比例缩放以完整显示，可能留边（信箱/柱箱）
-            </summary>
-        </member>
-        <member name="F:TCYM.UI.Elements.Player.StretchMode.Cover">
-            <summary>
-            按比例缩放以铺满容器，可能裁剪超出部分。
-            </summary>
-        </member>
-        <member name="F:TCYM.UI.Elements.Player.StretchMode.Fill">
-            <summary>
-            不保持比例，直接拉伸填满容器。
-            </summary>
-        </member>
-        <member name="F:TCYM.UI.Elements.Player.StretchMode.None">
-            <summary>
-            不缩放，按原始分辨率绘制（可能超出或留边）。
-            </summary>
-        </member>
-        <member name="T:TCYM.UI.Elements.Player.UIPlayer">
-             <summary>
-             UIPlayer：基于 FFmpeg 的视频播放控件（Skia 渲染）。
-             功能：
-            1) 解码播放 RTSP/HTTP/本地文件视频；
-            2) 支持缩放模式（contain/cover/fill/none）与保持宽高比；
-            3) 支持多水印（颜色/位置/字体/动态文本），并叠加到原始帧内存，显示与录制均可见；
-            4) 支持录像（通过 VideoCustomStreamFileEncoder），可随时开始/停止；
-            5) 线程安全：解码在后台线程，界面渲染在主线程，通过锁隔离共享帧。
-            说明：
-             - 水印坐标使用“视频原始分辨率”的像素坐标系（非控件坐标系）。
-             - 停止录制时会先停止喂帧，再调用编码器 Stop，以避免阻塞播放。
-             </summary>
-        </member>
-        <member name="P:TCYM.UI.Elements.Player.UIPlayer.Watermarks">
-            <summary>
-            获取或设置水印集合（线程安全，设置时整体替换）。
-            - 设置后会触发重绘，下一帧起生效；
-            - 绘制顺序按列表顺序依次叠加。
-            </summary>
-        </member>
-        <member name="M:TCYM.UI.Elements.Player.UIPlayer.AddWatermark(TCYM.UI.Elements.Player.WatermarkSpec)">
-            <summary>
-            追加一个水印（线程安全）。
-            </summary>
-        </member>
-        <member name="M:TCYM.UI.Elements.Player.UIPlayer.ClearWatermarks">
-            <summary>
-            清空所有水印（线程安全）。
-            </summary>
-        </member>
-        <member name="M:TCYM.UI.Elements.Player.UIPlayer.UpdateWatermarks(System.Action{System.Collections.Generic.List{TCYM.UI.Elements.Player.WatermarkSpec}})">
-            <summary>
-            原子方式批量更新水印（线程安全）。
-            </summary>
-        </member>
-        <member name="P:TCYM.UI.Elements.Player.UIPlayer.SourceUrl">
-            <summary>
-            当前视频源地址（rtsp/file/http…）。设置后若 AutoPlay=true 将自动重启解码。
-            </summary>
-        </member>
-        <member name="P:TCYM.UI.Elements.Player.UIPlayer.AutoPlay">
-            <summary>是否在设置 SourceUrl 后自动播放。默认为false</summary>
-        </member>
-        <member name="P:TCYM.UI.Elements.Player.UIPlayer.Stretch">
-            <summary>
-            缩放模式（决定视频帧在控件中的缩放与裁剪策略）。
-            默认 Contain：在容器内尽可能完整显示并保持宽高比。
-            </summary>
-        </member>
-        <member name="P:TCYM.UI.Elements.Player.UIPlayer.MaintainAspectRatio">
-            <summary>是否保持宽高比（对 fill以外模式有效）。</summary>
-        </member>
-        <member name="P:TCYM.UI.Elements.Player.UIPlayer.IsPlaying">
-            <summary>是否正在播放（解码线程运行）。</summary>
-        </member>
-        <member name="P:TCYM.UI.Elements.Player.UIPlayer.IsRecording">
-            <summary>是否正在录制（仅表示喂帧开关）。</summary>
-        </member>
-        <member name="E:TCYM.UI.Elements.Player.UIPlayer.FrameArrived">
-            <summary>
-            每帧回调（在解码线程触发）。
-            注意：避免在回调里执行耗时操作，以免影响解码。
-            </summary>
-        </member>
-        <member name="M:TCYM.UI.Elements.Player.UIPlayer.Play">
-            <summary>
-            开始播放当前源（若尚未创建解码线程）。
-            </summary>
-        </member>
-        <member name="M:TCYM.UI.Elements.Player.UIPlayer.SetPaused(System.Boolean)">
-            <summary>
-            设置暂停/恢复（仅暂停渲染更新，解码仍在循环）。
-            </summary>
-        </member>
-        <member name="M:TCYM.UI.Elements.Player.UIPlayer.SwitchUrl(System.String)">
-            <summary>
-            切换视频地址并立刻重启解码。
-            </summary>
-        </member>
-        <member name="M:TCYM.UI.Elements.Player.UIPlayer.StartRecordingAsync(System.String,TCYM.FFmpeg.AutoGen.AVCodecID)">
-            <summary>
-            开始录制（异步）。
-            </summary>
-        </member>
-        <member name="M:TCYM.UI.Elements.Player.UIPlayer.StopRecordingAsync">
-             <summary>
-             停止录制（异步）。
-            先关闭喂帧标记，再等待编码器停止，避免与 AddVideoStream 并发造成阻塞。
-             </summary>
-        </member>
-        <member name="M:TCYM.UI.Elements.Player.UIPlayer.Stop">
-            <summary>
-            停止播放：结束解码线程，清空当前帧。
-            </summary>
-        </member>
-        <member name="M:TCYM.UI.Elements.Player.UIPlayer.Restart">
-            <summary>
-            重启解码：先 Stop 再启动解码线程（若 SourceUrl为空则忽略）。
-            </summary>
-        </member>
-        <member name="M:TCYM.UI.Elements.Player.UIPlayer.DecodeLoop(System.String,System.Threading.CancellationToken)">
-            <summary>
-            解码主循环（后台线程）：
-            - 拉取并解码下一帧 -> 转 BGRA ->叠加水印 ->
-            - 拷贝到 SKBitmap 给 UI 显示 -> 若正在录制则转换为 YUV420P 并写入编码器。
-            </summary>
-        </member>
-        <member name="M:TCYM.UI.Elements.Player.UIPlayer.Measure(System.Single,System.Single)">
-            <summary>
-            测量：根据视频源尺寸与显式宽高推导最终占位尺寸。
-            </summary>
-        </member>
-        <member name="M:TCYM.UI.Elements.Player.UIPlayer.RenderContent(SkiaSharp.SKCanvas)">
-            <summary>
-            渲染内容：将最新帧绘制到控件内容区域（考虑缩放与对齐）。
-            </summary>
-        </member>
-        <member name="M:TCYM.UI.Elements.Player.UIPlayer.DisposePlayerAsync">
-             <summary>
-            释放控件：停止播放；若正在录制则优雅停止。
-             </summary>
-        </member>
-        <member name="M:TCYM.UI.Elements.Player.UIPlayer.DisposePlayer">
-            <summary>同步封装的释放。</summary>
-        </member>
-        <member name="T:TCYM.UI.Elements.Player.WatermarkSpec">
-            <summary>
-            水印描述：可配置文本來源/顏色/字號/位置/字體/開關。
-            注意：Position 為“視頻原始分辨率”的像素坐標（左上角為(0,0)）。
-            </summary>
-        </member>
-        <member name="P:TCYM.UI.Elements.Player.WatermarkSpec.TextProvider">
-            <summary>
-            变动文本提供器
-            </summary>
-        </member>
-        <member name="P:TCYM.UI.Elements.Player.WatermarkSpec.Text">
-            <summary>
-            靜態文本
-            </summary>
-        </member>
-        <member name="P:TCYM.UI.Elements.Player.WatermarkSpec.Color">
-            <summary>
-            文本文字顏色
-            </summary>
-        </member>
-        <member name="P:TCYM.UI.Elements.Player.WatermarkSpec.FontSize">
-            <summary>
-            字号（像素）
-            </summary>
-        </member>
-        <member name="P:TCYM.UI.Elements.Player.WatermarkSpec.Position">
-            <summary>
-            位置（视频像素坐标）
-            </summary>
-        </member>
-        <member name="P:TCYM.UI.Elements.Player.WatermarkSpec.FontFamily">
-            <summary>
-            字体名称
-            </summary>
-        </member>
-        <member name="P:TCYM.UI.Elements.Player.WatermarkSpec.Enabled">
-            <summary>
-            是否启用此水印
-            </summary>
-        </member>
         <member name="T:TCYM.UI.Elements.Select.SelectMode">
             <summary>
             Select 组件的模式枚举。
@@ -9147,6 +8982,793 @@
         </member>
         <member name="M:TCYM.UI.Elements.Slider.UIThermometer.RenderContent(SkiaSharp.SKCanvas)">
             <summary>绘制温度计内容。</summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Splitter.SplitterOrientation">
+            <summary>
+            Splitter 的布局方向。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.SplitterOrientation.Horizontal">
+            <summary>
+            水平方向，面板从左到右排列。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.SplitterOrientation.Vertical">
+            <summary>
+            垂直方向，面板从上到下排列。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Splitter.SplitterCollapsibleIconVisibility">
+            <summary>
+            可折叠图标的显示策略。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.SplitterCollapsibleIconVisibility.Auto">
+            <summary>
+            自动模式，仅在拖拽条悬浮、激活或当前面板已折叠时显示。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.SplitterCollapsibleIconVisibility.Visible">
+            <summary>
+            始终显示。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.SplitterCollapsibleIconVisibility.Hidden">
+            <summary>
+            不显示。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Splitter.UISplitter">
+            <summary>
+            Splitter 分隔面板容器，参考 Ant Design Splitter 的交互能力。
+            支持水平/垂直布局、拖拽调整、懒更新、尺寸约束、可折叠和双击重置。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Splitter.UISplitter.HoverTargetKind">
+            <summary>
+            当前鼠标悬停命中的拖拽条子区域。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Splitter.UISplitter.ArrowDirection">
+            <summary>
+            折叠按钮箭头方向。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Splitter.UISplitter.PanelState">
+            <summary>
+            Splitter 对单个面板维护的运行时状态。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.PanelState.Panel">
+            <summary>
+            关联的面板元素。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.PanelState.CurrentSize">
+            <summary>
+            当前参与布局的主轴尺寸。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.PanelState.DefaultSize">
+            <summary>
+            默认尺寸解析后的缓存值。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.PanelState.MinSize">
+            <summary>
+            当前最小尺寸约束。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.PanelState.MaxSize">
+            <summary>
+            当前最大尺寸约束。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.PanelState.CollapsedSize">
+            <summary>
+            折叠后应占用的尺寸。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.PanelState.LastExpandedSize">
+            <summary>
+            最近一次非折叠状态下的尺寸。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.PanelState.Resizable">
+            <summary>
+            是否允许与相邻面板一起被拖拽调整。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.PanelState.Collapsible">
+            <summary>
+            是否允许点击折叠按钮快速折叠。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.PanelState.CollapseStartAllowed">
+            <summary>
+            是否允许向起始侧折叠。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.PanelState.CollapseEndAllowed">
+            <summary>
+            是否允许向结束侧折叠。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.PanelState.IconVisibility">
+            <summary>
+            折叠图标显示策略。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.PanelState.IsCollapsed">
+            <summary>
+            当前是否处于折叠态。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.PanelState.CollapsedToStart">
+            <summary>
+            当前折叠方向；null 表示未折叠。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.PanelState.LastSeenSizeSpec">
+            <summary>
+            最近一次观察到的受控尺寸定义。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Splitter.UISplitter.CollapseButtonInfo">
+            <summary>
+            单个折叠按钮的命中信息。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.CollapseButtonInfo.#ctor(System.Int32,System.Boolean,SkiaSharp.SKRect)">
+            <summary>
+            初始化一个折叠按钮信息结构。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.CollapseButtonInfo.PanelIndex">
+            <summary>
+            按钮所作用的面板索引。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.CollapseButtonInfo.CollapseToStart">
+            <summary>
+            是否向起始侧折叠或从起始侧展开。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.CollapseButtonInfo.Rect">
+            <summary>
+            按钮绘制与命中矩形。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Splitter.UISplitter.DraggerInfo">
+            <summary>
+            单条拖拽带的几何信息与附属按钮信息。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.DraggerInfo.Index">
+            <summary>
+            拖拽带在面板列表中的索引。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.DraggerInfo.HitRect">
+            <summary>
+            整条拖拽带的命中区域。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.DraggerInfo.BarRect">
+            <summary>
+            可见分隔条矩形。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.DraggerInfo.HandleRect">
+            <summary>
+            中央把手矩形。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.DraggerInfo.BeforeButton">
+            <summary>
+            起始侧折叠按钮信息。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.DraggerInfo.AfterButton">
+            <summary>
+            结束侧折叠按钮信息。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._panelStates">
+            <summary>
+            当前参与布局的面板状态集合。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._draggers">
+            <summary>
+            当前布局周期内生成的拖拽带信息。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._panelCursorResetHooks">
+            <summary>
+            已为面板挂载过鼠标进入重置逻辑的集合。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._hoveredDraggerIndex">
+            <summary>
+            当前悬停的拖拽带索引，-1 表示未悬停。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._hoverTarget">
+            <summary>
+            当前悬停命中的拖拽带子区域。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._pressedDraggerIndex">
+            <summary>
+            已按下但尚未进入拖拽态的拖拽带索引。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._pressStartMain">
+            <summary>
+            按下时的主轴坐标。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._pressStartBefore">
+            <summary>
+            按下时前一个面板的尺寸。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._pressStartAfter">
+            <summary>
+            按下时后一个面板的尺寸。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._activeDraggerIndex">
+            <summary>
+            当前处于拖拽态的拖拽带索引。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._dragging">
+            <summary>
+            是否已经进入拖拽过程。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._pendingBeforeSize">
+            <summary>
+            懒更新模式下待提交的前面板尺寸。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._pendingAfterSize">
+            <summary>
+            懒更新模式下待提交的后面板尺寸。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._lazyPreviewActive">
+            <summary>
+            是否正在显示懒更新预览线。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._lastContentMainSize">
+            <summary>
+            最近一次布局时可供面板分配的主轴尺寸。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._lastDraggerClickUtc">
+            <summary>
+            最近一次点击拖拽带的时间戳。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._lastClickedDraggerIndex">
+            <summary>
+            最近一次点击的拖拽带索引。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter.DragStartThreshold">
+            <summary>
+            从按下进入实际拖拽所需的最小位移。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter.DoubleClickThresholdMs">
+            <summary>
+            双击拖拽带的判定时间窗口，单位毫秒。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.Orientation">
+            <summary>
+            布局方向。为 null 时使用 Vertical 作为兼容开关。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.Vertical">
+            <summary>
+            兼容 Ant Design 的 vertical 布尔开关。
+            当 Orientation 为 null 时生效。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.Lazy">
+            <summary>
+            是否开启懒更新模式。
+            开启后拖拽过程中仅显示预览线，松手时才真正更新面板尺寸。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.SplitBarSize">
+            <summary>
+            可视分隔条厚度。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.SplitTriggerSize">
+            <summary>
+            拖拽触发区域厚度。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.SplitBarDraggableSize">
+            <summary>
+            中央操作把手的长轴尺寸。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.DraggerCornerRadius">
+            <summary>
+            拖拽条圆角。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.CollapseButtonSize">
+            <summary>
+            折叠按钮尺寸。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.CollapseButtonHeight">
+            <summary>
+            折叠按钮高度。
+            对左右箭头场景会直接影响按钮的纵向尺寸。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.GripDotRadius">
+            <summary>
+            拖拽握柄圆点半径。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.ShowDraggerGrip">
+            <summary>
+            是否绘制默认握柄。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.SplitBarColor">
+            <summary>
+            分隔条默认颜色。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.SplitBarHoverColor">
+            <summary>
+            分隔条悬浮颜色。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.SplitBarActiveColor">
+            <summary>
+            分隔条激活颜色。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.DraggerHandleColor">
+            <summary>
+            中央把手背景色。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.DraggerHandleHoverColor">
+            <summary>
+            中央把手悬浮背景色。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.DraggerHandleActiveColor">
+            <summary>
+            中央把手激活背景色。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.DraggerIconColor">
+            <summary>
+            折叠按钮和握柄图标颜色。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.CollapseButtonHoverColor">
+            <summary>
+            折叠按钮悬浮背景色。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.LazyPreviewColor">
+            <summary>
+            懒更新预览线颜色。
+            </summary>
+        </member>
+        <member name="E:TCYM.UI.Elements.Splitter.UISplitter.ResizeStarted">
+            <summary>
+            开始拖拽时触发。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.OnResizeStart">
+            <summary>
+            开始拖拽回调。
+            </summary>
+        </member>
+        <member name="E:TCYM.UI.Elements.Splitter.UISplitter.ResizeChanged">
+            <summary>
+            面板尺寸发生变化时触发。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.OnResize">
+            <summary>
+            尺寸变化回调。
+            </summary>
+        </member>
+        <member name="E:TCYM.UI.Elements.Splitter.UISplitter.ResizeEnded">
+            <summary>
+            拖拽结束时触发。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.OnResizeEnd">
+            <summary>
+            拖拽结束回调。
+            </summary>
+        </member>
+        <member name="E:TCYM.UI.Elements.Splitter.UISplitter.CollapseChanged">
+            <summary>
+            面板折叠状态变化时触发。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.OnCollapse">
+            <summary>
+            折叠状态变化回调。
+            </summary>
+        </member>
+        <member name="E:TCYM.UI.Elements.Splitter.UISplitter.DraggerDoubleClicked">
+            <summary>
+            双击拖拽条时触发。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.OnDraggerDoubleClick">
+            <summary>
+            双击拖拽条回调。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.Sizes">
+            <summary>
+            当前面板尺寸快照。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.CollapsedStates">
+            <summary>
+            当前折叠状态快照。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitter.IsVerticalLayout">
+            <summary>
+            当前是否按垂直模式布局。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.#ctor">
+            <summary>
+            构造 Splitter。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.GetSizes">
+            <summary>
+            返回当前各面板尺寸快照。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.GetCollapsedStates">
+            <summary>
+            返回当前折叠状态快照。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.Measure(System.Single,System.Single)">
+            <inheritdoc />
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.Layout(System.Single,System.Single,System.Single,System.Single)">
+            <inheritdoc />
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.LayoutManagedPanel(TCYM.UI.Core.UIElement,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            以 Splitter 计算出的盒子尺寸布局直系面板，并临时屏蔽面板自身的宽高样式干扰。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.OnPointerDown(System.Single,System.Single)">
+            <inheritdoc />
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.OnPointerMove(System.Single,System.Single)">
+            <inheritdoc />
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.OnPointerUp(System.Single,System.Single)">
+            <inheritdoc />
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.RenderContent(SkiaSharp.SKCanvas)">
+            <inheritdoc />
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.GetVisiblePanels">
+            <summary>
+            收集当前可见的直系面板。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.GetTriggerSize">
+            <summary>
+            返回拖拽带最终用于布局和命中的厚度。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ResolveMeasuredPanelSize(TCYM.UI.Elements.Splitter.UISplitter.PanelState)">
+            <summary>
+            返回某个面板状态当前应参与布局的主轴尺寸。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ResolveFallbackMainBasis(System.Collections.Generic.IReadOnlyList{TCYM.UI.Core.UIElement})">
+            <summary>
+            在缺少明确可用空间时，根据上一次布局或子面板测量结果推导主轴基准尺寸。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.SyncPanelStates(System.Collections.Generic.IReadOnlyList{TCYM.UI.Core.UIElement},System.Single)">
+            <summary>
+            将当前可见面板列表同步为内部状态集合，并完成尺寸初始化与归一化。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.EnsurePanelCursorResetHook(TCYM.UI.Core.UIElement)">
+            <summary>
+            确保面板在鼠标进入时会把拖拽带残留光标状态重置掉。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ResetCursorOutsideDragger">
+            <summary>
+            当鼠标离开拖拽带区域时恢复默认光标与悬停状态。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ApplyPanelDefinition(TCYM.UI.Elements.Splitter.UISplitter.PanelState,System.Single)">
+            <summary>
+            根据当前面板定义刷新内部状态中的尺寸约束、折叠配置和受控尺寸。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.InitializeUnsetSizes(System.Single)">
+            <summary>
+            为尚未确定尺寸的面板分配初始主轴尺寸。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.NormalizePanelSizes(System.Single)">
+            <summary>
+            将所有面板尺寸归一化到当前可用主轴空间内，并尽量满足最小最大约束。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.DistributeDiff(System.Single,System.Boolean)">
+            <summary>
+            将剩余尺寸差值按容量分摊给候选面板，并返回仍未消化的差值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.PushStateBackToPanels">
+            <summary>
+            将内部折叠状态回写到对应的 UISplitterPanel 实例上。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ResolveUnit(System.Nullable{TCYM.UI.Core.UnitValue},System.Single,System.Single)">
+            <summary>
+            将 UnitValue 按给定基准解析为实际像素值，失败时返回回退值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.SameUnitValue(System.Nullable{TCYM.UI.Core.UnitValue},System.Nullable{TCYM.UI.Core.UnitValue})">
+            <summary>
+            比较两个 UnitValue 是否在语义上等价。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ClampToBounds(System.Single,System.Single,System.Single)">
+            <summary>
+            将数值限制在最小最大边界内，并兼容无穷大上界。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.BuildDraggerInfo(System.Int32,TCYM.UI.Elements.Splitter.UISplitter.PanelState,TCYM.UI.Elements.Splitter.UISplitter.PanelState,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            根据相邻两个面板和当前布局参数构建单条拖拽带的几何信息。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ShouldAllocateCollapseButton(System.Int32,TCYM.UI.Elements.Splitter.UISplitter.PanelState,System.Boolean)">
+            <summary>
+            判断指定面板在当前方向上是否需要分配折叠按钮几何区域。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ShouldRenderCollapseButton(System.Int32,TCYM.UI.Elements.Splitter.UISplitter.PanelState,System.Boolean)">
+            <summary>
+            判断折叠按钮当前是否需要实际绘制出来。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.DrawDraggers(SkiaSharp.SKCanvas)">
+            <summary>
+            绘制全部拖拽带、把手和折叠按钮。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ResolveArrowDirection(TCYM.UI.Elements.Splitter.UISplitter.PanelState,System.Boolean)">
+            <summary>
+            根据面板折叠状态解析按钮箭头方向。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.DrawGrip(SkiaSharp.SKCanvas,SkiaSharp.SKRect)">
+            <summary>
+            在拖拽把手中央绘制默认握柄圆点。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.DrawCollapseButton(SkiaSharp.SKCanvas,SkiaSharp.SKRect,TCYM.UI.Elements.Splitter.UISplitter.ArrowDirection,System.Boolean)">
+            <summary>
+            绘制单个折叠按钮及其箭头图标。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.DrawLazyPreview(SkiaSharp.SKCanvas,System.Int32,System.Single)">
+            <summary>
+            在懒更新模式下绘制拖拽后的预览分隔线。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.TryHitDragger(System.Single,System.Single,System.Int32@)">
+            <summary>
+            命中测试当前坐标是否落在某条拖拽带的命中区域内。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.TryHitCollapseButton(System.Single,System.Single,TCYM.UI.Elements.Splitter.UISplitter.CollapseButtonInfo@)">
+            <summary>
+            命中测试当前坐标是否落在某个折叠按钮上。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.UpdateHoverState(System.Single,System.Single)">
+            <summary>
+            根据当前指针位置刷新悬停目标和鼠标光标状态。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.CanResizeDragger(System.Int32)">
+            <summary>
+            判断指定拖拽带两侧面板当前是否都允许参与拖拽调整。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.GetMainCoordinate(System.Single,System.Single)">
+            <summary>
+            提取当前布局方向下的主轴坐标值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.StartDrag(System.Int32)">
+            <summary>
+            将指定拖拽带切换到拖拽态并初始化拖拽过程数据。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.UpdateDrag(System.Single,System.Single)">
+            <summary>
+            根据当前指针位置更新拖拽结果或懒更新预览结果。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.CoercePairSizes(TCYM.UI.Elements.Splitter.UISplitter.PanelState,TCYM.UI.Elements.Splitter.UISplitter.PanelState,System.Single,System.Single,System.Single@,System.Single@)">
+            <summary>
+            在成对尺寸总和不变的前提下，按约束修正前后两个面板的目标尺寸。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ApplyResolvedPair(System.Int32,System.Single,System.Single,System.Boolean)">
+            <summary>
+            提交某条拖拽带两侧面板的最终尺寸，并在需要时触发变更通知。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ToggleCollapse(System.Int32,System.Boolean)">
+            <summary>
+            切换指定面板在某个方向上的折叠或展开状态。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ResetAdjacentPanels(System.Int32)">
+            <summary>
+            将指定拖拽带两侧面板恢复到默认尺寸或最近一次展开尺寸。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.CopySizes">
+            <summary>
+            复制当前全部面板的尺寸快照。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.CopyCollapsedStates">
+            <summary>
+            复制当前全部面板的折叠状态快照。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Splitter.UISplitterPanelCollapsibleOptions">
+            <summary>
+            Splitter.Panel 的可折叠配置。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitterPanelCollapsibleOptions.Start">
+            <summary>
+            是否允许通过起始侧拖拽条折叠。
+            对于水平 Splitter 即向左折叠；垂直 Splitter 即向上折叠。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitterPanelCollapsibleOptions.End">
+            <summary>
+            是否允许通过结束侧拖拽条折叠。
+            对于水平 Splitter 即向右折叠；垂直 Splitter 即向下折叠。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitterPanelCollapsibleOptions.ShowCollapsibleIcon">
+            <summary>
+            折叠图标显示策略。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Splitter.UISplitterPanel">
+            <summary>
+            Splitter.Panel 面板。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitterPanel.Size">
+            <summary>
+            当前面板的受控尺寸。
+            支持像素、百分比或 calc 表达式。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitterPanel.DefaultSize">
+            <summary>
+            当前面板的默认尺寸。
+            仅在首次参与布局或双击重置时作为参考值。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitterPanel.Min">
+            <summary>
+            最小尺寸。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitterPanel.Max">
+            <summary>
+            最大尺寸。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitterPanel.CollapsedSize">
+            <summary>
+            折叠后的尺寸，默认 0。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitterPanel.Resizable">
+            <summary>
+            是否允许通过拖拽条调整尺寸。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitterPanel.Collapsible">
+            <summary>
+            是否启用快捷折叠能力。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitterPanel.CollapsibleOptions">
+            <summary>
+            折叠细节配置。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitterPanel.IsCollapsed">
+            <summary>
+            当前是否处于折叠状态。
+            由 Splitter 在布局过程中维护。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Splitter.UISplitterPanel.CollapsedToStart">
+            <summary>
+            当前折叠方向是否为起始侧。
+            null 表示未折叠。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitterPanel.#ctor">
+            <summary>
+            构造一个 Splitter.Panel。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.StretchMode">
+            <summary>
+            内容缩放模式枚举：
+            - Contain：按比例缩放以完整显示，可能留边（信箱/柱箱）。
+            - Cover：按比例缩放以铺满容器，可能裁剪超出部分。
+            - Fill：不保持比例，直接拉伸填满容器。
+            - None：不缩放，按原始分辨率绘制（可能超出或留边）。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.StretchMode.Contain">
+            <summary>
+            按比例缩放以完整显示，可能留边（信箱/柱箱）
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.StretchMode.Cover">
+            <summary>
+            按比例缩放以铺满容器，可能裁剪超出部分。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.StretchMode.Fill">
+            <summary>
+            不保持比例，直接拉伸填满容器。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.StretchMode.None">
+            <summary>
+            不缩放，按原始分辨率绘制（可能超出或留边）。
+            </summary>
         </member>
         <member name="T:TCYM.UI.Elements.Svg.SvgAnimator">
             <summary>
@@ -14974,6 +15596,21 @@
         <member name="M:TCYM.UI.Helpers.MathHelper.Lerp(System.Single,System.Single,System.Single)">
             <summary>
             线性插值：返回 a 与 b 之间按 t 比例的值（t 在 0..1）
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Helpers.MathHelper.UsesContinuousCorners(System.String)">
+            <summary>
+            是否使用连续圆角（iOS 风格）路径。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Helpers.MathHelper.CreateRoundedRectPath(SkiaSharp.SKRect,System.Single,System.Single,System.Single,System.Single,System.Boolean)">
+            <summary>
+            创建一个圆角矩形路径。continuous=true 时使用连续曲率近似。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Helpers.MathHelper.AppendRoundedRectPath(SkiaSharp.SKPath,SkiaSharp.SKRect,System.Single,System.Single,System.Single,System.Single,System.Boolean)">
+            <summary>
+            向现有路径追加圆角矩形轮廓。continuous=true 时使用 superellipse 近似的连续圆角。
             </summary>
         </member>
         <member name="M:TCYM.UI.Helpers.MathHelper.ApplyEasing(System.Single,System.String)">
