@@ -60,14 +60,14 @@ namespace TCYM.UI.Example.Page.Layout
                             new("datepicker", "日期选择框") { Icon = "&#xe629;" },
                             new("switch", "开关") { Icon = "&#xed5f;" },
                             new("input", "输入框") { Icon = "&#xe790;" },
-                            new("codeEditor", "代码编辑器") { Icon = "&#xe61d;", Badge = new UIBadge { CountText = "NEW",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d")} },
+                            new("codeEditor", "代码编辑器") { Icon = "&#xe61d;"},
                         }),
                         MenuItem.Group("group-data-display", "数据展示", new List<MenuItem>
                         {
                             MenuItem.Divider("group-data-display-divider-top"),
                             new("badge", "徽标数") { Icon = "&#xe61c;" },
-                            new("image", "图片") { Icon = "&#xe60d;", Badge = new UIBadge { CountText = "NEW",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d")} },
-                            new("virtualScrollView", "虚拟滚动") { Icon = "&#xe610;", Badge = new UIBadge { CountText = "NEW",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d")} },
+                            new("image", "图片") { Icon = "&#xe60d;", Badge = new UIBadge { CountText = "更新",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#28b5ec")} },
+                            new("virtualScrollView", "虚拟滚动") { Icon = "&#xe610;"},
                             new("tooltip", "文字提示") { Icon = "&#xe6e0;" },
                             new("tag", "标签") { Icon = "&#xe6a7;" },
                             new("table", "表格") { Icon = "&#xe6a9;",Badge = new UIBadge { CountText = "更新",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#28b5ec")} },
@@ -82,8 +82,8 @@ namespace TCYM.UI.Example.Page.Layout
                         MenuItem.Group("group-other", "其他", new List<MenuItem>
                         {
                             MenuItem.Divider("group-other-divider-top"),
-                            new("filePicker", "文件选择") { Icon = "&#xea3e;", Badge = new UIBadge { CountText = "NEW",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d")} },
-                            new("usbCamera", "USB 摄像头") { Icon = "&#xe965;", Badge = new UIBadge { CountText = "NEW",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d")} },
+                            new("filePicker", "文件选择") { Icon = "&#xea3e;"},
+                            new("usbCamera", "USB 摄像头") { Icon = "&#xe965;" },
                         })
                     },
                     OnSelect = (keys, item) =>
