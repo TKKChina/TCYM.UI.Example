@@ -39,7 +39,7 @@ namespace TCYM.UI.Example.Page.Layout
             .Register("/demo/float-button", () => new UIFloatButtonDemo())
             .Register("/demo/icon", () => new UIIconDemo())
             .Register("/demo/label", () => new UILabelDemo())
-            .Register("/demo/image", () => new UIImageDemo())
+            .Register("/demo/image", () => new UIImageDemo(),false)
             .Register("/demo/menu", () => new UIMenuDemo())
             .Register("/demo/slider", () => new UISliderDemo())
             .Register("/demo/splitter", () => new UISplitterDemo())
