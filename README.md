@@ -20,6 +20,13 @@ TCYM.UI.Example 是一个可独立构建和运行的 TCYM.UI 示例工程。
 - Windows 或 Linux 桌面环境
 - 可用的 SDL2 运行环境
 
+## FFmpeg 依赖
+
+示例仓库不内置 FFmpeg 运行库，需要使用相关功能时请按平台自行下载并解压到运行目录或发布目录：
+
+- Linux：[Linux.zip](https://tcym.top:8035/tcym/UI/Linux.zip)
+- Windows：[Win.zip](https://tcym.top:8035/tcym/UI/Win.zip)
+
 ## 目录说明
 
 - Assets：示例所需图片、字体等资源
