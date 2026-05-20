@@ -40,6 +40,7 @@
     <None Remove="Page\component\Message\style.css" />
     <None Remove="Page\component\Radio\style.css" />
     <None Remove="Page\component\Select\style.css" />
+    <None Remove="Page\component\Segmented\style.css" />
     <None Remove="Page\component\Slider\style.css" />
     <None Remove="Page\component\Splitter\style.css" />
     <None Remove="Page\component\Svg\style.css" />
@@ -99,6 +100,7 @@
     <EmbeddedResource Include="Page\component\Menu\style.css" />
     <EmbeddedResource Include="Page\component\Radio\style.css" />
     <EmbeddedResource Include="Page\component\Select\style.css" />
+    <EmbeddedResource Include="Page\component\Segmented\style.css" />
     <EmbeddedResource Include="Page\component\Slider\style.css" />
     <EmbeddedResource Include="Page\component\Splitter\style.css" />
     <EmbeddedResource Include="Page\component\Switch\style.css" />

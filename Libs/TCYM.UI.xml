@@ -162,6 +162,12 @@
             尝试获取访问器。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Binding.PropertyAccessorRegistry.Clear">
+            <summary>
+            清空已注册的属性访问器。
+            设计时宿主在循环加载可卸载程序集时需要移除旧类型引用。
+            </summary>
+        </member>
         <member name="T:TCYM.UI.Binding.UIBindingEngine">
             <summary>
             UI 绑定引擎，管理绑定表达式并在源对象属性变化时更新目标。
@@ -205,6 +211,27 @@
             声明式事件绑定，用于通过对象初始化器为 <see cref="T:TCYM.UI.Core.UIElement"/> 绑定事件处理器。
             可与 <see cref="P:TCYM.UI.Core.UIElement.Events"/> 属性配合使用。
             </summary>
+        </member>
+        <member name="P:TCYM.UI.Binding.UIEventBindings.PointerEvent">
+            <summary>统一指针事件回调，同时覆盖鼠标与触摸输入。</summary>
+        </member>
+        <member name="P:TCYM.UI.Binding.UIEventBindings.PointerPressed">
+            <summary>统一指针按下事件回调。</summary>
+        </member>
+        <member name="P:TCYM.UI.Binding.UIEventBindings.PointerReleased">
+            <summary>统一指针抬起事件回调。</summary>
+        </member>
+        <member name="P:TCYM.UI.Binding.UIEventBindings.PointerMoved">
+            <summary>统一指针移动事件回调。</summary>
+        </member>
+        <member name="P:TCYM.UI.Binding.UIEventBindings.PointerEntered">
+            <summary>统一指针进入事件回调。</summary>
+        </member>
+        <member name="P:TCYM.UI.Binding.UIEventBindings.PointerExited">
+            <summary>统一指针离开事件回调。</summary>
+        </member>
+        <member name="P:TCYM.UI.Binding.UIEventBindings.PointerCanceled">
+            <summary>统一指针取消事件回调。</summary>
         </member>
         <member name="P:TCYM.UI.Binding.UIEventBindings.Click">
             <summary>鼠标点击事件回调。</summary>
@@ -254,6 +281,12 @@
             目标可以是派生类型（例如 <see cref="T:TCYM.UI.Elements.Input.UIInput"/>），此时会附加额外的焦点类事件。
             </summary>
             <param name="target">要附加事件的目标 UI 元素。</param>
+        </member>
+        <member name="M:TCYM.UI.Binding.UIEventBindings.DetachFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            将所有非空的事件处理器从目标元素上移除。
+            </summary>
+            <param name="target">要移除事件的目标 UI 元素。</param>
         </member>
         <member name="T:TCYM.UI.Core.DefaultUIStyle">
             <summary>
@@ -402,6 +435,47 @@
             通常在元素被点击以外的区域或通过键盘导航切换焦点时调用。
             </summary>
         </member>
+        <member name="T:TCYM.UI.Core.PreviewHotReloadPatcher">
+            <summary>
+            统一处理预览宿主的 same-tree patch。
+            组件只需要暴露状态快照、额外子树和字段级 source tag，公共递归逻辑都收敛在这里。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Core.PreviewHotReloadPatcher.CurrentPreserveRuntimeStyleState">
+            <summary>
+            当前递归 patch 上下文是否需要保留运行时样式偏离。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.PreviewHotReloadPatcher.CanPatchTreeInPlace(TCYM.UI.Core.UIElement,TCYM.UI.Core.UIElement)">
+            <summary>
+            仅做结构兼容性判断，不触碰当前树。
+            </summary>
+            <param name="currentElement">当前预览树中的节点。</param>
+            <param name="nextElement">新源码树中的节点。</param>
+            <returns>结构兼容时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Core.PreviewHotReloadPatcher.TryPatchTreeInPlace(TCYM.UI.Core.UIElement,TCYM.UI.Core.UIElement,System.Boolean)">
+            <summary>
+            在确认结构兼容后，递归把 next 树中的源码态同步到 current 树。
+            </summary>
+            <param name="currentElement">当前预览树中的节点。</param>
+            <param name="nextElement">新源码树中的节点。</param>
+            <param name="preserveRuntimeStyleState">是否保留运行时样式偏离。</param>
+            <returns>patch 成功时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Core.PreviewHotReloadPatcher.StampSourceStateSignatures(TCYM.UI.Core.UIElement)">
+            <summary>
+            记录当前源码树的显式样式签名、组件状态签名以及字段级 source tag。
+            </summary>
+            <param name="element">要打源码签名的根节点。</param>
+        </member>
+        <member name="M:TCYM.UI.Core.PreviewHotReloadPatcher.GetStyleSignature(System.Object)">
+            <summary>
+            把任意样式/状态对象归一化为稳定签名，供热更判断源码是否真的变化。
+            </summary>
+            <param name="style">待签名的对象。</param>
+            <returns>稳定的签名字符串。</returns>
+        </member>
         <member name="T:TCYM.UI.Core.Routing.IUIRouteLifecycle">
             <summary>
             路由页面生命周期。
@@ -496,6 +570,12 @@
             导航（replace）。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Core.Routing.UIRouter.ReplaceCurrentPage(TCYM.UI.Core.UIElement)">
+            <summary>
+            在保持当前路由路径不变的前提下，替换当前显示页面实例。
+            适用于需要原地热替换当前路由页的场景。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Core.Routing.UIRouter.Back">
             <summary>
             返回上一页。
@@ -558,6 +638,12 @@
             - 尽量在显示窗口前完成第一帧渲染以避免启动黑屏闪烁。
             </summary>
         </member>
+        <member name="P:TCYM.UI.Core.SDLPlatform.EnableTouchMouseEvents">
+            <summary>
+            是否允许 SDL 将触摸输入转换为鼠标事件。
+            关闭后会同步更新 SDL Hint，并在事件泵中过滤 SDL_TOUCH_MOUSEID 的伪鼠标事件。
+            </summary>
+        </member>
         <member name="T:TCYM.UI.Core.SDLPlatform.GpuSyncMode">
             <summary>
              GPU 同步模式枚举：控制是否以及何时调用 glFinish 以确保 GPU 命令完成。
@@ -581,6 +667,12 @@
         <member name="P:TCYM.UI.Core.SDLPlatform.SyncMode">
             <summary>
              GPU 同步模式设置（默认值为 None）。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.SDLPlatform.ApplyTouchMouseEventHint">
+            <summary>
+            将当前 Touch->Mouse 配置同步到底层 SDL。
+            该 Hint 只影响 SDL 的触摸转鼠标行为，不影响原生 FINGER 事件分发。
             </summary>
         </member>
         <member name="M:TCYM.UI.Core.SDLPlatform.EnsureGlProcs">
@@ -642,6 +734,16 @@
         </member>
         <member name="F:TCYM.UI.Core.SDLPlatform.MDT_EFFECTIVE_DPI">
             <summary>GetDpiForMonitor DPI 类型：有效 DPI（考虑用户在设置中选择的缩放百分比）。</summary>
+        </member>
+        <member name="M:TCYM.UI.Core.SDLPlatform.ShouldIgnoreSyntheticTouchMouse(System.UInt32)">
+            <summary>
+            当禁用 Touch->Mouse 时，忽略 SDL 为触摸伪造出的鼠标事件。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.SDLPlatform.ShouldDispatchSyntheticTouchFromMouse(System.UInt32)">
+            <summary>
+            仅在启用 Touch->Mouse 时，把伪鼠标事件补发回触摸快照链路。
+            </summary>
         </member>
         <member name="M:TCYM.UI.Core.SDLPlatform.GetCurrentDisplayIndex">
             <summary>
@@ -1120,6 +1222,20 @@
             注意：如果悬停样式有 Transition，则不更新快照，以便能正确恢复到原始状态。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Core.UIElement.ApplyHoverCursorOverride(TCYM.UI.Core.UIStyle,TCYM.UI.Core.UIStyle)">
+            <summary>
+            进入 hover 时立即覆盖当前 cursor。
+            cursor 不参与过渡动画，因此需要在 hover 生效阶段直接同步到 Style 和元素字段。
+            </summary>
+            <param name="hover">hover 样式。</param>
+            <param name="defaultStyle">默认样式，用于判断 hover 是否声明了非默认 cursor。</param>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.RestoreHoverCursorOverride">
+            <summary>
+            恢复 hover 前的 cursor 状态。
+            光标语义应当在离开 hover 时立即恢复，而不是等过渡动画结束。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Core.UIElement.ApplyAnimatedTransforms(TCYM.UI.Helpers.Transform.TransformType,TCYM.UI.Helpers.Transform)">
             <summary>
             直接构建动画 Transforms 列表，避免字符串格式化和重新解析。
@@ -1512,6 +1628,66 @@
             元素样式。设置时会合并类名样式（如有）并应用到元素。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Core.UIElement.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            返回会影响组件源码态的最小快照，供预览热更判断是否需要进入组件级 patch。
+            </summary>
+            <returns>组件源码态快照；无需比较时返回 null。</returns>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.GetPreviewHotReloadStateSnapshotCore">
+            <summary>
+            提供给外部程序集派生组件重写的预览热更状态快照入口。
+            </summary>
+            <returns>组件源码态快照；无需比较时返回 null。</returns>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.GetPreviewHotReloadPatchChildren">
+            <summary>
+            返回当前组件参与预览热更递归的子树集合。
+            </summary>
+            <returns>默认返回真实 Children；复合组件可改为自管子树。</returns>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.GetPreviewHotReloadPatchChildrenCore">
+            <summary>
+            提供给外部程序集派生组件重写的预览热更子树入口。
+            </summary>
+            <returns>默认返回真实 Children；复合组件可改为自管子树。</returns>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.CanPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            允许组件在递归前先检查自管子树是否仍可原地 patch。
+            </summary>
+            <param name="nextElement">新源码树中的同位置节点。</param>
+            <returns>可原地 patch 时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.CanPreviewHotReloadPatchFromCore(TCYM.UI.Core.UIElement)">
+            <summary>
+            提供给外部程序集派生组件重写的预览热更结构检查入口。
+            </summary>
+            <param name="nextElement">新源码树中的同位置节点。</param>
+            <returns>可原地 patch 时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            给需要保活的字段打上“源码签名”标签，后续可区分源码变更与运行时偏离。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.StampPreviewHotReloadSourceStateTagsCore">
+            <summary>
+            提供给外部程序集派生组件重写的源码签名打点入口。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            组件级 patch 入口；默认不处理，交给具体控件按需覆盖。
+            </summary>
+            <param name="nextElement">新源码树中的同位置节点。</param>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.ApplyPreviewHotReloadPatchFromCore(TCYM.UI.Core.UIElement)">
+            <summary>
+            提供给外部程序集派生组件重写的组件级 patch 入口。
+            </summary>
+            <param name="nextElement">新源码树中的同位置节点。</param>
+        </member>
         <member name="P:TCYM.UI.Core.UIElement.BindingEngine">
             <summary>
             绑定数据上下文。
@@ -1603,6 +1779,11 @@
             清理所有子元素，自动维护父子关系并触发布局变更。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Core.UIElement.RemoveAllChildren">
+            <summary>
+            移除所有子元素，并递归释放实现了 IDisposable 的子树对象。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Core.UIElement.AddRangeChild(System.Collections.Generic.IEnumerable{TCYM.UI.Core.UIElement})">
             <summary>
             更新子元素集合：清空现有子元素并添加新的集合。
@@ -1663,6 +1844,27 @@
             检查当前元素是否有正在运行的动画（包括悬停动画和过渡动画）。如果有，返回 true；否则返回 false。
             </summary>
             <returns>如果有正在运行的动画，返回 true；否则返回 false。</returns>
+        </member>
+        <member name="E:TCYM.UI.Core.UIElement.OnPointerEvent">
+            <summary>统一公共指针事件，同时覆盖鼠标与触摸输入。</summary>
+        </member>
+        <member name="E:TCYM.UI.Core.UIElement.OnPointerPressed">
+            <summary>统一指针按下事件。</summary>
+        </member>
+        <member name="E:TCYM.UI.Core.UIElement.OnPointerReleased">
+            <summary>统一指针抬起事件。</summary>
+        </member>
+        <member name="E:TCYM.UI.Core.UIElement.OnPointerMoved">
+            <summary>统一指针移动事件。</summary>
+        </member>
+        <member name="E:TCYM.UI.Core.UIElement.OnPointerEntered">
+            <summary>统一指针进入事件。</summary>
+        </member>
+        <member name="E:TCYM.UI.Core.UIElement.OnPointerExited">
+            <summary>统一指针离开事件。</summary>
+        </member>
+        <member name="E:TCYM.UI.Core.UIElement.OnPointerCanceled">
+            <summary>统一指针取消事件。</summary>
         </member>
         <member name="E:TCYM.UI.Core.UIElement.OnClick">
             <summary>鼠标点击事件，在元素内按下并抬起时触发。</summary>
@@ -1823,6 +2025,36 @@
             可以从任何线程调用此方法来触发 UI 更新。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Core.UIElement.RequestSelfBoundsRedraw">
+            <summary>
+            请求重绘当前元素自身区域。
+            供设计期等“内容变了但外部布局未变”的场景使用，避免 CPU 回退路径整窗表面更新。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Core.UIElement._pseudoBackgroundImageCache">
+            <summary>
+            伪元素背景图缓存。
+            使用图片源路径作为 key，避免 ::before/::after 在每次绘制时重复创建 SKImage。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.GetPseudoBackgroundImage(System.String)">
+            <summary>
+            获取伪元素背景图对应的缓存图像。
+            首次访问时从资源或文件加载位图并转换为 SKImage，后续直接复用缓存实例。
+            </summary>
+            <param name="backgroundImageSource">背景图路径，支持 res:// 与文件路径。</param>
+            <returns>可复用的 SKImage；加载失败时返回 null。</returns>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.DrawPseudoElement(SkiaSharp.SKCanvas,TCYM.UI.Core.DefaultUIStyle,System.Boolean,System.Nullable{System.Single},System.Nullable{System.Single})">
+            <summary>
+            绘制伪元素；当提供 inline 坐标时，非绝对定位的伪元素会按调用方给出的行内位置绘制。
+            </summary>
+            <param name="canvas">目标画布。</param>
+            <param name="pseudo">伪元素样式。</param>
+            <param name="isAfter">是否为 ::after。</param>
+            <param name="inlineX">可选的行内起始 X 坐标。</param>
+            <param name="inlineCenterY">可选的行内中心 Y 坐标。</param>
+        </member>
         <member name="M:TCYM.UI.Core.UIElement.Render(SkiaSharp.SKCanvas)">
             <summary>
             渲染入口：
@@ -1898,11 +2130,18 @@
             <param name="rTop">上端圆角半径</param>
             <param name="rBottom">下端圆角半径</param>
         </member>
+        <member name="M:TCYM.UI.Core.UIElement.RenderChildElements(SkiaSharp.SKCanvas)">
+            <summary>
+            仅绘制子元素：
+            - 子元素按 `ZIndex` 排序，同层中将 `absolute/fixed` 排到后；
+            - 逐个调用子元素的 `Render` 方法进行绘制。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Core.UIElement.RenderContent(SkiaSharp.SKCanvas)">
             <summary>
             绘制内容：
-            - 子元素按 `ZIndex` 排序，同层中将 `absolute/fixed` 排到后；
-            - 逐个调用子元素的 `Render` 方法进行绘制。
+            - 默认仅绘制子元素；
+            - 子类可在前后插入自己的文本/图形渲染逻辑。
             </summary>
         </member>
         <member name="M:TCYM.UI.Core.UIElement.CreatesStackingContext(TCYM.UI.Core.UIElement)">
@@ -2064,6 +2303,12 @@
             这个方法是线程安全的，可以从任何线程调用。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Core.UIManager.RequestRedraw(SkiaSharp.SKRect)">
+            <summary>
+            从外部线程请求局部区域重绘。
+            仅在没有全量脏标记时保留该矩形；否则自动退回整窗重绘。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Core.UIManager.HasExternalRedrawRequest">
             <summary>
             检查是否有外部重绘请求。
@@ -2093,6 +2338,17 @@
         <member name="M:TCYM.UI.Core.UIManager.UnregisterElement(TCYM.UI.Core.UIElement)">
             <summary>
             从管理器中注销元素（当元素 Id 变更或被移除时由元素内部调用）。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIManager.ResetForPreviewTreeRebuild(TCYM.UI.Core.UIElement)">
+            <summary>
+            为预览宿主重建 UI 树前清理元素注册表和悬挂的交互状态。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIManager.ClearPreviewRegistrationsForTree(TCYM.UI.Core.UIElement)">
+            <summary>
+            为预览宿主的局部热替换清理即将挂载子树使用的 Id 注册。
+            仅按 Id 删除，不要求现有注册实例与传入子树是同一对象。
             </summary>
         </member>
         <member name="P:TCYM.UI.Core.UIManager.Root">
@@ -2296,6 +2552,17 @@
         <member name="M:TCYM.UI.Core.UIManager.MarkDirty">
             <summary>
             标记需要重绘。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIManager.MarkDirty(SkiaSharp.SKRect)">
+            <summary>
+            标记一个局部区域需要重绘。
+            若当前帧已经被升级为整窗脏标记，则忽略该局部矩形。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIManager.TryGetPartialPresentRects(TCYM.UI.SDL2.SDL.SDL_Rect[]@)">
+            <summary>
+            当前帧是否存在可供 CPU 呈现层复用的局部更新矩形。
             </summary>
         </member>
         <member name="M:TCYM.UI.Core.UIManager.ClearDirty">
@@ -2861,6 +3128,13 @@
             </summary>
             <param name="cssText">CSS 文本，例如：".button { color: red; } .label { font-size: 16px; }"</param>
         </member>
+        <member name="M:TCYM.UI.Core.UIStyleManager.RegisterClassStylesFromCss(System.String,System.String)">
+            <summary>
+            从 CSS 文本批量注册类样式，并按样式源替换旧规则。
+            </summary>
+            <param name="cssText">CSS 文本。</param>
+            <param name="sourceKey">样式源标识；相同 sourceKey 的后续注册会替换旧规则。</param>
+        </member>
         <member name="T:TCYM.UI.Core.UIStyleParser">
              <summary>
              UIStyleParser 样式解析器
@@ -3036,6 +3310,45 @@
             - 为 null 表示未设置全局默认，不影响现有样式。
             </summary>
         </member>
+        <member name="T:TCYM.UI.Core.StyleGlobals.State">
+            <summary>
+            全局样式状态快照。
+            用于按样式源保存与重放 * / :root 解析出的默认值和变量集合。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Core.StyleGlobals.State.UniversalFontSizePx">
+            <summary>快照中的全局默认字体大小（px）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Core.StyleGlobals.State.UniversalColor">
+            <summary>快照中的全局默认文本颜色。</summary>
+        </member>
+        <member name="P:TCYM.UI.Core.StyleGlobals.State.UniversalFontFamily">
+            <summary>快照中的全局默认字体。</summary>
+        </member>
+        <member name="P:TCYM.UI.Core.StyleGlobals.State.UniversalFontWeight">
+            <summary>快照中的全局默认字重。</summary>
+        </member>
+        <member name="P:TCYM.UI.Core.StyleGlobals.State.UniversalLineHeight">
+            <summary>快照中的全局默认行高。</summary>
+        </member>
+        <member name="P:TCYM.UI.Core.StyleGlobals.State.UniversalLetterSpacing">
+            <summary>快照中的全局默认字间距。</summary>
+        </member>
+        <member name="P:TCYM.UI.Core.StyleGlobals.State.UniversalTextAlign">
+            <summary>快照中的全局默认文本对齐方式。</summary>
+        </member>
+        <member name="P:TCYM.UI.Core.StyleGlobals.State.UniversalCursor">
+            <summary>快照中的全局默认光标样式。</summary>
+        </member>
+        <member name="P:TCYM.UI.Core.StyleGlobals.State.UniversalOpacity">
+            <summary>快照中的全局默认不透明度。</summary>
+        </member>
+        <member name="P:TCYM.UI.Core.StyleGlobals.State.UniversalBackgroundColor">
+            <summary>快照中的全局默认背景颜色。</summary>
+        </member>
+        <member name="P:TCYM.UI.Core.StyleGlobals.State.Variables">
+            <summary>快照中的 CSS 变量集合，键名通常为 --token。</summary>
+        </member>
         <member name="P:TCYM.UI.Core.StyleGlobals.UniversalFontSizePx">
             <summary>全局默认字体大小（px）。仅当声明为像素时生效。</summary>
         </member>
@@ -3069,6 +3382,46 @@
         <member name="P:TCYM.UI.Core.StyleGlobals.UniversalBackgroundColor">
             <summary>全局默认背景颜色。</summary>
         </member>
+        <member name="M:TCYM.UI.Core.StyleGlobals.CreateEmptyState">
+            <summary>
+            创建一个空的全局样式状态对象。
+            </summary>
+            <returns>不包含任何默认值和变量的状态实例。</returns>
+        </member>
+        <member name="M:TCYM.UI.Core.StyleGlobals.ResetToDefaults">
+            <summary>
+            将当前全局样式状态重置为库默认值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.StyleGlobals.ApplyState(TCYM.UI.Core.StyleGlobals.State)">
+            <summary>
+            将给定状态中的值应用到当前全局样式状态。
+            仅覆盖传入状态中显式提供的字段。
+            </summary>
+            <param name="state">要应用的全局样式状态；为 null 时忽略。</param>
+        </member>
+        <member name="M:TCYM.UI.Core.StyleGlobals.MergeState(TCYM.UI.Core.StyleGlobals.State,TCYM.UI.Core.StyleGlobals.State)">
+            <summary>
+            将来源状态合并到目标状态。
+            合并规则与运行时重建全局样式时保持一致：来源中的显式值覆盖目标中的旧值。
+            </summary>
+            <param name="target">接收合并结果的目标状态。</param>
+            <param name="source">提供覆盖值的来源状态。</param>
+        </member>
+        <member name="M:TCYM.UI.Core.StyleGlobals.ParseRootState(System.String)">
+            <summary>
+            解析给定 CSS 文本中的 :root 规则并返回对应状态快照。
+            </summary>
+            <param name="cssText">包含 :root 规则的 CSS 文本。</param>
+            <returns>解析得到的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Core.StyleGlobals.ParseGlobalState(System.String)">
+            <summary>
+            解析给定 CSS 文本中的 * 全局规则并返回对应状态快照。
+            </summary>
+            <param name="cssText">包含 * 规则的 CSS 文本。</param>
+            <returns>解析得到的状态快照。</returns>
+        </member>
         <member name="M:TCYM.UI.Core.StyleGlobals.ApplyCommonStylesToElement(TCYM.UI.Core.DefaultUIStyle)">
             <summary>
             将公共样式应用到指定元素（仅当元素未显式设置对应属性时）。
@@ -3080,6 +3433,16 @@
             </summary>
             <param name="name">变量名</param>
             <param name="value">变量值</param>
+        </member>
+        <member name="M:TCYM.UI.Core.StyleGlobals.ReplaceVariables(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            用新的变量集合替换当前 CSS 变量状态。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.StyleGlobals.GetVariablesSnapshot">
+            <summary>
+            获取当前 CSS 变量快照。
+            </summary>
         </member>
         <member name="M:TCYM.UI.Core.StyleGlobals.GetVariable(System.String)">
             <summary>
@@ -3100,6 +3463,11 @@
             - 初始化底层平台（SDL + 可选 OpenGL/Skia GPU）。
             - 初始化 UI 管理器（布局、事件、渲染）。
             - 驱动主循环与关闭释放。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Core.UISystem.ResourceAssemblyResolver">
+            <summary>
+            设计时资源解析钩子，允许调用方为特定程序集名称返回当前应使用的已加载程序集实例。
             </summary>
         </member>
         <member name="T:TCYM.UI.Core.UISystem.RuntimeHandle">
@@ -3230,6 +3598,13 @@
             <summary>
             默认窗口是否始终置顶。
             可在调用 Initialize 前修改。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Core.UISystem.EnableTouchMouseEvents">
+            <summary>
+            是否允许 SDL 将触摸输入转换为鼠标事件。
+            关闭后，来自触摸的伪鼠标事件会被平台层忽略。
+            建议在调用 Initialize 前配置。
             </summary>
         </member>
         <member name="P:TCYM.UI.Core.UISystem.EnableFrameTimingLog">
@@ -3397,6 +3772,22 @@
             注册 CSS class 样式（包含关键帧）。
             </summary>
             <param name="css">CSS 字符串</param>
+        </member>
+        <member name="M:TCYM.UI.Core.UISystem.RegisterClassStylesFromCss(System.String,System.String)">
+            <summary>
+            注册 CSS class 样式（包含关键帧），并允许按样式源替换旧规则。
+            </summary>
+            <param name="css">CSS 字符串</param>
+            <param name="sourceKey">样式源标识；相同 sourceKey 的后续注册会替换旧规则。</param>
+        </member>
+        <member name="M:TCYM.UI.Core.UISystem.RegisterGlobalDefaultsCss(System.String,System.String)">
+            <summary>
+            注册程序级全局默认 CSS。
+            适用于 Program.cs 中的 * / :root 默认样式，内部会为内联样式生成稳定的样式源标识，
+            以便后续样式重建时能够替换旧值而不是被清空。
+            </summary>
+            <param name="css">CSS 字符串。</param>
+            <param name="sourceName">可选的内联样式源名称；不传时会基于入口程序集名生成。</param>
         </member>
         <member name="M:TCYM.UI.Core.UISystem.LoadStyleFile(System.String)">
             <summary>
@@ -4303,6 +4694,18 @@
             初始化 Badge 组件。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.UIBadge.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响徽标展示结果的源码态快照。
+            </summary>
+            <returns>用于热更比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIBadge.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新的源码配置同步到当前 Badge 实例。
+            </summary>
+            <param name="nextElement">新源码树中的 Badge 节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.UIBadge.Measure(System.Single,System.Single)">
             <summary>
             测量 Badge 尺寸。
@@ -4678,6 +5081,23 @@
             编辑器完整文本（换行符为 \n）。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.CodeEditor.UICodeEditor.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响代码编辑器文本内容、语法高亮和显示行为的源码态快照。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.CodeEditor.UICodeEditor.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            为源码文本记录字段级签名，避免运行态编辑内容被无关保存覆盖。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.CodeEditor.UICodeEditor.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新的源码配置同步到当前代码编辑器实例，并尽量保留运行态编辑状态。
+            </summary>
+            <param name="nextElement">新源码树中的代码编辑器节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.CodeEditor.UICodeEditor.#ctor">
             <summary>
             初始化代码编辑器实例。
@@ -4735,6 +5155,21 @@
             失去键盘焦点并停止文本输入。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.CodeEditor.UICodeEditor.BuildTextSignature(System.String)">
+            <summary>
+            构造文本字段的稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.CodeEditor.UICodeEditor.BuildPreviewDataSignature(System.Object)">
+            <summary>
+            对委托和其他可空配置值构造稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.CodeEditor.UICodeEditor.ShouldApplySourceSetting(System.String,System.String,System.String)">
+            <summary>
+            判断字段级源码设置是否应该覆盖当前运行态值。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Elements.CodeEditor.UICodeEditor.EnsureFallbackTypeface(SkiaSharp.SKTypeface)">
             <summary>懒加载回退字体 Typeface（CJK 中文等）。</summary>
         </member>
@@ -4746,6 +5181,21 @@
         </member>
         <member name="M:TCYM.UI.Elements.CodeEditor.UICodeEditor.SetTextInternal(System.String,System.Boolean)">
             <summary>设置内部文本并刷新折叠、光标与匹配状态。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.CodeEditor.UICodeEditor.ApplySourceTextForHotReload(System.String,System.Boolean)">
+            <summary>
+            在 preview hot reload 中应用新的源码文本，并清理过期的后台格式化与折叠状态。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.CodeEditor.UICodeEditor.CancelPendingFormattingForHotReload">
+            <summary>
+            取消尚未完成或尚未应用的异步格式化结果，避免旧文档结果晚到覆盖当前编辑器。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.CodeEditor.UICodeEditor.CancelPendingFoldRecomputeForHotReload(System.Boolean)">
+            <summary>
+            取消尚未完成或尚未应用的折叠区域计算结果，避免旧文本的折叠信息污染当前编辑器。
+            </summary>
         </member>
         <member name="M:TCYM.UI.Elements.CodeEditor.UICodeEditor.InsertText(System.String)">
             <summary>在当前光标位置插入文本（支持换行拆分）。</summary>
@@ -5152,6 +5602,23 @@
             初始化 <see cref="T:TCYM.UI.Elements.UIDatePicker"/>。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.UIDatePicker.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响日期输入框和弹层面板的源码态快照。
+            </summary>
+            <returns>用于热更比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIDatePicker.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            为 Value 和 Mode 记录源码签名，避免运行态选择在无关保存时被覆盖。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIDatePicker.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            同步新的源码配置到当前日期选择器，并尽量局部刷新 trigger 或 popup。
+            </summary>
+            <param name="nextElement">新源码树中的日期选择器节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.UIDatePicker.Update(System.Single)">
             <summary>
             每帧更新。弹层打开时实时同步弹层位置。
@@ -5270,6 +5737,11 @@
             点击确定回调。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.UIDatePicker.ShouldApplySourceSetting(System.String,System.String,System.String)">
+            <summary>
+            判断某个源码字段是否应该覆盖当前运行态值。
+            </summary>
+        </member>
         <member name="T:TCYM.UI.Elements.UIRangePicker">
             <summary>
             日期范围选择器（简化版，风格参考 antd RangePicker）。
@@ -5284,6 +5756,23 @@
             <summary>
             初始化 <see cref="T:TCYM.UI.Elements.UIRangePicker"/>。
             </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIRangePicker.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响范围选择 trigger 和 popup 的源码态快照。
+            </summary>
+            <returns>用于热更比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIRangePicker.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            为 StartDate、EndDate 和 Mode 记录源码签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIRangePicker.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            同步新的源码配置到当前范围选择器，并尽量局部刷新 trigger 和 popup。
+            </summary>
+            <param name="nextElement">新源码树中的范围选择器节点。</param>
         </member>
         <member name="M:TCYM.UI.Elements.UIRangePicker.Update(System.Single)">
             <summary>
@@ -5544,6 +6033,92 @@
             初始化悬浮按钮。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButton.GetPreviewHotReloadPatchChildren">
+            <summary>
+            FloatButton 的内部 tooltip、badge 和 button 子树都由当前实例自行维护，
+            因此不走默认 Children 递归 patch。
+            </summary>
+            <returns>空集合，表示由组件自行管理内部组合树。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButton.CanPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            仅当目标节点仍然是 <see cref="T:TCYM.UI.Elements.UIFloatButton"/> 或其派生类型时，允许进入组件级 patch。
+            </summary>
+            <param name="nextElement">新源码树中的悬浮按钮节点。</param>
+            <returns>节点类型兼容时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButton.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响悬浮按钮视觉、定位和内部组合树的源码态快照。
+            </summary>
+            <returns>用于热更比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButton.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            为 Fixed 状态记录源码签名，便于区分源码改动和按钮组里的运行时归一化。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButton.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新的源码配置同步到当前悬浮按钮实例，并按需重建内部视觉树。
+            </summary>
+            <param name="nextElement">新源码树中的悬浮按钮节点。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButton.RefreshVisualTree">
+            <summary>
+            按当前属性配置重建按钮外观和内部组合树。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButton.ApplyRootStyle">
+            <summary>
+            应用悬浮按钮根节点的定位样式。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButton.ApplyTooltipState">
+            <summary>
+            把当前 Tooltip 文本同步到内部 Tooltip 组件。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButton.ApplyButtonStyle">
+            <summary>
+            根据当前形状和样式覆盖配置更新内部按钮样式。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButton.RebuildButtonContent">
+            <summary>
+            按图标与描述配置重建按钮内容。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButton.CreateIconElement(System.Single,SkiaSharp.SKColor)">
+            <summary>
+            创建用于渲染图标的内部 <see cref="T:TCYM.UI.Elements.UIIcon"/>。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButton.ResolveIconFont(System.String)">
+            <summary>
+            根据当前图标内容推断要使用的字体。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButton.ResolveForegroundColor">
+            <summary>
+            解析按钮内容的前景色。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButton.ShouldApplySourceSetting(System.String,System.String,System.String)">
+            <summary>
+            判断源码中的字段是否应该覆盖当前运行态值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButton.CloneUIStyleForHotReload(TCYM.UI.Core.UIStyle)">
+            <summary>
+            克隆按钮样式对象，避免直接复用 next 树上的实例。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButton.BuildPreviewDataSignature(System.Object)">
+            <summary>
+            为委托、字体和样式字段构造稳定签名。
+            </summary>
+        </member>
         <member name="T:TCYM.UI.Elements.UIFloatButtonGroup">
             <summary>
             悬浮按钮组。
@@ -5575,9 +6150,31 @@
             初始化按钮组。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButtonGroup.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响按钮组布局与定位的源码态快照。
+            </summary>
+            <returns>用于热更比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButtonGroup.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            同步新的源码布局配置到当前按钮组实例，子按钮仍交给默认递归 patch。
+            </summary>
+            <param name="nextElement">新源码树中的按钮组节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.UIFloatButtonGroup.Measure(System.Single,System.Single)">
             <summary>
             测量前把组内按钮切为相对定位，避免固定定位子项脱离组布局。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButtonGroup.ApplyGroupStyle(System.Boolean)">
+            <summary>
+            按当前定位与间距配置刷新按钮组根样式。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatButtonGroup.NormalizeChildren">
+            <summary>
+            把组内按钮强制归一化为相对定位，避免 fixed 子按钮脱离按钮组布局。
             </summary>
         </member>
         <member name="T:TCYM.UI.Elements.UIFloatBackTop">
@@ -5601,9 +6198,26 @@
             初始化回顶按钮。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.UIFloatBackTop.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集回顶按钮相对基础悬浮按钮新增的源码态快照。
+            </summary>
+            <returns>包含基础按钮状态以及回顶专属配置的快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatBackTop.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            同步新的源码配置到当前回顶按钮，并保留运行中的显示/滚动动画状态。
+            </summary>
+            <param name="nextElement">新源码树中的回顶按钮节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.UIFloatBackTop.Update(System.Single)">
             <summary>
             根据滚动位置更新可见状态。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFloatBackTop.BuildBackTopTargetSignature(TCYM.UI.Elements.UIScrollView)">
+            <summary>
+            为回顶目标构造稳定签名，避免比较整个滚动树。
             </summary>
         </member>
         <member name="T:TCYM.UI.Elements.Image.UIImageFit">
@@ -5796,6 +6410,23 @@
             内置工具条动作完成事件。参数依次为图片实例、工具条动作、动作是否成功。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Image.UIImage.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响图片输入、交互状态和工具条表现的源码态快照。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Image.UIImage.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            为图片输入与运行态交互字段记录源码签名，避免无关保存覆盖当前缩放、旋转或运行态切换的图片源。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Image.UIImage.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            将新的源码态配置同步到当前图片实例，同时尽量保留运行态缩放、旋转和动画播放进度。
+            </summary>
+            <param name="nextElement">新源码树中的图片节点。</param>
+        </member>
         <member name="P:TCYM.UI.Elements.Image.UIImage.IsAnimated">
             <summary>
             当前是否为多帧图片。
@@ -5879,6 +6510,56 @@
         <member name="M:TCYM.UI.Elements.Image.UIImage.RenderContent(SkiaSharp.SKCanvas)">
             <summary>
             绘制当前图片帧和可选工具条。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Image.UIImage.ShouldApplySourceSetting(System.String,System.String,System.String)">
+            <summary>
+            判断某个源码字段是否应该覆盖当前运行态值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Image.UIImage.NormalizeScaleForHotReload">
+            <summary>
+            在缩放约束变化后归一化当前运行态缩放值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Image.UIImage.ClampScaleForHotReload(System.Single)">
+            <summary>
+            使用当前缩放约束对目标缩放进行限制。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Image.UIImage.ApproximatelyEqual(System.Single,System.Single)">
+            <summary>
+            比较两个浮点值是否可以视为相同。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Image.UIImage.BuildFloatSignature(System.Single)">
+            <summary>
+            构造浮点值的稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Image.UIImage.BuildStringSignature(System.String)">
+            <summary>
+            构造字符串值的稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Image.UIImage.BuildByteArraySignature(System.Byte[])">
+            <summary>
+            构造图片字节内容的稳定签名，避免把整段字节直接放进状态快照。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Image.UIImage.BuildEffectiveImageInputSignature(System.String,System.Byte[])">
+            <summary>
+            构造当前真正参与加载的图片输入签名，用于判断是否需要重新加载图片。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Image.UIImage.CloneByteArray(System.Byte[])">
+            <summary>
+            复制图片字节，避免直接复用 next 树中的缓冲区实例。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Image.UIImage.BuildDelegateSignature(System.Delegate)">
+            <summary>
+            构造委托的稳定签名，用于判断回调是否由源码更新。
             </summary>
         </member>
         <member name="T:TCYM.UI.Elements.Input.CountConfig">
@@ -6913,6 +7594,19 @@
             用法：new 后加入任意容器，通过设置属性自定义外观与节奏。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Loading.NeonLoading.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            采集影响霓虹加载动画外观与节奏的源码态快照。
+            不包含运行中的时间进度，避免无关保存打断当前动画相位。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Loading.NeonLoading.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            将新的源码态参数同步到当前霓虹加载实例，同时保留动画运行进度。
+            </summary>
+            <param name="nextElement">新源码树中的霓虹加载节点。</param>
+        </member>
         <member name="P:TCYM.UI.Elements.Loading.NeonLoading.NeonColor">
             <summary>霓虹主色（默认天蓝）。</summary>
         </member>
@@ -6958,10 +7652,10 @@
         </member>
         <member name="M:TCYM.UI.Elements.Loading.NeonLoading.Measure(System.Single,System.Single)">
             <summary>
-            测量阶段：根据文本内容与换行/最大行数策略计算所需尺寸
+            测量组件期望尺寸；当宽高未显式指定时，使用 <see cref="P:TCYM.UI.Elements.Loading.NeonLoading.SizeLoader"/> 作为默认值。
             </summary>
-            <param name="availableWidth">Width</param>
-            <param name="availableHeight">Height</param>
+            <param name="availableWidth">父容器提供的可用宽度。</param>
+            <param name="availableHeight">父容器提供的可用高度。</param>
         </member>
         <member name="M:TCYM.UI.Elements.Loading.NeonLoading.DelayToPhase(System.Single)">
             <summary>
@@ -6983,6 +7677,19 @@
             - 4 个点围绕中心旋转；
             - 点在“圆点  花瓣”之间往复形变；
             </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Loading.TomatoNovelLoading.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            采集影响四点花瓣加载动画外观与运动节奏的源码态快照。
+            不包含运行中的时间进度，避免无关保存打断当前动画相位。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Loading.TomatoNovelLoading.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            将新的源码态参数同步到当前加载实例，同时保留动画运行进度。
+            </summary>
+            <param name="nextElement">新源码树中的番茄小说风格加载节点。</param>
         </member>
         <member name="P:TCYM.UI.Elements.Loading.TomatoNovelLoading.SizeLoader">
             <summary>控件默认宽高（像素）。</summary>
@@ -7066,6 +7773,11 @@
             </summary>
             <param name="t">输入时间（通常为归一化时间）。</param>
             <returns>归一化循环值，范围 [0,1)。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Loading.TomatoNovelLoading.AreColorArraysEquivalent(SkiaSharp.SKColor[],SkiaSharp.SKColor[])">
+            <summary>
+            比较两组颜色数组是否在语义上等价。
+            </summary>
         </member>
         <member name="T:TCYM.UI.Elements.Menu.MenuItemIcon">
             <summary>
@@ -7365,6 +8077,139 @@
             初始化 Menu 组件。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.GetPreviewHotReloadPatchChildren">
+            <summary>
+            Menu 的真实可视树会随 Items、展开态和收起态动态重建，因此不走默认 Children 递归 patch。
+            </summary>
+            <returns>空集合，表示由组件自行管理内部子树热更。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.CanPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            只要目标节点仍然是 <see cref="T:TCYM.UI.Elements.Menu.UIMenu"/>，就允许进入组件级 patch。
+            </summary>
+            <param name="nextElement">新源码树中的 Menu 节点。</param>
+            <returns>节点类型兼容时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响菜单结构、交互和视觉表现的源码态快照。
+            </summary>
+            <returns>用于热更比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            为选中项和展开项记录源码签名，避免运行态交互在无关保存时被覆盖。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新的源码配置同步到当前 Menu 实例，并按需重建内部菜单树或重放视觉状态。
+            </summary>
+            <param name="nextElement">新源码树中的 Menu 节点。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.Rebuild">
+            <summary>
+            根据当前 Items 和配置完整重建内部菜单树。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.ApplyContainerTheme">
+            <summary>
+            根据当前 Theme 和 Style 来源更新菜单容器主题样式。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.BuildNode(TCYM.UI.Elements.Menu.MenuItem,System.Int32)">
+            <summary>
+            为单个菜单项构建可视节点，并注册对应的点击与悬停逻辑。
+            </summary>
+            <param name="item">当前要构建的菜单项。</param>
+            <param name="level">当前层级。</param>
+            <returns>构建出的可视节点；分割线和分组也会返回对应容器。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.SetSelectedKeysForHotReload(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            在不触发外部回调的前提下同步当前选中 keys。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.SetOpenKeysForHotReload(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            在不触发外部回调的前提下同步当前展开 keys。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.NormalizeInteractiveState">
+            <summary>
+            当菜单结构或模式变化后，清理无效的选中态和展开态。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.CollectValidInteractiveKeys(System.Collections.Generic.IEnumerable{TCYM.UI.Elements.Menu.MenuItem},System.Collections.Generic.ISet{System.String},System.Collections.Generic.ISet{System.String})">
+            <summary>
+            收集当前菜单树中允许选中和允许展开的有效 key 集合。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.ShouldApplySourceSetting(System.String,System.String,System.String)">
+            <summary>
+            判断源码中的交互字段是否应该覆盖当前运行态值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.HandleSelect(TCYM.UI.Elements.Menu.MenuItem)">
+            <summary>
+            处理叶子节点的选中逻辑，并触发对应回调。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.ToggleOpen(System.String)">
+            <summary>
+            切换某个子菜单的展开状态，并触发展开变化事件。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.ApplyVisualState">
+            <summary>
+            根据当前选中态、展开态和收起态，重放菜单节点的视觉状态。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.BuildKeyCollectionSignature(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            构造选中 keys 或展开 keys 的稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.BuildMenuItemsSignature(System.Collections.Generic.IEnumerable{TCYM.UI.Elements.Menu.MenuItem})">
+            <summary>
+            构造 MenuItem 树的结构与行为签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.BuildMenuItemSnapshot(TCYM.UI.Elements.Menu.MenuItem)">
+            <summary>
+            构造单个 MenuItem 的稳定快照，用于比较源码态差异。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.BuildMenuItemIconSignature(System.Nullable{TCYM.UI.Elements.Menu.MenuItemIcon})">
+            <summary>
+            为 MenuItemIcon 构造稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.CloneMenuItemsForHotReload(System.Collections.Generic.IEnumerable{TCYM.UI.Elements.Menu.MenuItem})">
+            <summary>
+            复制 MenuItem 树，避免直接复用 next 树上的 List 实例。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.CloneMenuItemForHotReload(TCYM.UI.Elements.Menu.MenuItem)">
+            <summary>
+            复制单个 MenuItem，保留行为委托和附加元素引用。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.CloneMenuItemIconForHotReload(System.Nullable{TCYM.UI.Elements.Menu.MenuItemIcon})">
+            <summary>
+            复制菜单图标值，避免共享可变列表或包装对象。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.BuildStyleTrackingSignature(System.Boolean,TCYM.UI.Core.UpdateUIStyle)">
+            <summary>
+            构造影响菜单容器主题补丁逻辑的 style 来源签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Menu.UIMenu.BuildPreviewDataSignature(System.Object)">
+            <summary>
+            对委托、样式和字体等行为字段构造稳定签名。
+            </summary>
+        </member>
         <member name="T:TCYM.UI.Elements.Message.MessageConfig">
             <summary>
             全局提示的配置参数。
@@ -7374,7 +8219,7 @@
             <summary>提示内容文本。</summary>
         </member>
         <member name="P:TCYM.UI.Elements.Message.MessageConfig.Duration">
-            <summary>自动关闭延时（秒），默认 3 秒。设为 0 则不自动关闭。</summary>
+            <summary>自动关闭延时（秒），默认 2 秒。设为 0 则不自动关闭。</summary>
         </member>
         <member name="P:TCYM.UI.Elements.Message.MessageConfig.Type">
             <summary>消息类型。</summary>
@@ -7406,7 +8251,7 @@
             <summary>消息距离顶部的位置（像素），默认 33。</summary>
         </member>
         <member name="P:TCYM.UI.Elements.Message.MessageGlobalConfig.Duration">
-            <summary>默认自动关闭延时（秒），默认 3。</summary>
+            <summary>默认自动关闭延时（秒），默认 2。</summary>
         </member>
         <member name="P:TCYM.UI.Elements.Message.MessageGlobalConfig.MaxCount">
             <summary>最大同时显示数量，0 表示不限制。</summary>
@@ -7678,6 +8523,66 @@
             构造分页组件。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.UIPagination.GetPreviewHotReloadPatchChildren">
+            <summary>
+            Pagination 的可视树会随当前页码和折叠策略频繁变化，因此由组件自行决定何时重建子树。
+            </summary>
+            <returns>空集合，表示不走默认 Children 递归 patch。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIPagination.CanPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            只要目标节点仍然是 <see cref="T:TCYM.UI.Elements.UIPagination"/>，就允许进入组件级 patch。
+            </summary>
+            <param name="nextElement">新源码树中的分页节点。</param>
+            <returns>节点类型兼容时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIPagination.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            采集影响分页布局、交互和回调绑定的源码态快照。
+            </summary>
+            <returns>用于比较源码差异的快照数组。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIPagination.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            为 Current/PageSize 记录源码签名，避免预览里的翻页和改页长在无关保存时被覆盖。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIPagination.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新的源码配置同步到当前分页实例，必要时只重建当前控件自身。
+            </summary>
+            <param name="nextElement">新源码树中的分页节点。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIPagination.Rebuild">
+            <summary>
+            根据当前状态完整重建分页的内部 UI 树。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIPagination.ShouldApplySourceSetting(System.String,System.String,System.String)">
+            <summary>
+            判断某个源码字段是否允许覆盖当前运行态值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIPagination.ApplyCurrentStateForHotReload(TCYM.UI.Elements.UIPagination)">
+            <summary>
+            按新的源码模式同步页码相关字段，不触发外部回调。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIPagination.ApplyPageSizeStateForHotReload(TCYM.UI.Elements.UIPagination)">
+            <summary>
+            按新的源码模式同步页长相关字段，不触发外部回调。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIPagination.BuildControlledPagingSignature(System.Boolean,System.Int32,System.Int32)">
+            <summary>
+            为 Current/DefaultCurrent 和 PageSize/DefaultPageSize 生成统一签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIPagination.BuildPreviewDataSignature(System.Object)">
+            <summary>
+            对委托和集合等字段生成稳定签名，便于比较源码态差异。
+            </summary>
+        </member>
         <member name="T:TCYM.UI.Elements.PaginationSize">
             <summary>
             分页尺寸。
@@ -7721,6 +8626,211 @@
         <member name="F:TCYM.UI.Elements.PaginationItemType.JumpNext">
             <summary>
             向后跳页。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Segmented.UISegmented">
+            <summary>
+            Segmented 分段选择器。
+            参考 Ant Design Segmented 的交互模型，
+            支持字符串或自定义 UIElement 作为选项内容。
+            </summary>
+        </member>
+        <member name="E:TCYM.UI.Elements.Segmented.UISegmented.Change">
+            <summary>
+            当前值变化时触发。
+            </summary>
+        </member>
+        <member name="E:TCYM.UI.Elements.Segmented.UISegmented.SelectionChanged">
+            <summary>
+            当前选项变化时触发，参数依次为索引和选项对象。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.#ctor">
+            <summary>
+            初始化 Segmented 组件并应用默认轨道样式。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.Style">
+            <summary>
+            容器样式。外部赋值时会保留 Segmented 所需的默认 flex 布局，
+            避免仅设置宽度等属性时把内部轨道布局覆盖成普通 block 容器。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.Options">
+            <summary>
+            选项列表。
+            支持 string、UIElement 或 UISegmentedOption。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.DefaultValue">
+            <summary>
+            默认选中值。仅在 Value 为空时参与初始选择。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.Value">
+            <summary>
+            当前选中的值。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.SelectedIndex">
+            <summary>
+            当前选中项索引，未选中时为 -1。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.SelectedOption">
+            <summary>
+            当前选中项。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.Block">
+            <summary>
+            是否启用 block 模式。
+            打开后每个分段会均分剩余宽度。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.Disabled">
+            <summary>
+            是否禁用整个组件。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.TrackPadding">
+            <summary>
+            轨道内边距。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.SegmentGap">
+            <summary>
+            分段之间的间距。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.ItemHeight">
+            <summary>
+            单个分段高度。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.ItemHorizontalPadding">
+            <summary>
+            分段左右内边距。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.ItemVerticalPadding">
+            <summary>
+            分段上下内边距。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.FontSize">
+            <summary>
+            分段文本字号。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.SelectionAnimationDuration">
+            <summary>
+            选中滑块滑动动画时长，单位为秒；设置为 0 时禁用动画并直接切换。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.SelectionAnimationTimingFunction">
+            <summary>
+            选中滑块滑动动画的缓动函数名称，支持 linear、ease-out、ease-in-out、ease-out-cubic 等。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.ItemStyle">
+            <summary>
+            所有分段共用的常规态增量样式。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.SelectedItemStyle">
+            <summary>
+            所有分段共用的选中态增量样式。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.ThumbStyle">
+            <summary>
+            选中滑道的增量样式。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.OnChange">
+            <summary>
+            便捷订阅 Change 事件。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.OnSelectionChanged">
+            <summary>
+            便捷订阅 SelectionChanged 事件。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.SelectIndex(System.Int32)">
+            <summary>
+            按索引切换选中项。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.Update(System.Single)">
+            <summary>
+            推进选中滑块动画，再更新基类及其子元素状态。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.Layout(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            布局完成后同步选中滑块的目标位置，首次布局直接到位，后续选择切换时执行滑动动画。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.RenderContent(SkiaSharp.SKCanvas)">
+            <summary>
+            绘制选中滑块并推进动画，再渲染各个分段按钮内容。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Segmented.UISegmentedOption">
+            <summary>
+            Segmented 的选项定义。
+            支持纯文本标签或自定义 UIElement 内容。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmentedOption.#ctor">
+            <summary>
+            初始化一个空的 Segmented 选项定义。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmentedOption.#ctor(System.String,System.Object)">
+            <summary>
+            使用文本标签创建一个选项。
+            </summary>
+            <param name="label">显示文本。</param>
+            <param name="value">选项值；为空时回退为 label。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmentedOption.#ctor(TCYM.UI.Core.UIElement,System.Object)">
+            <summary>
+            使用自定义 UIElement 内容创建一个选项。
+            </summary>
+            <param name="content">选项内容元素。</param>
+            <param name="value">选项值；为空时回退为 content 实例。</param>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmentedOption.Value">
+            <summary>
+            选项值。未设置时会回退为 Label、Content 或索引。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmentedOption.Label">
+            <summary>
+            纯文本标签。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmentedOption.Content">
+            <summary>
+            自定义内容。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmentedOption.Disabled">
+            <summary>
+            是否禁用当前选项。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmentedOption.Style">
+            <summary>
+            常规态增量样式。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Segmented.UISegmentedOption.SelectedStyle">
+            <summary>
+            选中态增量样式。
             </summary>
         </member>
         <member name="T:TCYM.UI.Elements.Select.SelectMode">
@@ -8050,6 +9160,23 @@
             设置后会自动刷新UI。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelect.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响 Select 触发器、下拉列表和选择结果的源码态快照。
+            </summary>
+            <returns>用于热更比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelect.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            为单选值和多选值记录源码签名，避免运行态选择结果被无关保存覆盖。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelect.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新的源码配置同步到当前 Select 实例，并按需局部刷新 trigger 或 dropdown。
+            </summary>
+            <param name="nextElement">新源码树中的 Select 节点。</param>
+        </member>
         <member name="P:TCYM.UI.Elements.Select.UISelect.SelectStyle">
             <summary>
             选中条目的样式（应用到下拉菜单中的选中项）。
@@ -8312,6 +9439,18 @@
             支持虚拟滚动、搜索过滤、动态数据源、选中状态管理和滚动回调。
             </summary>
         </member>
+        <member name="F:TCYM.UI.Elements.Select.UISelectDropdown.PreviewSourceOptionsSignatureTag">
+            <summary>
+            记录 dropdown 源码态选项列表签名的字段级 tag。
+            用于判断当前 _options 是否已被运行态过滤结果覆盖。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Select.UISelectDropdown.PreviewSourceSelectedValuesSignatureTag">
+            <summary>
+            记录 dropdown 源码态选中值签名的字段级 tag。
+            用于在无关保存时保留运行态选择结果。
+            </summary>
+        </member>
         <member name="F:TCYM.UI.Elements.Select.UISelectDropdown._scroll">
             <summary>
             滚动容器，用于承载选项列表并支持滚动
@@ -8404,6 +9543,23 @@
             滚动条圆角半径（像素）。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectDropdown.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响 dropdown 列表内容、渲染方式和交互回调的源码态快照。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectDropdown.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            记录源码态选项和选中值签名，避免运行时过滤和选择结果被无关保存覆盖。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectDropdown.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新的源码配置同步到当前 dropdown，并在必要时局部重建选项列表。
+            </summary>
+            <param name="nextElement">新源码树中的 UISelectDropdown 节点。</param>
+        </member>
         <member name="E:TCYM.UI.Elements.Select.UISelectDropdown.OnSearchTextChanged">
             <summary>
             搜索文本变化时触发。
@@ -8492,6 +9648,93 @@
             虚拟滚动模式下仅触发重绘，样式在创建时应用。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectDropdown.RestoreScrollOffsetForHotReload(System.Single,System.Single)">
+            <summary>
+            在列表重建后恢复热更前的滚动位置。
+            </summary>
+            <param name="scrollY">重建前的垂直滚动偏移。</param>
+            <param name="scrollX">重建前的水平滚动偏移。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectDropdown.ShouldApplySourceState(System.String,System.String,System.String)">
+            <summary>
+            根据字段级源码签名判断当前运行态是否允许被新的源码值覆盖。
+            </summary>
+            <param name="tagName">保存源码签名的 tag 名称。</param>
+            <param name="currentSignature">当前运行态字段签名。</param>
+            <param name="nextSignature">新源码树中的字段签名。</param>
+            <returns>当源码真的变化或当前不存在运行态偏离时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectDropdown.CloneOptionsForHotReload(System.Collections.Generic.IEnumerable{TCYM.UI.Elements.Select.SelectOption})">
+            <summary>
+            深拷贝选项集合，避免当前运行态继续引用新源码树中的对象实例。
+            </summary>
+            <param name="options">待复制的选项集合。</param>
+            <returns>可安全写回当前 dropdown 的新集合。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectDropdown.CloneOptionForHotReload(TCYM.UI.Elements.Select.SelectOption)">
+            <summary>
+            深拷贝单个选项及其自定义字段。
+            </summary>
+            <param name="option">待复制的选项。</param>
+            <returns>新的选项实例。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectDropdown.CloneSelectedValuesForHotReload(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            深拷贝当前选中值集合，用于回写源码态选择结果。
+            </summary>
+            <param name="values">待复制的选中值集合。</param>
+            <returns>新的选中值哈希集合。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectDropdown.CloneHotReloadData(System.Object)">
+            <summary>
+            递归复制热更过程中会被写回当前实例的数据对象。
+            </summary>
+            <param name="value">待复制的数据。</param>
+            <returns>适合当前运行树持有的副本。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectDropdown.CloneUpdateStyleForHotReload(TCYM.UI.Core.UpdateUIStyle)">
+            <summary>
+            复制可更新样式对象，避免共享同一份 UpdateUIStyle 实例。
+            </summary>
+            <param name="style">待复制的样式。</param>
+            <returns>复制后的样式；原值为空时返回 null。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectDropdown.CloneUIStyleForHotReload(TCYM.UI.Core.UIStyle)">
+            <summary>
+            复制任意 UIStyle，统一为当前运行树可安全持有的新实例。
+            </summary>
+            <param name="style">待复制的样式。</param>
+            <returns>复制后的样式对象。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectDropdown.BuildSelectionCollectionSignature(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            构造选中值集合签名。
+            这里按签名排序后再聚合，避免哈希集合枚举顺序影响热更判断。
+            </summary>
+            <param name="values">待签名的选中值集合。</param>
+            <returns>稳定的集合签名。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectDropdown.BuildSelectOptionsSignature(System.Collections.Generic.IEnumerable{TCYM.UI.Elements.Select.SelectOption})">
+            <summary>
+            构造选项列表的稳定签名。
+            </summary>
+            <param name="options">待签名的选项集合。</param>
+            <returns>用于比较源码变化的签名字符串。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectDropdown.BuildPreviewDataSignature(System.Object)">
+            <summary>
+            把任意值归一化为稳定签名，供 preview hot reload 比较使用。
+            </summary>
+            <param name="value">待签名的对象。</param>
+            <returns>稳定签名字符串。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectDropdown.AppendPreviewDataSignature(System.Text.StringBuilder,System.Object)">
+            <summary>
+            递归把值写入签名构造器。
+            </summary>
+            <param name="builder">签名输出缓冲区。</param>
+            <param name="value">当前要展开的值。</param>
+        </member>
         <member name="T:TCYM.UI.Elements.Select.UISelectOptionItem">
             <summary>
             下拉列表中的单个选项项。
@@ -8542,6 +9785,19 @@
             注意：禁用状态的选项不会触发此事件。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectOptionItem.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响默认选项项文本、样式和点击回调的源码态快照。
+            不包含运行态 Selected，避免无关保存覆盖当前选择态。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectOptionItem.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新的源码配置同步到当前选项项，并保留运行态 Selected。
+            </summary>
+            <param name="nextElement">新源码树中的 UISelectOptionItem 节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.Select.UISelectOptionItem.#ctor(TCYM.UI.Elements.Select.SelectOption)">
             <summary>
             创建一个新的选项项实例。
@@ -8559,6 +9815,54 @@
             根据当前状态应用样式。
             优先级：禁用样式 > 选中样式 > 默认样式。
             </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectOptionItem.ApplyOptionForHotReload(TCYM.UI.Elements.Select.SelectOption)">
+            <summary>
+            同步源码态选项对象的可变字段，并更新当前显示文本。
+            </summary>
+            <param name="nextOption">新源码树中的选项数据。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectOptionItem.BuildOptionSignature(TCYM.UI.Elements.Select.SelectOption)">
+            <summary>
+            构造单个选项的稳定签名。
+            </summary>
+            <param name="option">待签名的选项。</param>
+            <returns>用于比较源码变化的签名字符串。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectOptionItem.CloneHotReloadData(System.Object)">
+            <summary>
+            深拷贝热更过程中会写回当前选项的数据对象。
+            </summary>
+            <param name="value">待复制的数据。</param>
+            <returns>适合当前运行树持有的副本。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectOptionItem.CloneUpdateStyleForHotReload(TCYM.UI.Core.UpdateUIStyle)">
+            <summary>
+            复制 UpdateUIStyle，避免直接复用 next 树中的样式实例。
+            </summary>
+            <param name="style">待复制的样式。</param>
+            <returns>复制后的样式对象。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectOptionItem.CloneUIStyleForHotReload(TCYM.UI.Core.UIStyle)">
+            <summary>
+            复制任意 UIStyle，统一为当前运行树可安全持有的新实例。
+            </summary>
+            <param name="style">待复制的样式。</param>
+            <returns>复制后的样式对象。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectOptionItem.BuildPreviewDataSignature(System.Object)">
+            <summary>
+            把任意值归一化为稳定签名，供 preview hot reload 比较使用。
+            </summary>
+            <param name="value">待签名的对象。</param>
+            <returns>稳定签名字符串。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Select.UISelectOptionItem.AppendPreviewDataSignature(System.Text.StringBuilder,System.Object)">
+            <summary>
+            递归把值写入签名构造器。
+            </summary>
+            <param name="builder">签名输出缓冲区。</param>
+            <param name="value">当前要展开的值。</param>
         </member>
         <member name="T:TCYM.UI.Elements.Slider.UISlider">
             <summary>
@@ -8751,10 +10055,10 @@
             <summary>是否显示刻度尺（主/次刻度线 + 主刻度数字 + 当前值高亮）。</summary>
         </member>
         <member name="P:TCYM.UI.Elements.Slider.UISlider.RulerMajorStep">
-            <summary>刻度尺主刻度间隔。</summary>
+            <summary>刻度尺主刻度间隔。小于等于 0 时自动计算。</summary>
         </member>
         <member name="P:TCYM.UI.Elements.Slider.UISlider.RulerMinorStep">
-            <summary>刻度尺次刻度间隔。</summary>
+            <summary>刻度尺次刻度间隔。小于等于 0 时自动计算。</summary>
         </member>
         <member name="P:TCYM.UI.Elements.Slider.UISlider.RulerMajorTickLength">
             <summary>主刻度线长度。</summary>
@@ -8811,6 +10115,23 @@
         <member name="M:TCYM.UI.Elements.Slider.UISlider.#ctor">
             <summary>构造 UISlider。</summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响 Slider 值、布局和渲染表现的源码态快照。
+            </summary>
+            <returns>用于热更比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            为当前值和范围值记录源码签名，避免运行态拖拽结果被无关保存覆盖。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            同步新的源码配置到当前 Slider 实例，并尽量保留运行态拖拽后的值。
+            </summary>
+            <param name="nextElement">新源码树中的 Slider 节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.Slider.UISlider.Measure(System.Single,System.Single)">
             <summary>测量尺寸。</summary>
         </member>
@@ -8844,6 +10165,81 @@
         <member name="M:TCYM.UI.Elements.Slider.UISlider.IsValueInTrack(System.Single)">
             <summary>判断某个值是否在当前已选的 Track 范围内。</summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.TryApplyDefaultValueForHotReload(System.Single,System.Single,System.Boolean)">
+            <summary>
+            当源码默认值变化且当前运行态仍停留在旧默认值时，回写新的默认单值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.TryApplyDefaultRangeForHotReload(System.Single[],System.Single[],System.Boolean)">
+            <summary>
+            当源码默认范围变化且当前运行态仍停留在旧默认范围时，回写新的默认范围值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.NormalizeRuntimeValuesForHotReload">
+            <summary>
+            在约束或模式变化后重新归一化当前运行态值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.ShouldApplySourceSetting(System.String,System.String,System.String)">
+            <summary>
+            判断源码中的交互字段是否应该覆盖当前运行态值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.ApproximatelyEqual(System.Single,System.Single)">
+            <summary>
+            比较两个浮点数是否可视为同一个值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.BuildFloatSignature(System.Single)">
+            <summary>
+            构造单个浮点值的稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.BuildNullableFloatSignature(System.Nullable{System.Single})">
+            <summary>
+            构造可空步长值的稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.BuildRangeSignature(System.Single[])">
+            <summary>
+            构造默认范围数组的稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.BuildMarksSignature(System.Collections.Generic.Dictionary{System.Single,System.String})">
+            <summary>
+            构造 Marks 集合的稳定签名，保证不同插入顺序结果一致。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.CloneFloatArray(System.Single[])">
+            <summary>
+            复制默认范围数组，避免直接复用 next 树上的实例。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.CloneMarksForHotReload(System.Collections.Generic.Dictionary{System.Single,System.String})">
+            <summary>
+            复制 Marks 集合，避免直接复用 next 树上的字典实例。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.AreFloatArraysEquivalent(System.Single[],System.Single[])">
+            <summary>
+            比较两组浮点数组是否在语义上等价。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.SyncColorArrayForHotReload(SkiaSharp.SKColor[]@,SkiaSharp.SKColor[])">
+            <summary>
+            同步颜色数组配置并返回是否发生变化。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.SyncFloatArrayForHotReload(System.Single[]@,System.Single[])">
+            <summary>
+            同步浮点数组配置并返回是否发生变化。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.BuildPreviewDataSignature(System.Object)">
+            <summary>
+            对委托和数组等复杂字段构造稳定签名。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Elements.Slider.UISlider.MeasureRulerWidth">
             <summary>计算刻度尺所需宽度（数字宽度 + 间距 + 刻度线长度 + 间距）。</summary>
         </member>
@@ -8855,6 +10251,27 @@
         </member>
         <member name="M:TCYM.UI.Elements.Slider.UISlider.DrawRulerVertical(SkiaSharp.SKCanvas,System.Single,System.Single,System.Single,System.Single)">
             <summary>绘制垂直刻度尺（主/次刻度线 + 主刻度数字 + 当前值高亮）。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.ResolveRulerSteps(System.Single,System.Boolean)">
+            <summary>解析实际使用的主/次刻度步长。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.ComputeAutoRulerMajorStep(System.Single,System.Single,System.Boolean)">
+            <summary>根据范围和轨道像素长度自动估算主刻度步长。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.EstimateRulerLabelAxisExtent(System.Boolean)">
+            <summary>估算刻度尺标签在轴向上的占用尺寸。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.NiceRulerStep(System.Single)">
+            <summary>将原始步长规整为适合坐标轴的 1/2/2.5/5/10 系列。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.IsMajorRulerValue(System.Single,System.Single)">
+            <summary>判断某个刻度值是否落在主刻度上，按 Min 对齐。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.GetNearestRulerMajorValue(System.Single,System.Single)">
+            <summary>获取离当前值最近的主刻度值。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UISlider.FormatRulerValue(System.Single,System.Single)">
+            <summary>按主刻度步长格式化刻度尺标签，避免小数位丢失。</summary>
         </member>
         <member name="M:TCYM.UI.Elements.Slider.UISlider.MeasureMaxMarkTextWidth">
             <summary>获取最大刻度文本宽度（用于垂直模式测量）。</summary>
@@ -8868,6 +10285,23 @@
             仿 CodePen 温度计效果：深色胶囊容器、霓虹发光轨道、玻璃质感手柄、
             左侧刻度尺（长/短刻度线 + 数字）、底部大号发光温度值显示。
             </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UIThermometer.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            采集影响温度计值、布局和视觉表现的源码态快照。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UIThermometer.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            为当前值记录源码签名，避免拖拽后的运行态温度在无关保存时被覆盖。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UIThermometer.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            将新的源码态配置同步到当前温度计实例，并尽量保留运行态拖拽后的值。
+            </summary>
+            <param name="nextElement">新源码树中的温度计节点。</param>
         </member>
         <member name="P:TCYM.UI.Elements.Slider.UIThermometer.Value">
             <summary>当前温度值。</summary>
@@ -8982,6 +10416,36 @@
         </member>
         <member name="M:TCYM.UI.Elements.Slider.UIThermometer.RenderContent(SkiaSharp.SKCanvas)">
             <summary>绘制温度计内容。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UIThermometer.TryApplyDefaultValueForHotReload(System.Single,System.Single)">
+            <summary>
+            当源码默认值变化且当前运行态仍贴近旧默认值时，回写新的默认值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UIThermometer.NormalizeRuntimeValueForHotReload">
+            <summary>
+            在约束变化后重新归一化当前运行态值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UIThermometer.ShouldApplySourceSetting(System.String,System.String,System.String)">
+            <summary>
+            判断源码中的值字段是否应该覆盖当前运行态值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UIThermometer.ApproximatelyEqual(System.Single,System.Single)">
+            <summary>
+            比较两个浮点值是否可以视为相同。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UIThermometer.BuildFloatSignature(System.Single)">
+            <summary>
+            构造浮点值的稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Slider.UIThermometer.BuildPreviewDataSignature(System.Object)">
+            <summary>
+            对委托和可空值类型构造稳定签名。
+            </summary>
         </member>
         <member name="T:TCYM.UI.Elements.Splitter.SplitterOrientation">
             <summary>
@@ -9229,6 +10693,11 @@
             是否已经进入拖拽过程。
             </summary>
         </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter._activeTouchId">
+            <summary>
+            当前正在驱动 Splitter 交互的触点 ID。
+            </summary>
+        </member>
         <member name="F:TCYM.UI.Elements.Splitter.UISplitter._pendingBeforeSize">
             <summary>
             懒更新模式下待提交的前面板尺寸。
@@ -9267,6 +10736,21 @@
         <member name="F:TCYM.UI.Elements.Splitter.UISplitter.DoubleClickThresholdMs">
             <summary>
             双击拖拽带的判定时间窗口，单位毫秒。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter.TouchDraggerMinThickness">
+            <summary>
+            触控场景下拖拽带的最小命中厚度。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter.TouchCollapseButtonHitSize">
+            <summary>
+            触控场景下折叠按钮的最小命中尺寸。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Splitter.UISplitter.TouchHitPadding">
+            <summary>
+            触控命中区域额外扩展的边距。
             </summary>
         </member>
         <member name="P:TCYM.UI.Elements.Splitter.UISplitter.Orientation">
@@ -9442,6 +10926,18 @@
             构造 Splitter。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响 Splitter 布局、拖拽表现和面板定义的源码态快照。
+            </summary>
+            <returns>用于热更比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新的源码配置同步到当前 Splitter，并保留运行态拖拽与折叠状态。
+            </summary>
+            <param name="nextElement">新源码树中的 Splitter 节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.Splitter.UISplitter.GetSizes">
             <summary>
             返回当前各面板尺寸快照。
@@ -9458,6 +10954,28 @@
         <member name="M:TCYM.UI.Elements.Splitter.UISplitter.Layout(System.Single,System.Single,System.Single,System.Single)">
             <inheritdoc />
         </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.SyncPanelDefinitionsForHotReload(TCYM.UI.Elements.Splitter.UISplitter)">
+            <summary>
+            根据新的源码定义同步当前直系面板的 Splitter 配置。
+            </summary>
+            <param name="nextSplitter">新源码树中的 Splitter 实例。</param>
+            <returns>需要重新布局时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.SyncSplitterPanelDefinitionForHotReload(TCYM.UI.Elements.Splitter.UISplitterPanel,TCYM.UI.Elements.Splitter.UISplitterPanel,TCYM.UI.Elements.Splitter.UISplitter.PanelState,System.Single)">
+            <summary>
+            同步单个 Splitter.Panel 的定义，并按需把源码默认尺寸回写到当前运行态。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.TryApplyDefaultSizeForHotReload(TCYM.UI.Elements.Splitter.UISplitter.PanelState,System.Nullable{TCYM.UI.Core.UnitValue},System.Single,System.Single,System.Boolean)">
+            <summary>
+            当源码默认尺寸变化且当前运行态尚未偏离旧默认值时，把新默认尺寸回写到运行态。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.NormalizeCollapsedStateForHotReload(TCYM.UI.Elements.Splitter.UISplitter.PanelState,TCYM.UI.Elements.Splitter.UISplitterPanel,System.Single)">
+            <summary>
+            当源码禁用了当前折叠方向或直接关闭折叠能力时，恢复面板到展开态。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Elements.Splitter.UISplitter.LayoutManagedPanel(TCYM.UI.Core.UIElement,System.Single,System.Single,System.Single,System.Single)">
             <summary>
             以 Splitter 计算出的盒子尺寸布局直系面板，并临时屏蔽面板自身的宽高样式干扰。
@@ -9472,6 +10990,9 @@
         <member name="M:TCYM.UI.Elements.Splitter.UISplitter.OnPointerUp(System.Single,System.Single)">
             <inheritdoc />
         </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.OnTouchEvent(TCYM.UI.Events.UITouchEvent)">
+            <inheritdoc />
+        </member>
         <member name="M:TCYM.UI.Elements.Splitter.UISplitter.RenderContent(SkiaSharp.SKCanvas)">
             <inheritdoc />
         </member>
@@ -9483,6 +11004,26 @@
         <member name="M:TCYM.UI.Elements.Splitter.UISplitter.GetTriggerSize">
             <summary>
             返回拖拽带最终用于布局和命中的厚度。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ScaleMetric(System.Single)">
+            <summary>
+            将逻辑尺寸值转换为当前 DPI 下的实际像素值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.GetScaledDragStartThreshold">
+            <summary>
+            返回当前 DPI 下的拖拽启动阈值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ScreenToLocal(System.Single,System.Single)">
+            <summary>
+            将屏幕坐标转换为当前元素的局部坐标。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.FindTouchPointById(TCYM.UI.Events.UITouchEvent,System.Int64)">
+            <summary>
+            按触点 ID 从事件中查找对应的触摸点。
             </summary>
         </member>
         <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ResolveMeasuredPanelSize(TCYM.UI.Elements.Splitter.UISplitter.PanelState)">
@@ -9545,6 +11086,26 @@
             比较两个 UnitValue 是否在语义上等价。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.AreCollapsibleOptionsEquivalent(TCYM.UI.Elements.Splitter.UISplitterPanelCollapsibleOptions,TCYM.UI.Elements.Splitter.UISplitterPanelCollapsibleOptions)">
+            <summary>
+            比较两份折叠配置在语义上是否等价。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.CloneCollapsibleOptionsForHotReload(TCYM.UI.Elements.Splitter.UISplitterPanelCollapsibleOptions)">
+            <summary>
+            克隆折叠配置对象，避免直接复用 next 树上的实例。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.BuildPanelDefinitionsSignature(System.Collections.Generic.IEnumerable{TCYM.UI.Core.UIElement})">
+            <summary>
+            为当前直系面板的 Splitter 定义构造稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.BuildPreviewDataSignature(System.Object)">
+            <summary>
+            对事件委托等运行逻辑字段生成稳定签名。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Elements.Splitter.UISplitter.ClampToBounds(System.Single,System.Single,System.Single)">
             <summary>
             将数值限制在最小最大边界内，并兼容无穷大上界。
@@ -9595,9 +11156,29 @@
             命中测试当前坐标是否落在某条拖拽带的命中区域内。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.TryHitDragger(System.Single,System.Single,System.Int32@,System.Boolean)">
+            <summary>
+            命中测试当前坐标是否落在某条拖拽带的命中区域内。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Elements.Splitter.UISplitter.TryHitCollapseButton(System.Single,System.Single,TCYM.UI.Elements.Splitter.UISplitter.CollapseButtonInfo@)">
             <summary>
             命中测试当前坐标是否落在某个折叠按钮上。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.TryHitCollapseButton(System.Single,System.Single,TCYM.UI.Elements.Splitter.UISplitter.CollapseButtonInfo@,System.Boolean)">
+            <summary>
+            命中测试当前坐标是否落在某个折叠按钮上。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.GetTouchDraggerHitRect(SkiaSharp.SKRect)">
+            <summary>
+            返回触控场景下拖拽带使用的扩展命中区域。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Splitter.UISplitter.GetTouchCollapseButtonHitRect(SkiaSharp.SKRect)">
+            <summary>
+            返回触控场景下折叠按钮使用的扩展命中区域。
             </summary>
         </member>
         <member name="M:TCYM.UI.Elements.Splitter.UISplitter.UpdateHoverState(System.Single,System.Single)">
@@ -10380,9 +11961,19 @@
             获取属性值，不存在返回空字符串。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Svg.SvgNode.GetInheritedAttr(System.String,System.String)">
+            <summary>
+            获取可继承属性值，当前节点未定义时回退到父节点。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Elements.Svg.SvgNode.GetFloatAttr(System.String,System.Single)">
             <summary>
             获取浮点属性值，解析失败返回 0。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Svg.SvgNode.GetInheritedFloatAttr(System.String,System.Single)">
+            <summary>
+            获取可继承的浮点属性值，解析失败返回 fallback。
             </summary>
         </member>
         <member name="M:TCYM.UI.Elements.Svg.SvgNode.FindDescendants(System.String)">
@@ -10542,6 +12133,23 @@
             是否自动播放动画。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Svg.UISvg.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响 SVG 解析输入与动画播放行为的源码态快照。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Svg.UISvg.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            为 SVG 输入字段与动画播放开关记录源码签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Svg.UISvg.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            将新的源码态 SVG 配置同步到当前实例；只有在有效输入变化时才重新解析，避免重置当前动画进度。
+            </summary>
+            <param name="nextElement">新源码树中的 SVG 节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.Svg.UISvg.Load">
             <summary>
             解析并加载 SVG。
@@ -10555,16 +12163,41 @@
         </member>
         <member name="M:TCYM.UI.Elements.Svg.UISvg.Measure(System.Single,System.Single)">
             <summary>
-            
+            根据 SVG 自身宽高或 viewBox 计算组件测量尺寸。
             </summary>
-            <param name="availableWidth"></param>
-            <param name="availableHeight"></param>
+            <param name="availableWidth">可用宽度。</param>
+            <param name="availableHeight">可用高度。</param>
         </member>
         <member name="M:TCYM.UI.Elements.Svg.UISvg.RenderContent(SkiaSharp.SKCanvas)">
             <summary>
-            
+            将当前 SVG 内容绘制到组件内容区域。
             </summary>
-            <param name="canvas"></param>
+            <param name="canvas">目标画布。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Svg.UISvg.ShouldApplySourceSetting(System.String,System.String,System.String)">
+            <summary>
+            判断某个源码字段是否应该覆盖当前运行态值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Svg.UISvg.BuildStringSignature(System.String)">
+            <summary>
+            构造字符串字段的稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Svg.UISvg.BuildBooleanSignature(System.Boolean)">
+            <summary>
+            构造布尔字段的稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Svg.UISvg.BuildEffectiveSvgInputSignature(System.String,System.String)">
+            <summary>
+            构造真正参与 SVG 解析的有效输入签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Svg.UISvg.BuildEffectiveSvgCssSignature(System.String,System.String)">
+            <summary>
+            构造真正参与 CSS 应用的有效输入签名。
+            </summary>
         </member>
         <member name="T:TCYM.UI.Elements.Table.ITableColumnHost">
             <summary>
@@ -11296,6 +12929,28 @@
             默认搜索筛选命中文本的高亮颜色。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响表格结构、数据投影和宿主层重建的源码态快照。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.GetPreviewHotReloadPatchChildren">
+            <summary>
+            UITable 自己维护内部宿主层与动态子树，same-tree patch 时不递归对子节点做结构比较。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            为选择、展开与分页三组源码态记录字段级签名，避免运行态交互结果被无关保存覆盖。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新的源码配置同步到当前表格实例，并尽量保留当前页、展开与选中等运行态。
+            </summary>
+            <param name="nextElement">新源码树中的 UITable 节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.Table.UITable.#ctor">
             <summary>
             创建实验性 Canvas 表格原型。
@@ -12018,6 +13673,76 @@
             组合分页、筛选和排序状态并触发表格变化回调。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.BuildPreviewSignature(System.Object)">
+            <summary>
+            为 UITable 构造稳定的热更签名，支持普通配置对象、数据行、委托与 UIElement 配置项。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.ArePreviewValuesEquivalent(System.Object,System.Object)">
+            <summary>
+            比较两个表格配置值在热更签名层面上是否等价。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.AppendPreviewSignature(System.Text.StringBuilder,System.Object,System.Collections.Generic.HashSet{System.Object})">
+            <summary>
+            递归将任意配置对象展开为稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.BuildSortedKeySetSignature(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            为 key 集合构造稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.BuildSourceSelectedKeysSignatureForHotReload(TCYM.UI.Elements.Table.UITable)">
+            <summary>
+            构造当前表格源码指定的选中 key 签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.BuildSourceExpandedKeysSignatureForHotReload(TCYM.UI.Elements.Table.UITable)">
+            <summary>
+            构造当前表格源码指定的默认展开 key 签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.BuildSourcePaginationSignatureForHotReload(TCYM.UI.Elements.Table.UITable)">
+            <summary>
+            构造当前表格源码指定的分页签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.ComputeSourceExpandedKeysForHotReload(TCYM.UI.Elements.Table.UITable)">
+            <summary>
+            根据源码默认展开配置推导应展开的 key 集合。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.CollectExpandableKeysForHotReload(System.Collections.Generic.IEnumerable{System.Object},TCYM.UI.Elements.Table.UITable,System.Collections.Generic.List{System.String},System.Collections.Generic.HashSet{System.String})">
+            <summary>
+            递归收集当前源码默认需要展开的所有 key。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.ApplySelectedKeysForHotReload(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            应用新的选中 key 集合。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.ApplyExpandedKeysForHotReload(System.Collections.Generic.IEnumerable{System.String},System.Boolean)">
+            <summary>
+            应用新的展开 key 集合，并同步展开状态是否已初始化。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.ApplyPaginationStateForHotReload(System.Boolean,System.Int32,System.Int32)">
+            <summary>
+            应用新的分页运行态，并立即同步分页宿主视图。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.ShouldApplySourceSetting(System.String,System.String,System.String)">
+            <summary>
+            判断字段级源码设置是否应该覆盖当前运行态。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Table.UITable.ReferenceObjectComparer">
+            <summary>
+            基于引用相等比较对象，避免循环引用配置在签名构造中无限递归。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Elements.Table.UITable.ShouldHostHeaderColumn(TCYM.UI.Elements.Table.TableColumn)">
             <summary>
             判断表头列是否需要宿主化渲染。
@@ -12214,6 +13939,12 @@
             负责渲染底部指示线动画和标签切换交互。
             </summary>
         </member>
+        <member name="F:TCYM.UI.Elements.Tabs.UITabBar.PreviewSourceActiveKeySignatureTag">
+            <summary>
+            记录源码态 ActiveKey 签名的字段级 tag。
+            用于在无关保存时保留运行态页签切换结果。
+            </summary>
+        </member>
         <member name="F:TCYM.UI.Elements.Tabs.UITabBar._activeKey">
             <summary>
             当前选中的 Tab Key。
@@ -12359,6 +14090,30 @@
             Tab 被点击时触发，参数为被点击的 TabItem。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabBar.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响标签栏重建、指示线绘制和点击回调的源码态快照。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabBar.GetPreviewHotReloadPatchChildren">
+            <summary>
+            UITabBar 的真实子树由 Items 派生，热更时由组件自行重建，
+            因此这里不让公共 patcher 递归进入内部标签节点。
+            </summary>
+            <returns>空子树集合。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabBar.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            给 ActiveKey 打上源码签名，避免运行态点击切换被无关保存覆盖。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabBar.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新的源码配置同步到当前标签栏实例，并在必要时重建内部标签节点。
+            </summary>
+            <param name="nextElement">新源码树中的 UITabBar 节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.Tabs.UITabBar.#ctor">
             <summary>
             初始化 Tab 标签栏。
@@ -12422,6 +14177,56 @@
         <member name="M:TCYM.UI.Elements.Tabs.UITabBar.GetTabLabelClasses(TCYM.UI.Elements.Tabs.TabItem,System.Boolean)">
             <summary>
             根据 TabItem 状态生成对应的 CSS 类名列表。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabBar.ShouldApplySourceActiveKey(System.String,System.String)">
+            <summary>
+            判断源码中的 ActiveKey 是否应该覆盖当前运行态页签。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabBar.SetActiveKeyForHotReload(System.Object)">
+            <summary>
+            在不触发外部点击逻辑的前提下同步当前活动页签。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabBar.NormalizeActiveKeyForHotReload">
+            <summary>
+            当当前活动页签被隐藏或禁用时，回退到第一个可见可用页签。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabBar.CloneItemsForHotReload(System.Collections.Generic.IEnumerable{TCYM.UI.Elements.Tabs.TabItem})">
+            <summary>
+            克隆 TabItem 集合，避免当前运行态直接持有 next 树上的对象实例。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabBar.CloneTabItemForHotReload(TCYM.UI.Elements.Tabs.TabItem)">
+            <summary>
+            克隆单个 TabItem，只复制标签栏自身关心的字段。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabBar.CloneIconForHotReload(TCYM.UI.Elements.UIIcon)">
+            <summary>
+            克隆自定义图标，避免重建标签时把 next 树上的图标节点挪进当前树。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabBar.CloneHotReloadData(System.Object)">
+            <summary>
+            递归复制热更过程中会写回当前标签栏的数据对象。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabBar.CloneStyleForHotReload(TCYM.UI.Core.UIStyle)">
+            <summary>
+            克隆样式对象，避免直接复用 next 树上的样式实例。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabBar.BuildItemsSignature(System.Collections.Generic.IEnumerable{TCYM.UI.Elements.Tabs.TabItem})">
+            <summary>
+            构造 TabItem 集合签名，用来判断标签栏是否需要重建。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabBar.BuildPreviewValueSignature(System.Object)">
+            <summary>
+            统一生成标签栏内部字段的比较签名。
             </summary>
         </member>
         <member name="T:TCYM.UI.Elements.Tabs.UITabs">
@@ -12585,6 +14390,37 @@
             初始化 Tabs 组件。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabs.GetPreviewHotReloadPatchChildren">
+            <summary>
+            Tabs 的真实内容树挂在 <see cref="P:TCYM.UI.Elements.Tabs.TabItem.Content"/> 和 <see cref="P:TCYM.UI.Elements.Tabs.TabItem.Icon"/> 上，
+            不适合走基类的默认 Children 递归。
+            </summary>
+            <returns>空集合，表示由组件自行管理子树 patch。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabs.CanPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            检查下一棵 Tabs 树是否仍可在当前实例上原地 patch。
+            </summary>
+            <param name="nextElement">新源码树中的 Tabs 节点。</param>
+            <returns>结构兼容时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabs.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响标签栏和内容宿主表现的源码态快照。
+            </summary>
+            <returns>用于热更比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabs.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            给 ActiveKey 以及每个 Tab 的内容子树记录源码签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabs.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新源码树中的 Tabs 配置同步到当前实例，并尽量保留运行态选中的页签。
+            </summary>
+            <param name="nextElement">新源码树中的 Tabs 节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.Tabs.UITabs.SwitchTo(System.Object)">
             <summary>
             通过 Key 切换到指定 Tab。
@@ -12612,6 +14448,36 @@
             根据 TabPosition 调整布局方向。
             注意：必须通过 Style = xxx 重新赋值来更新 _explicitStyle，
             否则 ApplyClassStyles 会从旧的 _explicitStyle 恢复属性。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabs.ShouldApplySourceActiveKey(System.String,System.String)">
+            <summary>
+            判断源码中的 ActiveKey 是否应该覆盖当前运行态页签。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabs.SetActiveKeyForHotReload(System.Object)">
+            <summary>
+            在不触发外部点击逻辑的前提下同步当前活动页签。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabs.NormalizeActiveKeyForHotReload">
+            <summary>
+            当当前活动页签被隐藏或禁用时，回退到第一个可见可用页签。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabs.BuildItemsSignature(System.Collections.Generic.IEnumerable{TCYM.UI.Elements.Tabs.TabItem})">
+            <summary>
+            构造 TabItem 集合的结构签名，用来判断当前树是否仍可原地 patch。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabs.BuildPreviewValueSignature(System.Object)">
+            <summary>
+            统一生成 Tabs 内部字段的比较签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tabs.UITabs.CloneUIStyleForHotReload(TCYM.UI.Core.UIStyle)">
+            <summary>
+            克隆样式对象，避免直接复用 next 树上的样式实例。
             </summary>
         </member>
         <member name="T:TCYM.UI.Elements.TagClassColor">
@@ -12884,6 +14750,23 @@
             <summary>
             非受控模式下的默认打开状态。
             </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tooltip.UITooltip.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响 Tooltip 触发行为和弹层内容的源码态快照。
+            </summary>
+            <returns>用于热更比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tooltip.UITooltip.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            为 Open 记录源码签名，避免运行态显示状态被无关保存覆盖。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tooltip.UITooltip.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            同步新的源码配置到当前 Tooltip，并按需刷新 popup 内容或重建 overlay。
+            </summary>
+            <param name="nextElement">新源码树中的 Tooltip 节点。</param>
         </member>
         <member name="P:TCYM.UI.Elements.Tooltip.UITooltip.Title">
             <summary>
@@ -13237,6 +15120,36 @@
             参数：(选中的节点 Value 列表, TreeNode 节点数据, bool 是否选中)
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.GetPreviewHotReloadPatchChildren">
+            <summary>
+            Tree 的可视节点由 TreeData 和内部状态动态重建，因此由组件自行决定何时重建子树。
+            </summary>
+            <returns>空集合，表示不走默认 Children 递归 patch。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.CanPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            只要目标节点仍然是 <see cref="T:TCYM.UI.Elements.Tree.UITree"/>，就允许进入组件级 patch。
+            </summary>
+            <param name="nextElement">新源码树中的树组件节点。</param>
+            <returns>节点类型兼容时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            采集会影响 TreeData、节点样式、交互回调以及运行态集合的源码态快照。
+            </summary>
+            <returns>用于比较源码差异的快照数组。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            为 expanded/selected/checked 三组运行态集合记录源码签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            将新的源码态 Tree 配置同步到当前实例，必要时重建整棵可视树。
+            </summary>
+            <param name="nextElement">新源码树中的树组件节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.Tree.UITree.RebuildTreeInternal">
             <summary>
             内部重建方法，不触发 RequestLayout/RequestRedraw，
@@ -13344,9 +15257,93 @@
             <param name="values">节点 Value 列表</param>
             <param name="isChecked">是否选中</param>
         </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.SyncTreeDataForHotReload(System.Collections.Generic.IList{TCYM.UI.Elements.Tree.TreeNode},System.Boolean)">
+            <summary>
+            根据新的树数据替换当前数据源，并保持集合订阅状态正确。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.ShouldApplySourceSetting(System.String,System.String,System.String)">
+            <summary>
+            判断某个源码字段是否应该覆盖当前运行态值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.BuildTreeDataSignature(System.Collections.Generic.IList{TCYM.UI.Elements.Tree.TreeNode})">
+            <summary>
+            对 TreeData 结构构造稳定签名，用于判断是否需要重建整棵可视树。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.BuildTreeNodeSignature(TCYM.UI.Elements.Tree.TreeNode)">
+            <summary>
+            对单个树节点数据构造稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.BuildTreeIconSignature(TCYM.UI.Elements.UIIcon)">
+            <summary>
+            对树节点图标签名，避免遗漏图标内容和显式样式。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.BuildStateSetSignature(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            对 expanded/selected/checked 这类无序集合构造稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.CloneStateSet(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            克隆状态集合，避免共享可变引用。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.CloneTreeDataForHotReload(System.Collections.Generic.IList{TCYM.UI.Elements.Tree.TreeNode})">
+            <summary>
+            深拷贝 TreeData，避免复用 next 树中的数据模型和子集合。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.CloneTreeNodeForHotReload(TCYM.UI.Elements.Tree.TreeNode)">
+            <summary>
+            深拷贝单个树节点数据。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.CloneIconForHotReload(TCYM.UI.Elements.UIIcon)">
+            <summary>
+            复制树节点图标定义，避免把同一个 UIIcon 实例同时挂到两棵树上。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.CloneUIStyleForHotReload(TCYM.UI.Core.UIStyle)">
+            <summary>
+            复制样式对象，避免共享可变样式引用。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITree.BuildPreviewDataSignature(System.Object)">
+            <summary>
+            对委托、样式和数据集合构造稳定签名。
+            </summary>
+        </member>
         <member name="T:TCYM.UI.Elements.Tree.UITreeNode">
             <summary>
             树节点 UI 元素
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Tree.UITreeNode.PreviewSourceExpandedSignatureTag">
+            <summary>
+            记录源码态展开状态的字段级 tag。
+            用于在无关保存时保留运行态展开/折叠结果。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Tree.UITreeNode.PreviewSourceSelectedSignatureTag">
+            <summary>
+            记录源码态选中状态的字段级 tag。
+            用于在无关保存时保留运行态选中结果。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Tree.UITreeNode.PreviewSourceCheckedSignatureTag">
+            <summary>
+            记录源码态勾选状态的字段级 tag。
+            用于在无关保存时保留运行态勾选结果。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Tree.UITreeNode.PreviewSourceIndeterminateSignatureTag">
+            <summary>
+            记录源码态半选状态的字段级 tag。
+            用于在无关保存时保留运行态半选结果。
             </summary>
         </member>
         <member name="P:TCYM.UI.Elements.Tree.UITreeNode.Data">
@@ -13426,6 +15423,33 @@
             <param name="isLastChild">是否是最后一个子节点</param>
             <param name="ancestorIsLastList">祖先节点是否是最后一个子节点的列表</param>
         </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITreeNode.CanPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            仅在节点的结构壳子仍兼容时允许原地 patch。
+            像深度、叶子态、是否存在 checkbox / icon 以及自定义 TitleRender 这类会改变内部可视子树的情况，
+            仍然交给上层走整段重建。
+            </summary>
+            <param name="nextElement">新源码树中的 UITreeNode 节点。</param>
+            <returns>当前节点仍可原地 patch 时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITreeNode.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响节点文案、可交互性和四个运行态布尔值的源码态快照。
+            子节点结构仍走默认递归 patch，因此这里只记录本节点局部状态。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITreeNode.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            给四个运行态布尔值打上源码签名，避免无关保存覆盖当前交互结果。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITreeNode.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新的源码态节点数据同步到当前节点，并保留无关保存下的运行态展开/选中/勾选状态。
+            </summary>
+            <param name="nextElement">新源码树中的 UITreeNode 节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.Tree.UITreeNode.RenderContent(SkiaSharp.SKCanvas)">
             <summary>
             重写渲染方法，绘制连接线
@@ -13486,6 +15510,72 @@
             查找子节点
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITreeNode.HasCheckboxHost">
+            <summary>
+            判断当前节点是否实际承载 checkbox 子树。
+            </summary>
+            <returns>当前节点存在 checkbox 主体时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITreeNode.HasIconHost">
+            <summary>
+            判断当前节点是否实际承载 icon 子树。
+            </summary>
+            <returns>当前节点存在自定义图标时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITreeNode.ApplyNodeDataForHotReload(TCYM.UI.Elements.Tree.TreeNode)">
+            <summary>
+            同步新的节点数据到当前实例，只处理不改变当前可视结构壳子的字段。
+            </summary>
+            <param name="nextData">新源码树中的节点数据。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITreeNode.ApplyNodeIconForHotReload(TCYM.UI.Elements.UIIcon)">
+            <summary>
+            同步当前节点已有的图标实例，避免直接替换可视子节点对象。
+            </summary>
+            <param name="nextIcon">新源码树中的图标定义。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITreeNode.RefreshDisabledVisualsForHotReload">
+            <summary>
+            重新应用 disabled 对节点容器、标题、图标和切换器的视觉覆盖。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITreeNode.ShouldApplySourceState(System.String,System.Boolean,System.Boolean)">
+            <summary>
+            判断源码态布尔字段是否应该覆盖当前运行态值。
+            </summary>
+            <param name="tagName">字段级源码签名 tag 名称。</param>
+            <param name="currentValue">当前运行态布尔值。</param>
+            <param name="nextValue">新源码树中的布尔值。</param>
+            <returns>源码变化或当前没有运行态偏离时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITreeNode.BuildNodeDataSignature(TCYM.UI.Elements.Tree.TreeNode)">
+            <summary>
+            构造本节点局部数据签名，不递归子节点，避免重复覆盖子树状态。
+            </summary>
+            <param name="node">待签名的节点数据。</param>
+            <returns>用于比较节点源码态的稳定签名。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITreeNode.BuildIconSignature(TCYM.UI.Elements.UIIcon)">
+            <summary>
+            构造图标配置签名，仅覆盖当前节点会直接消费的内容与显式样式。
+            </summary>
+            <param name="icon">待签名的图标定义。</param>
+            <returns>图标签名；无图标时返回 null。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITreeNode.BuildPreviewDataSignature(System.Object)">
+            <summary>
+            把任意值归一化为稳定签名，供 preview hot reload 比较使用。
+            </summary>
+            <param name="value">待签名的值。</param>
+            <returns>稳定签名字符串。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Tree.UITreeNode.BuildBooleanSignature(System.Boolean)">
+            <summary>
+            把布尔值归一化为字段级源码签名。
+            </summary>
+            <param name="value">待签名的布尔值。</param>
+            <returns>布尔值对应的稳定签名。</returns>
+        </member>
         <member name="T:TCYM.UI.Elements.UIButton">
              <summary>
              按钮控件。继承自 `UILabel`：
@@ -13504,6 +15594,12 @@
             <summary>
             构造函数：设置按钮默认文字居中。
             </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIButton.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            在 UILabel 的文本快照基础上，额外记录按钮禁用状态。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
         </member>
         <member name="M:TCYM.UI.Elements.UIButton.OnMouseEvent(TCYM.UI.Events.UIMouseEvent)">
             <summary>
@@ -13537,6 +15633,18 @@
             <summary>
             自定义标题栏组件（支持图标、标题、最小化/最大化/关闭按钮）。
             </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UICaptionBar.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响标题栏布局和内部固定子节点视觉结果的源码态快照。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UICaptionBar.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新的源码配置同步到当前标题栏实例，并复用现有固定子树刷新视觉。
+            </summary>
+            <param name="nextElement">新源码树中的标题栏节点。</param>
         </member>
         <member name="P:TCYM.UI.Elements.UICaptionBar.CaptionBoxStyle">
             <summary>标题栏框样式（支持 DefaultUIStyle / UpdateUIStyle）。</summary>
@@ -13637,6 +15745,11 @@
             创建隐藏样式，用于隐藏最小化/最大化按钮。
             </summary>
             <returns>隐藏的样式</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UICaptionBar.ArePreviewValuesEquivalent(System.Object,System.Object)">
+            <summary>
+            比较两个预览状态值在热更签名层面上是否等价。
+            </summary>
         </member>
         <member name="T:TCYM.UI.Elements.UIContainer">
             <summary>
@@ -13868,6 +15981,29 @@
             - 为自身 Click 事件绑定打开逻辑（ToggleFromTriggerClick）。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.UIDropdown.GetPreviewHotReloadPatchChildren">
+            <summary>
+            在默认 Children 之外，把 Menu 列表也暴露给热更递归，保证 overlay 关闭时菜单项仍能被 patch。
+            </summary>
+            <returns>触发器子树加菜单子树。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIDropdown.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响下拉 overlay 壳和菜单行为的源码态快照。
+            </summary>
+            <returns>用于热更比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIDropdown.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            为 Open 记录源码签名，避免预览里的临时展开状态被无关保存覆盖。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIDropdown.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            同步新的源码配置到当前 Dropdown，并按需重建 runtime overlay 壳。
+            </summary>
+            <param name="nextElement">新源码树中的 Dropdown 节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.UIDropdown.Update(System.Single)">
             <summary>
             每帧更新：
@@ -13907,6 +16043,19 @@
             - 否则：仅设置 Display=none
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.UIDropdown.RebuildOverlayForHotReload">
+            <summary>
+            运行时重建 overlay 宿主，用来把宽高、箭头和内部样式的源码修改同步到现有实例。
+            </summary>
+            <summary>
+            当菜单宿主的尺寸、箭头或样式配置变化时，重建 runtime overlay 外壳。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIDropdown.SetOpenForHotReload(System.Boolean)">
+            <summary>
+            在不触发外部回调的前提下同步 Open 状态。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Elements.UIDropdown.UpdateOverlayPosition">
              <summary>
              更新下拉菜单位置。
@@ -13943,6 +16092,21 @@
             通过累加自身与祖先的 X/Y 得到。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.UIDropdown.ShouldApplySourceSetting(System.String,System.String,System.String)">
+            <summary>
+            判断某个源码字段是否应该覆盖当前运行态值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIDropdown.BuildPreviewDataSignature(System.Object)">
+            <summary>
+            对样式、委托和菜单数据生成稳定签名，便于比较源码态差异。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIDropdown.CloneUIStyleForHotReload(TCYM.UI.Core.UIStyle)">
+            <summary>
+            克隆样式对象，避免直接引用 next 树上的样式实例。
+            </summary>
+        </member>
         <member name="T:TCYM.UI.Elements.UIFragment">
             <summary>
             UIFragment：轻量级片段容器，不产生额外的布局盒与渲染内容。
@@ -13959,6 +16123,20 @@
             <summary>
              用于创建 UIFragment 实例的构造函数。
             </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFragment.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            片段本身只有 Flatten 会影响源码态建树行为。
+            子元素仍由默认递归 patch 处理，这里只需暴露扁平化标志。
+            </summary>
+            <returns>当前片段的扁平化配置。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIFragment.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            同步新的扁平化配置到当前片段实例。
+            仅在片段真实存在于当前树中时才会命中这里。
+            </summary>
+            <param name="nextElement">新源码树中的 UIFragment 节点。</param>
         </member>
         <member name="M:TCYM.UI.Elements.UIFragment.Measure(System.Single,System.Single)">
             <summary>
@@ -13984,6 +16162,12 @@
             <summary>
             要显示的图标内容，通常是一个字体图标的 Unicode 字符，例如 "\uE9F3" 或 "&#xe9f3;"。
             </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIIcon.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集图标文本内容的源码态快照。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
         </member>
         <member name="M:TCYM.UI.Elements.UIIcon.Measure(System.Single,System.Single)">
             <summary>
@@ -14065,6 +16249,19 @@
             文本是否被截断（测量宽度超过可用内容宽度时为 true）。
             仅在 Measure 执行后有效。
             </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UILabel.ApplyHotReloadTextPatchFrom(TCYM.UI.Elements.UILabel)">
+            <summary>
+            供设计期热更新使用：在文本相关状态变化时，尽量只触发当前标签重绘。
+            当标签宽高已固定且不参与文本+子元素的行内混排时，文本变化不会影响外部布局，
+            因此可以避免把整条父链都标记为需要重新布局。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UILabel.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集文本内容、换行、对齐和高亮配置的源码态快照。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
         </member>
         <member name="M:TCYM.UI.Elements.UILabel.OnHoverEnter">
             <summary>
@@ -14381,6 +16578,18 @@
             参数：(scrollY, scrollX)
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.UIScrollView.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响滚动行为、滚动条外观与虚拟列表数据模式的源码态快照。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIScrollView.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新的源码配置同步到当前滚动容器实例，并保留当前滚动偏移。
+            </summary>
+            <param name="nextElement">新源码树中的 UIScrollView 节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.UIScrollView.SetItems``1(System.Collections.Generic.IList{``0},System.Func{``0,TCYM.UI.Core.UIElement},System.Func{``0,System.Single},System.Func{``0,System.Single},System.Func{``0,TCYM.UI.Core.UIElement,TCYM.UI.Core.UIElement})">
             <summary>
             使用数据源启用虚拟列表模式。
@@ -14497,6 +16706,31 @@
             同时复用 UIElement 的背景、边框、伪元素、变换等所有能力。
             </summary>
             <param name="canvas">画布</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIScrollView.BuildVirtualDataModeSignature(TCYM.UI.Elements.UIScrollView)">
+            <summary>
+            构造虚拟列表模式内部数据与委托的稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIScrollView.ApplyVirtualDataModeForHotReload(TCYM.UI.Elements.UIScrollView)">
+            <summary>
+            同步虚拟列表模式的数据源与委托缓存，不重置当前滚动偏移。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIScrollView.BuildPreviewValueSignature(System.Object)">
+            <summary>
+            为委托、配置对象和集合构造稳定签名。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UIScrollView.AppendPreviewValueSignature(System.Text.StringBuilder,System.Object,System.Collections.Generic.HashSet{System.Object})">
+            <summary>
+            递归展开任意值并写入稳定签名。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.UIScrollView.ReferenceObjectComparer">
+            <summary>
+            基于引用相等比较对象，避免循环引用配置在签名构造时无限递归。
+            </summary>
         </member>
         <member name="T:TCYM.UI.Elements.UIView">
              <summary>
@@ -14727,6 +16961,23 @@
             占位态背景色；默认透明。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.UsbCamera.UICameraPreview.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响摄像头选择、自动播放与画面展示方式的源码态快照。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.UsbCamera.UICameraPreview.GetPreviewHotReloadPatchChildren">
+            <summary>
+            过滤掉运行态动态增删的 loading 子节点，避免 same-tree patch 因瞬时 child 数量变化而失败。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UsbCamera.UICameraPreview.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新的源码配置同步到当前摄像头预览，并仅在实际设备输入变化时重建预览图。
+            </summary>
+            <param name="nextElement">新源码树中的摄像头预览节点。</param>
+        </member>
         <member name="M:TCYM.UI.Elements.UsbCamera.UICameraPreview.GetPreviewUnsupportedRuntimeMessage">
             <summary>
             获取当前平台或运行时不支持摄像头预览时要展示的提示文本。
@@ -14735,6 +16986,11 @@
         <member name="M:TCYM.UI.Elements.UsbCamera.UICameraPreview.GetRecordingUnsupportedRuntimeMessage">
             <summary>
             获取当前平台或运行时不支持录像时要展示的提示文本。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.UsbCamera.UICameraPreview.BuildEffectivePreviewInputSignature(System.String,System.String)">
+            <summary>
+            构造实际会影响设备重连决策的稳定输入签名。
             </summary>
         </member>
         <member name="M:TCYM.UI.Elements.UsbCamera.UICameraPreview.GetVideoInputDeviceInfos">
@@ -14774,8 +17030,14 @@
         </member>
         <member name="M:TCYM.UI.Elements.UsbCamera.UICameraPreview.CapturePhoto(System.String,SkiaSharp.SKEncodedImageFormat,System.Int32)">
             <summary>
-            将当前摄像头最新一帧保存为图片文件。
+            将当前摄像头最新一帧保存为图片文件
             </summary>
+            <param name="filePath">图片文件保存路径。</param>
+            <param name="format">图片编码格式，默认为 PNG。</param>
+            <param name="quality">图片质量（0-100），仅对有损格式有效，默认为 100。</param>
+            <exception cref="T:System.PlatformNotSupportedException">当前平台不支持摄像头预览。</exception>
+            <exception cref="T:System.ArgumentException">文件路径无效。</exception>
+            <exception cref="T:System.InvalidOperationException">当前没有可拍照的摄像头画面或无法编码图片。</exception>
         </member>
         <member name="M:TCYM.UI.Elements.UsbCamera.UICameraPreview.StartRecordingAsync(System.String)">
             <summary>
@@ -15307,6 +17569,110 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:TCYM.UI.Events.UIPointerEventType">
+            <summary>
+            统一指针事件类型，屏蔽鼠标与触摸的差异。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIPointerEventType.Enter">
+            <summary>指针进入元素。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIPointerEventType.Leave">
+            <summary>指针离开元素。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIPointerEventType.Down">
+            <summary>指针按下。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIPointerEventType.Up">
+            <summary>指针抬起。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIPointerEventType.Move">
+            <summary>指针移动。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIPointerEventType.Cancel">
+            <summary>指针被取消。</summary>
+        </member>
+        <member name="T:TCYM.UI.Events.UIPointerDeviceType">
+            <summary>
+            指针设备类型。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIPointerDeviceType.Mouse">
+            <summary>鼠标输入。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIPointerDeviceType.Touch">
+            <summary>触摸输入。</summary>
+        </member>
+        <member name="T:TCYM.UI.Events.UIPointerEvent">
+            <summary>
+            对外暴露的统一指针事件对象，类似 Avalonia 的 PointerEventArgs。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.Type">
+            <summary>事件类型。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.DeviceType">
+            <summary>输入设备类型。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.Position">
+            <summary>指针全局位置（窗口坐标系）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.LocalPosition">
+            <summary>指针局部位置（元素坐标系）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.X">
+            <summary>全局 X 坐标。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.Y">
+            <summary>全局 Y 坐标。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.LocalX">
+            <summary>局部 X 坐标。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.LocalY">
+            <summary>局部 Y 坐标。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.PointerId">
+            <summary>统一指针 Id。鼠标固定为 0，触摸为触点 Id。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.IsPrimary">
+            <summary>是否为主指针。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.Pressure">
+            <summary>压力值。鼠标默认为 0，触摸透传原始压力。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.Button">
+            <summary>鼠标按钮；非鼠标事件时为 None。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.Modifiers">
+            <summary>键盘修饰键；触摸事件当前固定为 None。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.Timestamp">
+            <summary>原始时间戳（毫秒）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.Element">
+            <summary>当前目标元素。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.Handled">
+            <summary>
+            是否已处理当前指针事件。
+            对触摸事件会同步回写到底层 UITouchEvent.Handled，避免祖先滚动等默认行为继续执行。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.TouchPoints">
+            <summary>触摸点快照；鼠标事件时为空数组。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.MouseEvent">
+            <summary>原始鼠标事件；触摸事件时为 null。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPointerEvent.TouchEvent">
+            <summary>原始触摸事件；鼠标事件时为 null。</summary>
+        </member>
+        <member name="M:TCYM.UI.Events.UIPointerEvent.#ctor(TCYM.UI.Events.UIPointerEventType,TCYM.UI.Events.UIPointerDeviceType,SkiaSharp.SKPoint,SkiaSharp.SKPoint,TCYM.UI.Core.UIElement,System.Int64,System.Boolean,System.Single,TCYM.UI.Events.UIMouseButton,TCYM.UI.Events.UIKeyModifiers,System.Int64,System.Collections.Generic.IReadOnlyList{TCYM.UI.Events.UITouchPoint},TCYM.UI.Events.UIMouseEvent,TCYM.UI.Events.UITouchEvent)">
+            <summary>
+            构造统一指针事件。
+            </summary>
+        </member>
         <member name="T:TCYM.UI.Events.UITouchEventType">
             <summary>
             触摸事件类型
@@ -15660,7 +18026,7 @@
             <param name="canvas">目标画布</param>
             <param name="image">已缓存的 SKImage（可为 null）</param>
             <param name="contentRect">内容区域</param>
-            <param name="backgroundSize">填充策略</param>
+            <param name="backgroundSize">填充策略，支持 cover/contain/fill/auto 以及显式尺寸如 80% 80%、120px auto。</param>
             <param name="backgroundRepeat">重复策略</param>
             <param name="opacity">不透明度0..1</param>
             <param name="borderRadius">圆角半径（裁剪用）</param>
@@ -15668,6 +18034,40 @@
             <param name="posXVal">X 值（百分比或像素）</param>
             <param name="posYIsPercent">Y位置是否百分比</param>
             <param name="posYVal">Y 值（百分比或像素）</param>
+        </member>
+        <member name="M:TCYM.UI.Helpers.MathHelper.TryResolveExplicitBackgroundSize(System.String,System.Single,System.Single,System.Single,System.Single,System.Single@,System.Single@)">
+            <summary>
+            解析显式 background-size 值。
+            支持单值/双值写法，以及 px/%/calc/auto 的组合；当某一轴为 auto 时按原图比例补齐另一轴。
+            </summary>
+            <param name="backgroundSize">原始 background-size 字符串。</param>
+            <param name="sourceWidth">原图宽度。</param>
+            <param name="sourceHeight">原图高度。</param>
+            <param name="basisWidth">用于百分比换算的目标区域宽度。</param>
+            <param name="basisHeight">用于百分比换算的目标区域高度。</param>
+            <param name="drawWidth">解析得到的绘制宽度。</param>
+            <param name="drawHeight">解析得到的绘制高度。</param>
+            <returns>当 background-size 为显式尺寸时返回 true；关键字模式返回 false。</returns>
+        </member>
+        <member name="M:TCYM.UI.Helpers.MathHelper.TryParseBackgroundSizeToken(System.String,System.Single,System.Single@,System.Boolean@)">
+            <summary>
+            解析 background-size 中的单个尺寸 token。
+            例如 80%、120px、calc(100% - 8px) 或 auto。
+            </summary>
+            <param name="token">待解析的尺寸 token。</param>
+            <param name="basis">百分比与 calc 百分比部分的换算基准。</param>
+            <param name="resolved">解析得到的像素值。</param>
+            <param name="isAuto">是否为 auto。</param>
+            <returns>解析成功返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Helpers.MathHelper.ResolveBackgroundSizeValue(TCYM.UI.Core.UnitValue,System.Single)">
+            <summary>
+            将 UnitValue 转换为实际背景图尺寸像素值。
+            支持 px、%、以及包含 px/% 混合的 calc 表达式。
+            </summary>
+            <param name="value">待换算的单位值。</param>
+            <param name="basis">百分比计算基准。</param>
+            <returns>换算后的像素值。</returns>
         </member>
         <member name="M:TCYM.UI.Helpers.MathHelper.ParseBackgroundPosition(System.String,System.Boolean@,System.Single@,System.Boolean@,System.Single@)">
             <summary>

@@ -72,6 +72,7 @@ namespace TCYM.UI.Example.Page.Layout
                             new("tag", "标签") { Icon = "&#xe6a7;" },
                             new("table", "表格") { Icon = "&#xe6a9;",Badge = new UIBadge { CountText = "更新",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#28b5ec")} },
                             new("tree", "树形") { Icon = "&#xe67b;" },
+                            new("segmented", "分段选择") { Icon = "&#xe61a;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
                             new("svg", "SVG 矢量图") { Icon = "&#xeba4;" },
                         }),
                         MenuItem.Group("group-feedback", "反馈", new List<MenuItem>

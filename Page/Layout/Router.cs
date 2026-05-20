@@ -3,6 +3,7 @@ using TCYM.UI.Example.Page.component.Button;
 using TCYM.UI.Example.Page.component.Dropdown;
 using TCYM.UI.Example.Page.component.Icon;
 using TCYM.UI.Example.Page.component.Menu;
+using TCYM.UI.Example.Page.component.Segmented;
 using TCYM.UI.Example.Page.component.Slider;
 using TCYM.UI.Example.Page.component.Tabs;
 using TCYM.UI.Example.Page.component.Pagination;
@@ -41,6 +42,7 @@ namespace TCYM.UI.Example.Page.Layout
             .Register("/demo/label", () => new UILabelDemo())
             .Register("/demo/image", () => new UIImageDemo(),false)
             .Register("/demo/menu", () => new UIMenuDemo())
+            .Register("/demo/segmented", () => new UISegmentedDemo())
             .Register("/demo/slider", () => new UISliderDemo())
             .Register("/demo/splitter", () => new UISplitterDemo())
             .Register("/demo/tabs", () => new UITabsDemo())

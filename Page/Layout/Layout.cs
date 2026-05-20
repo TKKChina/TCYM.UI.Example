@@ -24,6 +24,7 @@ namespace TCYM.UI.Example.Page.Layout
                             "label" => "/demo/label",
                             "image" => "/demo/image",
                             "menu" => "/demo/menu",
+                            "segmented" => "/demo/segmented",
                             "slider" => "/demo/slider",
                             "splitter" => "/demo/splitter",
                             "tabs" => "/demo/tabs",
