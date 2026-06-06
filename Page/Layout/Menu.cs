@@ -33,7 +33,7 @@ namespace TCYM.UI.Example.Page.Layout
                         {
                             MenuItem.Divider("group-universal-divider-top"),
                             new("button", "按钮"){ Icon = "&#xe690;" },
-                            new("floatbutton", "悬浮按钮") { Icon = "&#xe649;",Badge = new UIBadge { CountText = "更新",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#28b5ec")} },
+                            new("floatbutton", "悬浮按钮") { Icon = "&#xe649;"},
                             new("icon", "Icon 图标") { Icon = "&#xe60a;" },
                             new("label", "文本") { Icon = "&#xe651;"},
                         }),
@@ -59,7 +59,7 @@ namespace TCYM.UI.Example.Page.Layout
                             new("radio", "单选框") { Icon = "&#xe71f;" },
                             new("datepicker", "日期选择框") { Icon = "&#xe629;" },
                             new("switch", "开关") { Icon = "&#xed5f;" },
-                            new("input", "输入框") { Icon = "&#xe790;" },
+                            new("input", "输入框") { Icon = "&#xe790;",Badge = new UIBadge { CountText = "更新",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#28b5ec")} },
                             new("codeEditor", "代码编辑器") { Icon = "&#xe61d;"},
                         }),
                         MenuItem.Group("group-data-display", "数据展示", new List<MenuItem>
@@ -70,7 +70,7 @@ namespace TCYM.UI.Example.Page.Layout
                             new("virtualScrollView", "虚拟滚动") { Icon = "&#xe610;"},
                             new("tooltip", "文字提示") { Icon = "&#xe6e0;" },
                             new("tag", "标签") { Icon = "&#xe6a7;" },
-                            new("table", "表格") { Icon = "&#xe6a9;"},
+                            new("table", "表格") { Icon = "&#xe6a9;",Badge = new UIBadge { CountText = "更新",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#28b5ec")} },
                             new("tree", "树形") { Icon = "&#xe67b;" },
                             new("segmented", "分段选择") { Icon = "&#xe61a;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
                             new("svg", "SVG 矢量图") { Icon = "&#xeba4;" },
