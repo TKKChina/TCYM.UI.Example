@@ -32,6 +32,7 @@
   padding: 10px 16px;
   background: rgba(17, 24, 39, 0.03);
   border-radius: 6px;
+  corner-shape: squircle;
   border: 1px solid rgba(15, 23, 42, 0.08);
 }
 
@@ -73,7 +74,7 @@
   padding-left: 14px;
   padding-right: 14px;
   border-radius: 8px;
-  border: 1px solid rgba(15, 23, 42, 0.12);
+  /* border: 1px solid rgba(15, 23, 42, 0.12); */
   background: #ffffff;
   color: rgba(15, 23, 42, 0.88);
   cursor: pointer;

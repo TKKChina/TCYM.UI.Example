@@ -14,6 +14,7 @@ namespace TCYM.UI.Example.Page.component.FilePicker
 
         private readonly UILabel _fileResultLabel;
         private readonly UILabel _folderResultLabel;
+        private readonly UILabel _openFolderResultLabel;
 
         internal UIFilePickerDemo()
         {
@@ -21,6 +22,7 @@ namespace TCYM.UI.Example.Page.component.FilePicker
 
             _fileResultLabel = CreateResultLabel("尚未调用 OpenFilePickerAsync。", "file-picker-result");
             _folderResultLabel = CreateResultLabel("尚未调用 OpenFolderPickerAsync。", "file-picker-result file-picker-result-folder");
+            _openFolderResultLabel = CreateResultLabel("尚未调用 OpenFolder。", "file-picker-result file-picker-result-folder");
 
             ClassName = new List<string> { "file-picker-demo-view" };
             Children = new()
@@ -32,7 +34,7 @@ namespace TCYM.UI.Example.Page.component.FilePicker
                 },
                 new UILabel
                 {
-                    Text = "演示 UISystem.OpenFilePickerAsync 和 UISystem.OpenFolderPickerAsync 的原生调用方式。",
+                    Text = "演示 UISystem.OpenFilePickerAsync、OpenFolderPickerAsync 与 OpenFolder 的原生调用方式。",
                     ClassName = new List<string> { "file-picker-demo-title-sub" },
                 },
                 new UILabel
@@ -42,6 +44,7 @@ namespace TCYM.UI.Example.Page.component.FilePicker
                 },
                 CreateFilePickerSection(),
                 CreateFolderPickerSection(),
+                CreateOpenFolderSection(),
             };
         }
 
@@ -85,6 +88,28 @@ namespace TCYM.UI.Example.Page.component.FilePicker
                     }
                 },
                 CreateHintLabel("文件夹选择器只返回目录路径，不包含文件类型过滤；常用参数是 Title、AllowMultiple 和 SuggestedStartLocation。")
+            );
+        }
+
+        private UIView CreateOpenFolderSection()
+        {
+            return CreateSectionCard(
+                "OpenFolder",
+                "同步调用系统资源管理器（Windows Explorer / macOS Finder / Linux xdg-open）打开指定目录，返回是否启动成功。",
+                new UIView
+                {
+                    ClassName = new List<string> { "file-picker-showcase" },
+                    Children = new()
+                    {
+                        CreateButtonRow(
+                            CreateActionButton("打开 我的文档", OpenMyDocumentsFolder, "file-picker-btn-primary"),
+                            CreateActionButton("打开 桌面", OpenDesktopFolder, "file-picker-btn-secondary"),
+                            CreateActionButton("选择并打开文件夹", PickAndOpenFolderAsync, "file-picker-btn-soft")
+                        ),
+                        _openFolderResultLabel
+                    }
+                },
+                CreateHintLabel("OpenFolder 仅是 Process.Start 的封装；路径为空、目录不存在或启动失败均返回 false。")
             );
         }
 
@@ -169,6 +194,42 @@ namespace TCYM.UI.Example.Page.component.FilePicker
             });
 
             SetLabelText(_folderResultLabel, BuildFolderResultText("多个文件夹", folders));
+        }
+
+        private void OpenMyDocumentsFolder()
+        {
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            bool ok = UISystem.OpenFolder(path);
+            SetLabelText(_openFolderResultLabel, BuildOpenFolderResultText("我的文档", path, ok));
+        }
+
+        private void OpenDesktopFolder()
+        {
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            bool ok = UISystem.OpenFolder(path);
+            SetLabelText(_openFolderResultLabel, BuildOpenFolderResultText("桌面", path, ok));
+        }
+
+        private async void PickAndOpenFolderAsync()
+        {
+            SetLabelText(_openFolderResultLabel, "正在打开原生文件夹选择器（选完即打开）...");
+
+            IReadOnlyList<string> folders = await UISystem.OpenFolderPickerAsync(new FolderPickerOpenOptions
+            {
+                Title = "选择要在资源管理器中打开的文件夹",
+                AllowMultiple = false,
+                SuggestedStartLocation = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+            });
+
+            if (folders == null || folders.Count == 0)
+            {
+                SetLabelText(_openFolderResultLabel, "选择并打开文件夹：用户取消选择。");
+                return;
+            }
+
+            string path = folders[0];
+            bool ok = UISystem.OpenFolder(path);
+            SetLabelText(_openFolderResultLabel, BuildOpenFolderResultText("选择的文件夹", path, ok));
         }
 
         private static UIView CreateSectionCard(string title, string description, params UIElement[] children)
@@ -295,6 +356,11 @@ namespace TCYM.UI.Example.Page.component.FilePicker
             label.Text = text;
             label.RequestLayout();
             label.RequestRedraw();
+        }
+
+        private static string BuildOpenFolderResultText(string operation, string path, bool ok)
+        {
+            return $"{operation}：OpenFolder 返回 {ok.ToString().ToLowerInvariant()}\n- {path}";
         }
     }
 }

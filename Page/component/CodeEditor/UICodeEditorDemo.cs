@@ -208,6 +208,7 @@ namespace TCYM.UI.Example.Page.component.CodeEditor
             return new UIButton
             {
                 Text = text,
+                CornerCurve = "continuous",
                 ClassName = classNames,
                 Events = new()
                 {
