@@ -38,6 +38,7 @@
     <None Remove="Page\component\Label\style.css" />
     <None Remove="Page\component\Menu\style.css" />
     <None Remove="Page\component\Message\style.css" />
+    <None Remove="Page\component\Modal\style.css" />
     <None Remove="Page\component\Radio\style.css" />
     <None Remove="Page\component\Select\style.css" />
     <None Remove="Page\component\Segmented\style.css" />
@@ -82,6 +83,7 @@
     <EmbeddedResource Include="Page\component\FilePicker\style.css" />
     <EmbeddedResource Include="Page\component\Label\style.css" />
     <EmbeddedResource Include="Page\component\Message\style.css" />
+    <EmbeddedResource Include="Page\component\Modal\style.css" />
     <EmbeddedResource Include="Page\component\FloatButton\style.css" />
     <EmbeddedResource Include="Page\component\Svg\style.css" />
     <EmbeddedResource Include="Page\component\Svg\svg-animation.css" />

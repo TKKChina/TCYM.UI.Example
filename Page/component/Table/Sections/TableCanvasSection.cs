@@ -179,6 +179,7 @@ namespace TCYM.UI.Example.Page.component.Table.Sections
                 Columns = columns,
                 DataSource = data.Cast<object>().ToList(),
                 Total = data.Count,
+               
                 RowSelection = new RowSelectionConfig
                 {
                     Type = SelectionType.Checkbox,
@@ -213,31 +214,52 @@ namespace TCYM.UI.Example.Page.component.Table.Sections
                     Show = true,
                     Add = new ToolbarActionConfig
                     {
-                        OnClick = () => UIMessage.Info("CanvasV2 工具栏新增")
+                        Events = new()
+                        {
+                            Click = _ => UIMessage.Success("CanvasV2 工具栏新增")
+                        }
                     },
                     Edit = new ToolbarActionConfig
                     {
-                        OnClick = () => UIMessage.Info("CanvasV2 工具栏编辑")
+                        Events = new()
+                        {
+                            Click =  _ => UIMessage.Success("CanvasV2 工具栏编辑")
+                        }
                     },
                     Delete = new ToolbarActionConfig
                     {
-                        OnClick = () => UIMessage.Error("CanvasV2 工具栏删除")
+                         Events = new()
+                         {
+                             Click = _ => UIMessage.Success("CanvasV2 工具栏删除")
+                         }
                     },
                     Refresh = new ToolbarActionConfig
                     {
-                        OnClick = () => UIMessage.Success("CanvasV2 工具栏刷新")
+                        Events = new()
+                        {
+                            Click = _ => UIMessage.Success("CanvasV2 工具栏刷新")
+                        }
                     },
                     Import = new ToolbarActionConfig
                     {
-                        OnClick = () => UIMessage.Info("CanvasV2 工具栏导入")
+                        Events = new()
+                        {
+                            Click = _ => UIMessage.Info("CanvasV2 工具栏导入")
+                        }
                     },
                     Export = new ToolbarActionConfig
                     {
-                        OnClick = () => UIMessage.Info("CanvasV2 工具栏导出")
+                         Events= new()
+                         {
+                                Click = _ => UIMessage.Info("CanvasV2 工具栏导出")
+                         }
                     },
                     DownloadTemplate = new ToolbarActionConfig
                     {
-                        OnClick = () => UIMessage.Info("CanvasV2 工具栏下载模板")
+                        Events = new()
+                        {
+                            Click = _ => UIMessage.Info("CanvasV2 工具栏下载模板")
+                        }
                     },
                     IsShowCustomDefault = true,
                     CustomToolbarRight = new UIButton

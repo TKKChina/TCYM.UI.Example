@@ -21,6 +21,7 @@ using TCYM.UI.Example.Page.component.Tag;
 using TCYM.UI.Example.Page.component.Svg;
 using TCYM.UI.Example.Page.component.Table;
 using TCYM.UI.Example.Page.component.Message;
+using TCYM.UI.Example.Page.component.Modal;
 using TCYM.UI.Example.Page.component.Label;
 using TCYM.UI.Example.Page.component.UsbCamera;
 using TCYM.UI.Example.Page.component.VirtualScrollView;
@@ -62,6 +63,7 @@ namespace TCYM.UI.Example.Page.Layout
             .Register("/demo/svg", () => new UISvgDemo())
             .Register("/demo/table", () => new UITableDemo())
             .Register("/demo/message", () => new UIMessageDemo())
+            .Register("/demo/modal", () => new UIModalDemo())
             .Register("/demo/virtual-scroll-view", () => new UIVirtualScrollViewDemo())
             .Register("/demo/file-picker", () => new UIFilePickerDemo())
             .Register("/demo/usb-camera", () => new UIUsbCameraDemo());

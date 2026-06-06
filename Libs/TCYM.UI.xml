@@ -852,7 +852,7 @@
             主循环会在后台根据最近的活动/动画决定是否使用高帧率或进入等待事件的低功耗模式。
             </summary>
         </member>
-        <member name="M:TCYM.UI.Core.SDLPlatform.RenderCpuFallback(TCYM.UI.Core.UIManager)">
+        <member name="F:TCYM.UI.Core.SDLPlatform._cpuPixelBuffer">
             <summary>
             CPU 回退渲染逻辑：使用 Skia 在 CPU 上渲染到 SKImage，然后将像素拷贝到 SDL 窗口表面并更新。
             适用于不支持/不可靠的 GPU 路径。
@@ -933,6 +933,12 @@
             <param name="x">窗口内 X 坐标。</param>
             <param name="y">窗口内 Y 坐标。</param>
             <returns>命中可拖动区域时返回 true；否则返回 false。</returns>
+        </member>
+        <member name="M:TCYM.UI.Core.SDLPlatform.IsStackingOverlayBoundary(TCYM.UI.Core.UIElement)">
+            <summary>
+            判定元素是否构成一个独立叠加层（其下的子树不应继承父级的 cursor 等区域属性）。
+            规则：Position="fixed"，或 Position="absolute" 且 ZIndex&gt;0。
+            </summary>
         </member>
         <member name="M:TCYM.UI.Core.SDLPlatform.IsWindowMaximizedForRestoreDrag">
             <summary>
@@ -1123,6 +1129,13 @@
             循环会一直运行直到所有窗口关闭。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Core.UIApp.OpenFolder(System.String)">
+            <summary>
+            在系统资源管理器（Windows: Explorer / macOS: Finder / Linux: xdg-open）中打开指定文件夹。
+            </summary>
+            <param name="path">要打开的文件夹路径，可为相对路径。</param>
+            <returns>成功启动外部进程返回 true；路径为空、不存在或启动失败返回 false。</returns>
+        </member>
         <member name="M:TCYM.UI.Core.UIApp.GetWindowId(TCYM.UI.SDL2.SDL.SDL_Event)">
             <summary>
             从 SDL 事件中解析出窗口 Id。
@@ -1181,7 +1194,10 @@
             <param name="deltaSeconds">距离上次更新的时间增量（秒）。</param>
         </member>
         <member name="M:TCYM.UI.Core.UIElement.HasActiveAnimation">
-            <summary>元素是否有激活的动画。</summary>
+            <summary>
+            元素是否有激活的动画。子类可重写以汇报自定义动画状态（例如 Segmented 滑块过渡）。
+            默认实现覆盖内置 animation/transition/keyframe。
+            </summary>
         </member>
         <member name="M:TCYM.UI.Core.UIElement.PerformClearHoverStyle">
             <summary>
@@ -1361,6 +1377,12 @@
         <member name="M:TCYM.UI.Core.UIElement.DetachVirtualParent">
             <summary>
             解除虚拟化元素的父级与 Manager 关联。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.SetVirtualLocalPosition(System.Single,System.Single)">
+            <summary>
+            为虚拟化子元素设置本地坐标（不在 Children 中、不经布局阶段时使用）。
+            使父链坐标变换与命中测试能正确工作。
             </summary>
         </member>
         <member name="M:TCYM.UI.Core.UIElement.SetManagerRecursiveForVirtual(TCYM.UI.Core.UIElement,TCYM.UI.Core.UIManager)">
@@ -1620,8 +1642,30 @@
         <member name="P:TCYM.UI.Core.UIElement.Cursor">
             <summary>鼠标光标样式。</summary>
         </member>
+        <member name="F:TCYM.UI.Core.UIElement.s_activeBackdropBlurCount">
+            <summary>
+            全局活动 BackdropBlur 元素计数。
+            渲染器据此决定是否跳过双阶段背景预渲染：当计数为 0 时可使用单 Pass 渲染。
+            </summary>
+        </member>
         <member name="P:TCYM.UI.Core.UIElement.BackdropBlur">
             <summary>背景高斯模糊强度（Backdrop）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Core.UIElement.RenderCacheEnabled">
+            <summary>是否启用渲染缓存（默认 false）。仅在内容变化频率低于绘制频率时启用。</summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.GetRenderCacheKey">
+            <summary>
+            渲染缓存自定义签名钩子。子类可重写返回一个表示当前视觉状态的对象（int、string、tuple 均可）。
+            框架会在每次 Render 前比较签名，发生变化即视为缓存失效。
+            默认返回 null，表示仅依赖 InvalidateRenderCache() / 尺寸变化。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.InvalidateRenderCache">
+            <summary>使渲染缓存失效；下一次 Render 会重新录制。</summary>
+        </member>
+        <member name="P:TCYM.UI.Core.UIElement.CachedRenderPictureInternal">
+            <summary>子树缓存图片（供 Render 内部使用）。</summary>
         </member>
         <member name="P:TCYM.UI.Core.UIElement.Style">
             <summary>
@@ -1917,6 +1961,12 @@
         <member name="E:TCYM.UI.Core.UIElement.OnKeyUp">
             <summary>键盘抬起事件。</summary>
         </member>
+        <member name="P:TCYM.UI.Core.UIElement.HasInteractivePointerHandlers">
+            <summary>
+            是否绑定了任何指针/鼠标/触摸交互处理器；用于让框架在拖动窗口区域（AppRegion="drag"）内
+            自动豁免交互元素，使其仍可响应点击。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Core.UIElement.OnKeyboardDown(TCYM.UI.Events.UIKeyboardEvent)">
             <summary>派生类可重写以处理键盘按下。</summary>
         </member>
@@ -1941,6 +1991,19 @@
              <summary>
             触摸事件入口：仅使用 Primary 点进行命中测试和分派。
              </summary>
+        </member>
+        <member name="F:TCYM.UI.Core.UIElement._flexNaturalContentHeight">
+            <summary>
+            Flex 容器在最近一次 LayoutFlex 完成后记录的"自然内容跨轴总尺寸"（像素）。
+            不计入 align-content:stretch 等对每行交叉尺寸的扩展，仅是各行自然 cross size 之和加行间 gap。
+            用于 UIScrollView 等可滚动容器在 stretch 抹平了真实 ContentHeight/ContentWidth 时取得正确的溢出量。
+            若未做 flex 布局或未启用 flex-wrap，此值保持为 0。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Core.UIElement._flexNaturalContentWidth">
+            <summary>
+            与 <see cref="F:TCYM.UI.Core.UIElement._flexNaturalContentHeight"/> 配对的水平方向版本（flex-direction:column 时使用）。
+            </summary>
         </member>
         <member name="M:TCYM.UI.Core.UIElement.Measure(System.Single,System.Single)">
             <summary>
@@ -2065,6 +2128,12 @@
             - 最后恢复画布与图层状态。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Core.UIElement.HasAnyVisualBoxOutput">
+            <summary>
+            判断元素自身（不含子元素）是否有任何可见盒模型输出（背景/边框/阴影/模糊/背景图）。
+            用于在 DrawBackgroundAndBorder 入口快速跳过纯透明容器，避免大量无用计算。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Core.UIElement.DrawBackgroundAndBorder(SkiaSharp.SKCanvas)">
             <summary>
             绘制背景、背景图、边框、阴影及 Backdrop：
@@ -2130,11 +2199,20 @@
             <param name="rTop">上端圆角半径</param>
             <param name="rBottom">下端圆角半径</param>
         </member>
+        <member name="F:TCYM.UI.Core.UIElement.EnableRenderTypeProfile">
+            <summary>是否开启分元素类型的渲染耗时统计。</summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.DumpAndResetRenderTypeProfile">
+            <summary>打印当前累计的分类型渲染耗时并清零（exclusive time，不含后代）。</summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.RenderChildWithProfile(TCYM.UI.Core.UIElement,SkiaSharp.SKCanvas)">
+            <summary>
+            调用子元素 Render，按需统计 exclusive 耗时（关闭时无开销）。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Core.UIElement.RenderChildElements(SkiaSharp.SKCanvas)">
             <summary>
-            仅绘制子元素：
-            - 子元素按 `ZIndex` 排序，同层中将 `absolute/fixed` 排到后；
-            - 逐个调用子元素的 `Render` 方法进行绘制。
+            渲染子元素：按 ZIndex 与 absolute/fixed 排序。
             </summary>
         </member>
         <member name="M:TCYM.UI.Core.UIElement.RenderContent(SkiaSharp.SKCanvas)">
@@ -2490,6 +2568,12 @@
             渲染到 SKImage（CPU 路径）。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Core.UIManager.RenderToPixels(System.IntPtr,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            直接渲染到调用方提供的非托管像素缓冲（CPU 单 Pass 快速路径）。
+            仅在没有 BackdropBlur 元素时可用；其它情况请使用 RenderImage()。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Core.UIManager.HitTest(System.Single,System.Single,System.Boolean)">
             <summary>
             命中测试：返回位于 (x,y) 处的最上层元素（考虑 ZIndex 和渲染遮挡）。
@@ -2669,6 +2753,19 @@
             <summary>
             设置 CPU 离屏渲染尺寸（仅影响 RenderToImage）。宽/高 &gt;0 时才更新。
             </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIRenderer.RenderToPixels(TCYM.UI.Core.UIElement,System.IntPtr,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            直接渲染到调用方提供的非托管像素缓冲（CPU 单 Pass 快速路径）。
+            跳过 Snapshot + ReadPixels，省掉两次完整位图拷贝（每帧约 1.9MB × 2）。
+            仅在没有 BackdropBlur 元素时可用；有 BackdropBlur 请使用 RenderToImage。
+            </summary>
+            <param name="root">UI 根元素。</param>
+            <param name="pixels">目标像素缓冲指针（必须 &gt;= rowBytes * height 字节）。</param>
+            <param name="width">像素宽度。</param>
+            <param name="height">像素高度。</param>
+            <param name="rowBytes">每行字节数（通常等于 width * 4）。</param>
+            <returns>是否成功渲染（true）。</returns>
         </member>
         <member name="M:TCYM.UI.Core.UIRenderer.RenderToImage(TCYM.UI.Core.UIElement)">
             <summary>
@@ -2944,6 +3041,23 @@
         </member>
         <member name="P:TCYM.UI.Core.UIStyle.TransformCss">
             <summary>CSS transform属性字符串（例如"rotate(45deg) translate(10px, 20px)"）</summary>
+        </member>
+        <member name="P:TCYM.UI.Core.UIStyle.PctTranslateXCached">
+            <summary>
+            从 TransformCss 解析出的百分比形式 translate(X) 系数（例如 -50% → -0.5）。
+            注意：渲染热路径每帧调用；动画下 TransformCss 每帧变化，不做跨帧缓存。
+            实现使用 Span 切片避免 ToLower/Substring 分配。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Core.UIStyle.PctTranslateYCached">
+            <summary>
+            从 TransformCss 解析出的百分比形式 translate(Y) 系数。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIStyle.GetPctTranslate(System.Single@,System.Single@)">
+            <summary>
+            一次性解析 TransformCss 中的百分比 translate（X、Y），渲染热路径用，避免重复扫描。
+            </summary>
         </member>
         <member name="P:TCYM.UI.Core.UIStyle.Transforms">
             <summary>解析后的变换列表</summary>
@@ -3625,6 +3739,12 @@
             即使未超阈值，也会按该间隔输出一次采样。
             </summary>
         </member>
+        <member name="P:TCYM.UI.Core.UISystem.EnableRenderTypeProfile">
+            <summary>
+            是否启用按元素类型聚合的渲染耗时统计。
+            开启后会随帧分段日志一起打印 [RenderProfile] 行，定位是哪些组件最贵。
+            </summary>
+        </member>
         <member name="P:TCYM.UI.Core.UISystem.EnableGpuInitLog">
             <summary>
             是否启用 GPU 初始化日志。
@@ -3755,6 +3875,13 @@
             <summary>
             打开文件夹选择器，返回所选文件夹完整路径列表。
             </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UISystem.OpenFolder(System.String)">
+            <summary>
+            在系统资源管理器（Windows: Explorer / macOS: Finder / Linux: xdg-open）中打开指定文件夹。
+            </summary>
+            <param name="path">要打开的文件夹路径，可为相对路径。</param>
+            <returns>成功启动外部进程返回 true；路径为空、不存在或启动失败返回 false。</returns>
         </member>
         <member name="M:TCYM.UI.Core.UISystem.SetWindowSize(System.Int32,System.Int32)">
             <summary>
@@ -6814,11 +6941,17 @@
         <member name="P:TCYM.UI.Elements.Input.UIInput.Prefix">
             <summary>
             输入框前缀元素（显示在文本区域左侧内部）。类似 Ant Design 的 prefix。
+            注意：Prefix 不进入 <see cref="P:TCYM.UI.Core.UIElement.Children"/>，但会通过
+            <c>AttachVirtualParent</c> 维护 <see cref="P:TCYM.UI.Core.UIElement.Parent"/> 引用，
+            以便样式继承、绝对坐标计算与 HitTestGlobal 沿父链工作。
             </summary>
         </member>
         <member name="P:TCYM.UI.Elements.Input.UIInput.Suffix">
             <summary>
             输入框后缀元素（显示在文本区域右侧内部）。类似 Ant Design 的 suffix。
+            注意：Suffix 不进入 <see cref="P:TCYM.UI.Core.UIElement.Children"/>，但会通过
+            <c>AttachVirtualParent</c> 维护 <see cref="P:TCYM.UI.Core.UIElement.Parent"/> 引用，
+            以便样式继承、绝对坐标计算与 HitTestGlobal 沿父链工作。
             </summary>
         </member>
         <member name="P:TCYM.UI.Elements.Input.UIInput.AllowClear">
@@ -6980,14 +7113,16 @@
             参数：最新 Text 值。
             </summary>
         </member>
-        <member name="F:TCYM.UI.Elements.Input.UIInput.defaultStyle">
+        <member name="F:TCYM.UI.Elements.Input.UIInput.DefaultClassName">
             <summary>
-            默认输入框样式。
+            UIInput 内置默认样式所使用的类名。会自动加入到 <see cref="P:TCYM.UI.Core.UIElement.ClassName"/> 列表中，
+            优先级低于用户显式 <see cref="P:TCYM.UI.Elements.Input.UIInput.Style"/> 与其它用户自定义类，从而支持 ClassName / Style 合并覆盖。
             </summary>
         </member>
         <member name="P:TCYM.UI.Elements.Input.UIInput.Style">
             <summary>
-            元素样式。设置时会合并类名样式（如有）并应用到元素。
+            元素样式。设置时会与 <see cref="P:TCYM.UI.Core.UIElement.ClassName"/> 中匹配的类样式合并，
+            显式 Style 的同名属性优先于类样式（含内置默认 <see cref="F:TCYM.UI.Elements.Input.UIInput.DefaultClassName"/>）。
             </summary>
         </member>
         <member name="M:TCYM.UI.Elements.Input.UIInput.#ctor">
@@ -7058,6 +7193,50 @@
         <member name="M:TCYM.UI.Elements.Input.UIInput.OnPointerUp(System.Single,System.Single)">
             <summary>
             处理鼠标松开事件，用于结束文本选择。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Input.UIInput.OnTouchEvent(TCYM.UI.Events.UITouchEvent)">
+            <summary>
+            处理平板触摸事件。在禁用 SDL 触摸转鼠标时，仍然桥接到输入框现有的聚焦、光标和选区逻辑。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Input.UIInput.FindTouchPointById(TCYM.UI.Events.UITouchEvent,System.Int64)">
+            <summary>
+            在当前触摸事件里按 Id 找回正在跟踪的那根手指。
+            用于多点触控场景下，让 Move/End 继续绑定到 TouchStart 时命中的同一触点。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Input.UIInput.TryDispatchAffixPointer(System.Single,System.Single,System.Boolean)">
+            <summary>
+            将指针事件转发给当前位置命中的 Prefix 或 Suffix（它们不在子元素链中，
+            不会被 UIManager.HitTest 选中，也就不会自动收到事件）。
+            通过合成 <see cref="T:TCYM.UI.Events.UIMouseEvent"/> 并调用其 <see cref="M:TCYM.UI.Core.UIElement.OnMouseEvent(TCYM.UI.Events.UIMouseEvent)"/>
+            触发完整事件链（含 <c>OnPointerPressed / Released / Click</c>，以及绑定到
+            <c>Events.PointerPressed</c> 的回调）。
+            </summary>
+            <param name="x">UIInput 局部坐标 X（相对 UIInput 左上角）。</param>
+            <param name="y">UIInput 局部坐标 Y（相对 UIInput 左上角）。</param>
+            <param name="isDown">true 表示按下，false 表示抬起。</param>
+            <returns>命中并已转发返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Input.UIInput.ComputeAffixOffsets(System.Single@,System.Single@,System.Single@,System.Single@)">
+            <summary>
+            计算 prefix / suffix 在 UIInput 局部坐标系内的左上角位置。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Input.UIInput.EnsureAffixMeasured(TCYM.UI.Core.UIElement)">
+            <summary>
+            确保 prefix/suffix 元素已被 Measure 过（设置 Width/Height）。它们不在子元素树中，
+            引擎布局阶段不会调用其 <see cref="M:TCYM.UI.Core.UIElement.Measure(System.Single,System.Single)"/>。这里在 Render / 命中测试前
+            显式触发一次，避免 Width/Height 为 0 导致无法点击。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Input.UIInput.DispatchAffixMouseEvent(TCYM.UI.Core.UIElement,System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            向脱离父子链的 Prefix/Suffix 元素派发一个 Down/Up 鼠标事件。
+            坐标 (<paramref name="screenX"/>, <paramref name="screenY"/>) 是屏幕坐标，
+            由于 affix 已通过 <c>AttachVirtualParent</c> 维护了 <see cref="P:TCYM.UI.Core.UIElement.Parent"/>，
+            其 <c>HitTestGlobal</c> 沿父链就能正确将屏幕坐标映射到自身局部空间。
             </summary>
         </member>
         <member name="M:TCYM.UI.Elements.Input.UIInput.OnMouseEvent(TCYM.UI.Events.UIMouseEvent)">
@@ -8394,6 +8573,274 @@
             消息图标视图，使用 SkiaSharp 绘制 SVG 路径或 Loading 旋转动画。
             </summary>
         </member>
+        <member name="T:TCYM.UI.Elements.Modal.ModalConfig">
+            <summary>
+            单个对话框的配置参数（参考 Ant Design Modal）。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.Title">
+            <summary>对话框标题文本。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.Content">
+            <summary>对话框正文（字符串，会以 UILabel 渲染并自动换行）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.Body">
+            <summary>
+            自定义正文内容元素。优先级高于 <see cref="P:TCYM.UI.Elements.Modal.ModalConfig.Content"/>。
+            若同时传入，则 Body 渲染在 Content 文本之下。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.Type">
+            <summary>对话框类型（决定默认图标与默认页脚布局）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.OkText">
+            <summary>确定按钮文字，默认 "确定"。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.CancelText">
+            <summary>取消按钮文字，默认 "取消"。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.OkType">
+            <summary>OK 按钮的视觉类型。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.OnOk">
+            <summary>
+            点击确定回调。返回 true 或不返回（void 风格）表示允许关闭；
+            返回 false 则保持对话框打开（适合表单校验）。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.OnCancel">
+            <summary>点击取消 / 关闭按钮 / 遮罩 / Esc 时的回调。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.AfterClose">
+            <summary>对话框关闭动画结束后的回调。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.Width">
+            <summary>对话框宽度（像素），默认 416（参考 Ant Design 默认 520，简洁场景常用 416）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.Centered">
+            <summary>是否垂直居中显示。默认 true。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.Mask">
+            <summary>是否显示遮罩。默认 true。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.MaskClosable">
+            <summary>点击遮罩是否关闭。默认 true。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.Closable">
+            <summary>是否显示右上角关闭按钮。默认 true。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.Keyboard">
+            <summary>是否支持 Esc 键关闭。默认 true。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.HideFooter">
+            <summary>
+            是否隐藏默认页脚（自带的 OK/Cancel 按钮）。
+            当需要完全自定义页脚时设为 true 并通过 <see cref="P:TCYM.UI.Elements.Modal.ModalConfig.FooterContent"/> 注入。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.FooterContent">
+            <summary>自定义页脚元素（设置后会替换默认按钮区）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.ConfirmLoading">
+            <summary>确认按钮显示 loading 状态（loading 期间禁用按钮）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.Top">
+            <summary>距离顶部的距离（像素）。在 <see cref="P:TCYM.UI.Elements.Modal.ModalConfig.Centered"/> = false 时使用，默认 100。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.ZIndex">
+            <summary>层叠顺序。默认 9000。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.Key">
+            <summary>对话框唯一 key，用于 Update / Destroy 指定对话框。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.Style">
+            <summary>对话框面板自定义样式（背景、圆角、阴影等）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.BodyStyle">
+            <summary>对话框正文区自定义样式（内边距、字号等）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.MaskStyle">
+            <summary>对话框遮罩自定义样式（背景色等）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalConfig.TitleStyle">
+            <summary>对话框标题自定义样式。</summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Modal.ModalGlobalConfig">
+            <summary>
+            UIModal 全局默认配置（被单条 <see cref="T:TCYM.UI.Elements.Modal.ModalConfig"/> 覆盖）。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalGlobalConfig.Width">
+            <summary>默认对话框宽度。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalGlobalConfig.Centered">
+            <summary>默认是否垂直居中。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalGlobalConfig.Top">
+            <summary>默认距离顶部的距离（仅 Centered=false 时生效）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalGlobalConfig.Mask">
+            <summary>默认是否显示遮罩。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalGlobalConfig.MaskClosable">
+            <summary>默认遮罩是否可关闭。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalGlobalConfig.Keyboard">
+            <summary>默认是否可通过 Esc 关闭。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalGlobalConfig.ZIndex">
+            <summary>默认 ZIndex。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalGlobalConfig.Style">
+            <summary>全局对话框面板样式（被单条 Style 覆盖）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalGlobalConfig.BodyStyle">
+            <summary>全局对话框正文区样式。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalGlobalConfig.MaskStyle">
+            <summary>全局遮罩样式。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalGlobalConfig.TitleStyle">
+            <summary>全局标题样式。</summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Modal.ModalType">
+            <summary>
+            对话框类型。决定默认图标与默认页脚按钮。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Modal.ModalType.None">
+            <summary>普通对话框（默认 OK + Cancel）。</summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Modal.ModalType.Info">
+            <summary>信息提示（蓝色 info 图标，默认仅 OK）。</summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Modal.ModalType.Success">
+            <summary>成功提示（绿色 check 图标，默认仅 OK）。</summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Modal.ModalType.Error">
+            <summary>错误提示（红色 close 图标，默认仅 OK）。</summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Modal.ModalType.Warning">
+            <summary>警告提示（黄色 ! 图标，默认仅 OK）。</summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Modal.ModalType.Confirm">
+            <summary>确认对话框（黄色 ? 图标，OK + Cancel）。</summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Modal.ModalOkType">
+            <summary>
+            OK 按钮的视觉类型。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Modal.ModalOkType.Primary">
+            <summary>主要按钮（蓝色填充）。</summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Modal.ModalOkType.Danger">
+            <summary>危险按钮（红色填充，用于确认删除等场景）。</summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Modal.ModalOkType.Default">
+            <summary>默认按钮（白底）。</summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Modal.UIModal">
+             <summary>
+             对话框组件（参考 Ant Design Modal）。通过静态方法弹出模态对话框，
+             支持标题、正文、确认 / 取消按钮、遮罩、Esc 关闭、loading、自定义页脚、
+             以及 Info / Success / Error / Warning / Confirm 五种语义化变体。
+             <para>用法示例：</para>
+             <code>
+             // 1) 普通对话框
+             UIModal.Show(new ModalConfig
+             {
+                 Title = "提示",
+                 Content = "你确认要执行该操作吗?",
+                 OnOk = () => { /* 返回 false 可阻止关闭 */ return true; },
+                 OnCancel = () => { /* 用户取消 */ },
+             });
+            
+             // 2) 语义化便捷方法
+             UIModal.Info("通知", "系统更新已完成。");
+             UIModal.Success("成功", "保存成功!");
+             UIModal.Error("错误", "连接服务器失败。");
+             UIModal.Warning("警告", "磁盘空间不足。");
+             UIModal.Confirm("删除确认", "确定要删除该项目吗？该操作不可恢复。", okType: ModalOkType.Danger, onOk: () => { /*...*/ });
+            
+             // 3) 全局配置
+             UIModal.Config(new ModalGlobalConfig { Mask = true, ZIndex = 9500 });
+             </code>
+             </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Modal.UIModal.Config(TCYM.UI.Elements.Modal.ModalGlobalConfig)">
+            <summary>配置全局默认参数。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Modal.UIModal.Show(TCYM.UI.Elements.Modal.ModalConfig)">
+            <summary>弹出一个对话框；返回实例 handle，可用于 .Update() / .Destroy()。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Modal.UIModal.Info(System.String,System.String,System.Action)">
+            <summary>信息提示对话框（蓝色 info 图标，默认仅显示 OK）。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Modal.UIModal.Success(System.String,System.String,System.Action)">
+            <summary>成功对话框。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Modal.UIModal.Error(System.String,System.String,System.Action)">
+            <summary>错误对话框。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Modal.UIModal.Warning(System.String,System.String,System.Action)">
+            <summary>警告对话框。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Modal.UIModal.Confirm(System.String,System.String,System.Action,System.Action,TCYM.UI.Elements.Modal.ModalOkType,System.String,System.String)">
+            <summary>确认对话框（带 OK + Cancel）。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Modal.UIModal.DestroyAll">
+            <summary>关闭所有对话框。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Modal.UIModal.Destroy(System.String)">
+            <summary>关闭指定 Key 的对话框。</summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Modal.ModalInstance">
+            <summary>
+            单个对话框的实例 handle，可用于运行时更新内容或关闭。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalInstance.Key">
+            <summary>对话框 Key。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalInstance.IsClosed">
+            <summary>是否已关闭。</summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Modal.ModalInstance.SupportsKeyboard">
+            <summary>是否支持 Esc 键关闭。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Modal.ModalInstance.UpdateConfig(System.Action{TCYM.UI.Elements.Modal.ModalConfig})">
+            <summary>更新对话框内容（标题、正文、按钮文字、loading 状态等）。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Modal.ModalInstance.UpdateConfig(TCYM.UI.Elements.Modal.ModalConfig)">
+            <summary>用新的 ModalConfig 整体替换；保留同一实例（用于 Key 复用）。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Modal.ModalInstance.Destroy">
+            <summary>立即开始关闭动画。</summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Modal.ModalInstance.ApplyPanelTransform(System.Single,System.Single,System.Boolean)">
+            <summary>
+            同步面板的不透明度 + 缩放 + 轻微位移动画。
+            </summary>
+            <param name="transformProgress">变换进度，0 = 隐藏态，1 = 完全显示。</param>
+            <param name="opacityProgress">不透明度进度，0 = 完全透明，1 = 完全不透明。</param>
+            <param name="opening">true 为进场（自下而上略弹起），false 为退场（向上略收）。</param>
+        </member>
+        <member name="T:TCYM.UI.Elements.Modal.ModalPanelView">
+            <summary>
+            对话框面板视图：重写 Update 以驱动动画。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Modal.ModalIconView">
+            <summary>
+            对话框类型图标：绘制 SVG 路径。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Modal.ModalCloseButtonView">
+            <summary>
+            对话框右上角关闭按钮（绘制 X 形）。
+            </summary>
+        </member>
         <member name="T:TCYM.UI.Elements.UIPagination">
             <summary>
             Pagination 分页组件。
@@ -8743,11 +9190,6 @@
             所有分段共用的选中态增量样式。
             </summary>
         </member>
-        <member name="P:TCYM.UI.Elements.Segmented.UISegmented.ThumbStyle">
-            <summary>
-            选中滑道的增量样式。
-            </summary>
-        </member>
         <member name="P:TCYM.UI.Elements.Segmented.UISegmented.OnChange">
             <summary>
             便捷订阅 Change 事件。
@@ -8763,9 +9205,115 @@
             按索引切换选中项。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.RefreshAll">
+            <summary>
+            刷新容器与分段样式，并请求重新布局和绘制。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.CreateContainerStyle">
+            <summary>
+            创建 Segmented 轨道容器的内部默认样式。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.ApplyContainerAppearance">
+            <summary>
+            重新应用轨道容器样式，并叠加用户传入的容器样式。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.ApplyContainerStyleOverrides(TCYM.UI.Core.DefaultUIStyle)">
+            <summary>
+            将缓存的用户容器样式覆盖到内部默认容器样式上。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.RebuildSegments">
+            <summary>
+            根据规范化后的选项重建所有分段按钮。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.BuildSegmentButton(TCYM.UI.Elements.Segmented.UISegmentedOption,System.Int32)">
+            <summary>
+            创建单个分段按钮，并绑定对应索引的选择交互。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.RefreshButtonStyles">
+            <summary>
+            按当前选中项和禁用状态刷新所有分段按钮样式。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.BuildButtonStyle(TCYM.UI.Elements.Segmented.UISegmentedOption,System.Boolean,System.Boolean)">
+            <summary>
+            合成单个分段按钮在指定状态下的最终样式。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.StripSelectionSurface(TCYM.UI.Core.DefaultUIStyle)">
+            <summary>
+            移除选中按钮自身的可见表面，让滑动块负责绘制选中态背景。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.UpdateSelectionThumbTarget(System.Boolean)">
+            <summary>
+            根据当前选中按钮同步滑动块目标矩形，并在需要时启动动画。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.SelectionThumbDiffersFromTarget(System.Single)">
+            <summary>
+            判断当前滑动块矩形与目标矩形是否超过指定误差。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.AdvanceSelectionThumbAnimation(System.Single)">
+            <summary>
+            推进滑动块动画进度，并在动画未结束时请求下一帧绘制。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.DrawSelectionThumb(SkiaSharp.SKCanvas)">
+            <summary>
+            使用选中态样式绘制滑动块背景、边框和阴影。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.ResolveStyleUnit(TCYM.UI.Core.UnitValue,System.Single)">
+            <summary>
+            将样式长度值解析为当前绘制坐标系下的像素值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.ApplyOpacity(SkiaSharp.SKColor,System.Single)">
+            <summary>
+            将整体透明度应用到颜色的 Alpha 通道。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.Lerp(System.Single,System.Single,System.Single)">
+            <summary>
+            在起止值之间按比例线性插值。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.ApplySelection(System.Int32,System.Boolean)">
+            <summary>
+            应用指定索引的选择，并按需触发变更事件。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.ResolveSelectionAfterOptionsChanged">
+            <summary>
+            在选项或默认值变化后重新解析当前选中项。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.FindFirstEnabledIndex">
+            <summary>
+            查找第一个可用选项的索引。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.FindIndexByValue(System.Object)">
+            <summary>
+            按选项值查找对应的可用选项索引。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Elements.Segmented.UISegmented.Update(System.Single)">
             <summary>
             推进选中滑块动画，再更新基类及其子元素状态。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.HasActiveAnimation">
+            <summary>
+            滑块过渡是自定义动画状态，需要让框架"活动动画"机制感知，
+            否则主循环可能在最后几帧停止唤醒，导致动画停在收尾位置。
             </summary>
         </member>
         <member name="M:TCYM.UI.Elements.Segmented.UISegmented.Layout(System.Single,System.Single,System.Single,System.Single)">
@@ -8776,6 +9324,11 @@
         <member name="M:TCYM.UI.Elements.Segmented.UISegmented.RenderContent(SkiaSharp.SKCanvas)">
             <summary>
             绘制选中滑块并推进动画，再渲染各个分段按钮内容。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Segmented.UISegmented.NormalizeOptions(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            将字符串、UIElement 或 UISegmentedOption 输入统一转换为选项模型。
             </summary>
         </member>
         <member name="T:TCYM.UI.Elements.Segmented.UISegmentedOption">
@@ -12133,6 +12686,18 @@
             是否自动播放动画。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.Svg.UISvg.#ctor">
+            <summary>
+            默认构造：启用渲染缓存。静态 SVG 缓存命中；有动画时 key 持续变化自动重建。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Svg.UISvg.GetRenderCacheKey">
+            <summary>
+            渲染缓存签名：
+            - 静态 SVG（无动画或 AutoPlay=false）签名稳定，缓存命中；
+            - 动画期间随 _svgAnimVersion 变化，每帧自动重建。
+            </summary>
+        </member>
         <member name="M:TCYM.UI.Elements.Svg.UISvg.GetPreviewHotReloadStateSnapshot">
             <summary>
             收集会影响 SVG 解析输入与动画播放行为的源码态快照。
@@ -12631,9 +13196,19 @@
             自定义渲染元素
             </summary>
         </member>
-        <member name="P:TCYM.UI.Elements.Table.ToolbarActionConfig.OnClick">
+        <member name="P:TCYM.UI.Elements.Table.ToolbarActionConfig.ClassName">
             <summary>
-            点击回调
+            工具按钮样式类名，多个类名可用空格分隔
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Table.ToolbarActionConfig.Style">
+            <summary>
+            工具按钮样式
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Table.ToolbarActionConfig.Events">
+            <summary>
+            工具按钮事件绑定
             </summary>
         </member>
         <member name="T:TCYM.UI.Elements.Table.SorterInfo">
@@ -12771,8 +13346,15 @@
         </member>
         <member name="P:TCYM.UI.Elements.Table.UITable.DataSource">
             <summary>
-            数据源。排序作用于当前数据源的浅拷贝，不会修改原集合顺序。
+            数据源。支持普通对象集合、字典集合、DataTable/DataView 等格式；内部会归一化为对象行列表。
             </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.NormalizeDataSource(System.Object)">
+            <summary>
+            将外部数据源归一化为表格内部使用的对象行列表。
+            </summary>
+            <param name="source">外部传入的数据源。</param>
+            <returns>可供表格分页、筛选、排序和渲染使用的行列表。</returns>
         </member>
         <member name="P:TCYM.UI.Elements.Table.UITable.Loading">
             <summary>
@@ -13127,6 +13709,33 @@
             <summary>
             按 DataIndex 路径读取行对象字段值。
             </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.TryGetRowMemberValue(System.Object,System.String,System.Object@)">
+            <summary>
+            从字典、DataRow/DataRowView 等动态行对象中读取字段值。
+            </summary>
+            <param name="current">当前路径节点。</param>
+            <param name="key">需要读取的字段名。</param>
+            <param name="value">读取到的字段值。</param>
+            <returns>当前节点支持该读取方式时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.TryGetDictionaryValue(System.Object,System.String,System.Object@)">
+            <summary>
+            从常见 string key 字典中读取字段值。
+            </summary>
+            <param name="current">当前路径节点。</param>
+            <param name="key">需要读取的字段名。</param>
+            <param name="value">读取到的字段值。</param>
+            <returns>当前节点是受支持的字典类型时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.TryGetDataRowValue(System.Data.DataRow,System.String,System.Object@)">
+            <summary>
+            从 DataRow 中按列名读取字段值，并把 DBNull 归一化为空值。
+            </summary>
+            <param name="row">DataTable 中的数据行。</param>
+            <param name="key">需要读取的列名。</param>
+            <param name="value">读取到的列值。</param>
+            <returns>存在同名列时返回 true。</returns>
         </member>
         <member name="M:TCYM.UI.Elements.Table.UITable.GetCellText(TCYM.UI.Elements.Table.TableColumn,System.Object)">
             <summary>
@@ -13603,7 +14212,27 @@
             构建表格工具栏。
             </summary>
         </member>
-        <member name="M:TCYM.UI.Elements.Table.UITable.BuildToolbarItem(System.String,System.String,SkiaSharp.SKTypeface)">
+        <member name="M:TCYM.UI.Elements.Table.UITable.ApplyToolbarActionConfig(TCYM.UI.Core.UIElement,TCYM.UI.Elements.Table.ToolbarActionConfig)">
+            <summary>
+            将工具栏动作配置应用到实际按钮元素，包括 class、样式、内容颜色和事件绑定。
+            </summary>
+            <param name="button">需要配置的按钮元素。</param>
+            <param name="config">工具栏动作配置，允许为空。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.ShouldUseDefaultToolbarHover(TCYM.UI.Elements.Table.ToolbarActionConfig)">
+            <summary>
+            判断默认工具按钮是否继续使用内置 hover 背景。
+            </summary>
+            <param name="config">工具栏动作配置，允许为空。</param>
+            <returns>没有自定义样式或 class 时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.ApplyToolbarActionContentColor(TCYM.UI.Core.UIElement)">
+            <summary>
+            将默认工具按钮的前景色同步到内部图标和文本。
+            </summary>
+            <param name="button">需要同步内容颜色的工具按钮。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.BuildToolbarItem(System.String,System.String,SkiaSharp.SKTypeface,System.Boolean)">
             <summary>
             构建默认工具栏按钮项。
             </summary>
@@ -13612,6 +14241,15 @@
             <summary>
             重建汇总行左右固定区与滚动区内容。
             </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Table.UITable.BuildSummaryLayoutSignature(System.Single,System.Single,System.Single)">
+            <summary>
+            生成汇总行结构签名，用于避免稳定布局下重复重建子节点。
+            </summary>
+            <param name="leftFixedWidth">左侧固定汇总区域宽度。</param>
+            <param name="rightFixedWidth">右侧固定汇总区域宽度。</param>
+            <param name="scrollableWidth">中间可滚动汇总区域内容宽度。</param>
+            <returns>代表当前汇总行结构和关键数据状态的签名。</returns>
         </member>
         <member name="M:TCYM.UI.Elements.Table.UITable.UpdateSummaryViewportLayout(System.Single)">
             <summary>
@@ -15751,6 +16389,11 @@
             比较两个预览状态值在热更签名层面上是否等价。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Elements.UICaptionBar.GetRenderCacheKey">
+            <summary>
+            渲染缓存签名：跟踪三个按钮的 hover 状态（任一切换即重建缓存）。
+            </summary>
+        </member>
         <member name="T:TCYM.UI.Elements.UIContainer">
             <summary>
             通用容器控件。
@@ -17402,6 +18045,11 @@
             按键的 SDL Scancode 或虚拟键值
             </summary>
         </member>
+        <member name="P:TCYM.UI.Events.UIKeyboardEvent.Element">
+            <summary>
+            当前目标元素。
+            </summary>
+        </member>
         <member name="P:TCYM.UI.Events.UIKeyboardEvent.Text">
             <summary>
             输入字符（仅在 TextInput 时有效）
@@ -18082,6 +18730,23 @@
             <summary>
             平台判断辅助类。
             提供当前运行时操作系统的快捷判断（Windows / Linux / MacOS / Unknown）。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Helpers.SKFontPool">
+             <summary>
+             全局 SKFont 共享池：按 (typeface, sizeBucket) 复用一份 SKFont 实例。
+             渲染热路径上每帧 new SKFont 是较大的开销（包含字形度量缓存初始化），
+             通过共享池显著减少分配与释放成本。
+            
+             使用约定：
+             - 调用方 **不** 需要 Dispose 返回的实例。
+             - 不要在多线程中同时修改返回 SKFont 的属性（Skew/Edging/Subpixel 等）；
+               渲染路径只读取 Metrics / 调用 MeasureText / DrawText 是线程安全（CPU canvas 仅在 UI 线程）。
+             </summary>
+        </member>
+        <member name="M:TCYM.UI.Helpers.SKFontPool.Get(SkiaSharp.SKTypeface,System.Single)">
+            <summary>
+            获取或创建匹配的 SKFont。size 会被四舍五入到 0.1px 桶，避免浮点漂移导致的不命中。
             </summary>
         </member>
         <member name="T:TCYM.UI.Helpers.TextMeasureHelper">

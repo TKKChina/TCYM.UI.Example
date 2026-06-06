@@ -45,7 +45,7 @@ namespace TCYM.UI.Example.Page.component.Segmented
             var segmented = new UISegmented
             {
                 Options = new List<object?> { "进行中", "待处理", "已完成" },
-                DefaultValue = "进行中",
+                DefaultValue = "待处理",
                 ItemHeight = 34,
                 SelectionAnimationDuration = 0.3f,
                 SelectionAnimationTimingFunction = "linear",
@@ -53,18 +53,17 @@ namespace TCYM.UI.Example.Page.component.Segmented
                 {
                     Width = 80,
                     BorderRadius = 8,
-                    BorderColor = SKColors.Transparent,
+                    Hover   =  new DefaultUIStyle
+                    {
+                        Color = SKColors.White,
+                    }
                 },
                 SelectedItemStyle = new UpdateUIStyle
                 {
-                    Color = ColorHelper.ParseColor("#1677ff"),
-                },
-                ThumbStyle = new UpdateUIStyle
-                {
                     BackgroundColor = SKColors.White,
                     BorderColor = ColorHelper.ParseColor("#d5def0"),
+                    Color = ColorHelper.ParseColor("#1677ff"),
                 },
-
                 OnChange = value => currentValue.Text = $"当前值：{value}",
                 //Style = new UpdateUIStyle
                 //{
@@ -123,6 +122,7 @@ namespace TCYM.UI.Example.Page.component.Segmented
                         SelectedStyle = new UpdateUIStyle
                         {
                             BackgroundColor = ColorHelper.ParseColor("#fff7ed"),
+                            BorderWidth = 1,
                             BorderColor = ColorHelper.ParseColor("#fdba74"),
                         }
                     }
@@ -134,7 +134,7 @@ namespace TCYM.UI.Example.Page.component.Segmented
                 {
                     Width = 118,
                 },
-                ThumbStyle = new UpdateUIStyle
+                SelectedItemStyle = new UpdateUIStyle
                 {
                     BorderRadius = 12,
                 },
@@ -204,12 +204,10 @@ namespace TCYM.UI.Example.Page.component.Segmented
                 },
                 SelectedItemStyle = new UpdateUIStyle
                 {
-                    Color = SKColors.White,
-                },
-                ThumbStyle = new UpdateUIStyle
-                {
                     BackgroundColor = ColorHelper.ParseColor("#2563eb"),
+                    BorderWidth = 1,
                     BorderColor = ColorHelper.ParseColor("#60a5fa"),
+                    Color = SKColors.White,
                     BorderRadius = 14,
                     BoxShadowColor = ColorHelper.ParseColor("rgba(37,99,235,0.45)"),
                     BoxShadowBlur = 14,
@@ -231,7 +229,7 @@ namespace TCYM.UI.Example.Page.component.Segmented
                     },
                     new UILabel
                     {
-                        Text = "通过 ItemStyle、SelectedItemStyle 与 ThumbStyle 可以分别调整默认态、选中内容和滑道外观。",
+                        Text = "通过 ItemStyle 与 SelectedItemStyle 可以分别调整默认态和选中态外观。",
                         ClassName = new List<string> { "segmented-card-desc" }
                     },
                     new UIView
