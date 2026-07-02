@@ -213,7 +213,7 @@ namespace TCYM.UI.Example.Page.component.Icon
                                     FontSize = 20,
                                     Width = 30,
                                     Height = 30,
-                                },
+                                }
                             }
                         },
                         Events = new()

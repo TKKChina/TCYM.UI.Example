@@ -5,7 +5,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <TCYMSourcePreviewComponentRoot>Page/component</TCYMSourcePreviewComponentRoot>
+    <TCYMSourcePreviewDefaultEntry>Page/Layout/Layout.cs</TCYMSourcePreviewDefaultEntry>
+    <TCYMSourcePreviewGlobalCss>Page/com.css</TCYMSourcePreviewGlobalCss>
     <PublishAot>true</PublishAot>
+    <StripSymbols>true</StripSymbols>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <InvariantGlobalization>true</InvariantGlobalization>
     <!-- Windows EXE 图标（写入可执行文件资源） -->
@@ -39,6 +43,7 @@
     <None Remove="Page\component\Menu\style.css" />
     <None Remove="Page\component\Message\style.css" />
     <None Remove="Page\component\Modal\style.css" />
+    <None Remove="Page\component\MvGigECamera\style.css" />
     <None Remove="Page\component\Radio\style.css" />
     <None Remove="Page\component\Select\style.css" />
     <None Remove="Page\component\Segmented\style.css" />
@@ -50,9 +55,12 @@
     <None Remove="Page\component\Table\style.css" />
     <None Remove="Page\component\Tabs\style.css" />
     <None Remove="Page\component\Pagination\style.css" />
+    <None Remove="Page\component\Player\style.css" />
+    <None Remove="Page\component\PlayerDetection\style.css" />
     <None Remove="Page\component\Tag\style.css" />
     <None Remove="Page\component\Tooltip\style.css" />
     <None Remove="Page\component\VirtualScrollView\style.css" />
+    <None Remove="Page\component\Watermark\style.css" />
     <None Remove="style.css" />
   </ItemGroup>
   
@@ -84,6 +92,7 @@
     <EmbeddedResource Include="Page\component\Label\style.css" />
     <EmbeddedResource Include="Page\component\Message\style.css" />
     <EmbeddedResource Include="Page\component\Modal\style.css" />
+    <EmbeddedResource Include="Page\component\MvGigECamera\style.css" />
     <EmbeddedResource Include="Page\component\FloatButton\style.css" />
     <EmbeddedResource Include="Page\component\Svg\style.css" />
     <EmbeddedResource Include="Page\component\Svg\svg-animation.css" />
@@ -108,29 +117,43 @@
     <EmbeddedResource Include="Page\component\Switch\style.css" />
     <EmbeddedResource Include="Page\component\Tabs\style.css" />
     <EmbeddedResource Include="Page\component\Pagination\style.css" />
+    <EmbeddedResource Include="Page\component\Player\style.css" />
+    <EmbeddedResource Include="Page\component\PlayerDetection\style.css" />
     <EmbeddedResource Include="Page\component\VirtualScrollView\style.css" />
+    <EmbeddedResource Include="Page\component\Watermark\style.css" />
     <EmbeddedResource Include="Page\Layout\style.css">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
+  <!-- YOLOv8 GPU 推理（ONNX Runtime + DirectML）。
+       1) 直接引用 OnnxRuntime.DirectML：保证带 DirectML EP 的 onnxruntime.dll 被复制到输出。
+       2) DirectML.dll 本体由传递依赖 Microsoft.AI.DirectML 提供，其复制 targets 位于 build/（非 buildTransitive/），
+          且仅在 PlatformTarget=x64 时才设置复制项；作为传递依赖既不会流到本项目，AnyCPU 下也不触发复制。
+          因此这里直接引用该包并用 GeneratePathProperty 显式把 x64 的 DirectML.dll 复制到输出根目录，
+          onnxruntime 会在加载 DML EP 时从应用目录 LoadLibrary("DirectML.dll")。 -->
   <ItemGroup>
-    <PackageReference Include="SkiaSharp" Version="3.119.2" />
-    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.119.2" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime.DirectML" Version="1.24.4" />
+    <PackageReference Include="Microsoft.AI.DirectML" Version="1.15.4" GeneratePathProperty="true" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="TCYM.UI">
-      <HintPath>Libs\TCYM.UI.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
-    <Analyzer Include="Libs\TCYM.UI.Generator.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Libs\TCYM.UI.xml">
+  <ItemGroup Condition="'$(PkgMicrosoft_AI_DirectML)' != ''">
+    <None Include="$(PkgMicrosoft_AI_DirectML)\bin\x64-win\DirectML.dll" Condition="Exists('$(PkgMicrosoft_AI_DirectML)\bin\x64-win\DirectML.dll')">
+      <Link>DirectML.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="TCYM.FFmpeg">
+      <HintPath>..\TCYM.UI.Pro\Libs\TCYM.FFmpeg.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <ProjectReference Include="..\TCYM.UI\TCYM.UI.csproj" />
+    <ProjectReference Include="..\TCYM.UI.Pro\TCYM.UI.Pro.csproj" />
+    <ProjectReference Include="..\TCYM.UI.Generator\TCYM.UI.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Libs\Linux\libSDL2-2.0.so.0">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

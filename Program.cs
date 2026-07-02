@@ -19,11 +19,12 @@ internal class Program
 
         // 是否启用GPU初始化日志（输出GPU相关的初始化信息和错误日志）。启用后会在控制台输出GPU设备的相关信息、驱动版本、支持的功能等，以及在GPU初始化过程中遇到的任何错误。这对于调试和优化GPU渲染性能非常有帮助，尤其是在不同平台和设备上运行时。
         UISystem.EnableGpuInitLog = true;
-        UISystem.Initialize("TCYM", 1620, 800, true, 30);
+        UISystem.Initialize("TCYM", 1620, 800, true, 30, resizable: true);
 
         var manager = UISystem.Manager;
         if (manager == null) return;
         // 支持AOT 环境下的属性访问
+        TCYM.UI.Binding.Generated.GeneratedBindingAccessors_TCYM_UI.InitGenerated();
         TCYM.UI.Binding.Generated.GeneratedBindingAccessors_TCYM_UI_Example.InitGenerated();
 
         // === 全局通配符默认样式：字体16px，颜色 #000000 ===

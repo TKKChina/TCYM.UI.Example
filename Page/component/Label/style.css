@@ -71,9 +71,6 @@
   align-items: flex-start;
 }
 
-.label-showcase-column {
-  flex-direction: column;
-}
 
 .label-priority-list {
   width: 100%;

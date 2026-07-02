@@ -22,13 +22,17 @@ using TCYM.UI.Example.Page.component.Svg;
 using TCYM.UI.Example.Page.component.Table;
 using TCYM.UI.Example.Page.component.Message;
 using TCYM.UI.Example.Page.component.Modal;
+using TCYM.UI.Example.Page.component.MvGigECamera;
 using TCYM.UI.Example.Page.component.Label;
 using TCYM.UI.Example.Page.component.UsbCamera;
 using TCYM.UI.Example.Page.component.VirtualScrollView;
 using TCYM.UI.Example.Page.component.FilePicker;
 using TCYM.UI.Example.Page.component.Image;
 using TCYM.UI.Example.Page.component.CodeEditor;
+using TCYM.UI.Example.Page.component.Player;
+using TCYM.UI.Example.Page.component.PlayerDetection;
 using TCYM.UI.Example.Page.component.Splitter;
+using TCYM.UI.Example.Page.component.Watermark;
 
 namespace TCYM.UI.Example.Page.Layout
 {
@@ -41,7 +45,7 @@ namespace TCYM.UI.Example.Page.Layout
             .Register("/demo/float-button", () => new UIFloatButtonDemo())
             .Register("/demo/icon", () => new UIIconDemo())
             .Register("/demo/label", () => new UILabelDemo())
-            .Register("/demo/image", () => new UIImageDemo(),false)
+            .Register("/demo/image", () => new UIImageDemo(), false)
             .Register("/demo/menu", () => new UIMenuDemo())
             .Register("/demo/segmented", () => new UISegmentedDemo())
             .Register("/demo/slider", () => new UISliderDemo())
@@ -64,8 +68,12 @@ namespace TCYM.UI.Example.Page.Layout
             .Register("/demo/table", () => new UITableDemo())
             .Register("/demo/message", () => new UIMessageDemo())
             .Register("/demo/modal", () => new UIModalDemo())
+            .Register("/demo/watermark", () => new UIWatermarkDemo())
             .Register("/demo/virtual-scroll-view", () => new UIVirtualScrollViewDemo())
             .Register("/demo/file-picker", () => new UIFilePickerDemo())
+            .Register("/demo/player", () => new UIPlayerDemo())
+            .Register("/demo/player-detection", () => new UIPlayerDetectionDemo())
+            .Register("/demo/mv-gige-camera", () => new UIMvGigECameraDemo())
             .Register("/demo/usb-camera", () => new UIUsbCameraDemo());
             
             return router;

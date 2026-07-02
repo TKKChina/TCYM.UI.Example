@@ -48,7 +48,7 @@ namespace TCYM.UI.Example.Page.component.Label
                 "UILabel 可直接承载标题、正文、辅助说明和强调信息，样式完全由 UIStyle 控制。",
                 new UIView
                 {
-                    ClassName = new List<string> { "label-showcase", "label-showcase-column" },
+                    ClassName = new List<string> { "label-showcase" },
                     Children = new()
                     {
                         new UILabel

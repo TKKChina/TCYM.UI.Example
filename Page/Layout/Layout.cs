@@ -10,6 +10,7 @@ namespace TCYM.UI.Example.Page.Layout
         {
             UISystem.LoadStyleFile("res://TCYM.UI.Example/Page.Layout.style.css");
             var router = Router.Create();
+            //router.Push("/demo/button");
             ClassName = new List<string> { "main-view" };
             Children = new()
             {
@@ -45,9 +46,14 @@ namespace TCYM.UI.Example.Page.Layout
                             "table" => "/demo/table",
                             "svg" => "/demo/svg",
                             "message" => "/demo/message",
+                            "modal" => "/demo/modal",
                             "virtualScrollView" => "/demo/virtual-scroll-view",
                             "filePicker" => "/demo/file-picker",
+                            "player" => "/demo/player",
+                            "playerDetection" => "/demo/player-detection",
+                            "GigECamera" => "/demo/mv-gige-camera",
                             "usbCamera" => "/demo/usb-camera",
+                            "watermark" => "/demo/watermark",
                             _ => "/demo/button"
                         };
                         router.Push(path);
