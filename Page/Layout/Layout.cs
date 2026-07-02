@@ -49,11 +49,7 @@ namespace TCYM.UI.Example.Page.Layout
                             "modal" => "/demo/modal",
                             "virtualScrollView" => "/demo/virtual-scroll-view",
                             "filePicker" => "/demo/file-picker",
-                            "player" => "/demo/player",
-                            "playerDetection" => "/demo/player-detection",
-                            "GigECamera" => "/demo/mv-gige-camera",
                             "usbCamera" => "/demo/usb-camera",
-                            "watermark" => "/demo/watermark",
                             _ => "/demo/button"
                         };
                         router.Push(path);

@@ -80,60 +80,11 @@ namespace TCYM.UI.Example.Page.Layout
                             MenuItem.Divider("group-feedback-divider-top"),
                             new("message", "消息") { Icon = "&#xe671;" },
                             new("modal", "对话框") { Icon = "&#xe6ad;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
-                            new("watermark", "水印") { Icon = "&#xe62c;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") }  },
                         }),
                         MenuItem.Group("group-other", "其他", new List<MenuItem>
                         {
                             MenuItem.Divider("group-other-divider-top"),
                             new("filePicker", "文件选择") { Icon = "&#xea3e;",Badge = new UIBadge { CountText = "更新",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#28b5ec")} },
-                            new("player", "视频播放") { Icon = "&#xe644;", 
-                            Badge = new UITag
-                            {
-                                Text = "Pro",
-                                Variant = TagVariant.Filled,
-                                Style = new DefaultUIStyle
-                                {
-                                    Color = ColorHelper.ParseColor("#2db7f5"),
-                                    PaddingLeft = 8, 
-                                    PaddingRight = 8,
-                                    PaddingTop = 2, 
-                                    PaddingBottom = 2,
-                                    BorderRadius = "50%",
-                                    FontSize = 14,
-                                }
-                            } },
-                            new("playerDetection", "视频识别 YOLO") { Icon = "&#xe644;",
-                            Badge = new UITag
-                            {
-                                Text = "Pro",
-                                Variant = TagVariant.Filled,
-                                Style = new DefaultUIStyle
-                                {
-                                    Color = ColorHelper.ParseColor("#2db7f5"),
-                                    PaddingLeft = 8,
-                                    PaddingRight = 8,
-                                    PaddingTop = 2,
-                                    PaddingBottom = 2,
-                                    BorderRadius = "50%",
-                                    FontSize = 14,
-                                }
-                            } },
-                            new("GigECamera", "GigE 摄像头") { Icon = "&#xe965;",
-                            Badge = new UITag
-                            {
-                                Text = "Pro",
-                                Variant = TagVariant.Filled,
-                                Style = new DefaultUIStyle
-                                {
-                                    Color = ColorHelper.ParseColor("#2db7f5"),
-                                    PaddingLeft = 8,
-                                    PaddingRight = 8,
-                                    PaddingTop = 2,
-                                    PaddingBottom = 2,
-                                    BorderRadius = "50%",
-                                    FontSize = 14,
-                                }
-                            } },
                            new("usbCamera", "USB 摄像头") { Icon = "&#xe965;" },
                           
                         })
