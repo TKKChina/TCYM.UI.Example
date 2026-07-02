@@ -80,6 +80,7 @@ namespace TCYM.UI.Example.Page.Layout
                             MenuItem.Divider("group-feedback-divider-top"),
                             new("message", "消息") { Icon = "&#xe671;" },
                             new("modal", "对话框") { Icon = "&#xe6ad;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
+                            new("watermark", "水印") { Icon = "&#xe62c;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
                         }),
                         MenuItem.Group("group-other", "其他", new List<MenuItem>
                         {

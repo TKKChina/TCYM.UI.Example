@@ -47,6 +47,7 @@ namespace TCYM.UI.Example.Page.Layout
                             "svg" => "/demo/svg",
                             "message" => "/demo/message",
                             "modal" => "/demo/modal",
+                            "watermark" => "/demo/watermark",
                             "virtualScrollView" => "/demo/virtual-scroll-view",
                             "filePicker" => "/demo/file-picker",
                             "usbCamera" => "/demo/usb-camera",

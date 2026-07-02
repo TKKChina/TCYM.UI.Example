@@ -25,9 +25,6 @@
     <Compile Remove="Page\component\PlayerDetection\**" />
     <EmbeddedResource Remove="Page\component\PlayerDetection\**" />
     <None Remove="Page\component\PlayerDetection\**" />
-    <Compile Remove="Page\component\Watermark\**" />
-    <EmbeddedResource Remove="Page\component\Watermark\**" />
-    <None Remove="Page\component\Watermark\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -65,6 +62,7 @@
     <None Remove="Page\component\Tag\style.css" />
     <None Remove="Page\component\Tooltip\style.css" />
     <None Remove="Page\component\VirtualScrollView\style.css" />
+    <None Remove="Page\component\Watermark\style.css" />
     <None Remove="style.css" />
   </ItemGroup>
 
@@ -121,6 +119,7 @@
     <EmbeddedResource Include="Page\component\Tabs\style.css" />
     <EmbeddedResource Include="Page\component\Pagination\style.css" />
     <EmbeddedResource Include="Page\component\VirtualScrollView\style.css" />
+    <EmbeddedResource Include="Page\component\Watermark\style.css" />
     <EmbeddedResource Include="Page\Layout\style.css">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>

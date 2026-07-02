@@ -29,6 +29,7 @@ using TCYM.UI.Example.Page.component.FilePicker;
 using TCYM.UI.Example.Page.component.Image;
 using TCYM.UI.Example.Page.component.CodeEditor;
 using TCYM.UI.Example.Page.component.Splitter;
+using TCYM.UI.Example.Page.component.Watermark;
 
 namespace TCYM.UI.Example.Page.Layout
 {
@@ -64,6 +65,7 @@ namespace TCYM.UI.Example.Page.Layout
             .Register("/demo/table", () => new UITableDemo())
             .Register("/demo/message", () => new UIMessageDemo())
             .Register("/demo/modal", () => new UIModalDemo())
+            .Register("/demo/watermark", () => new UIWatermarkDemo())
             .Register("/demo/virtual-scroll-view", () => new UIVirtualScrollViewDemo())
             .Register("/demo/file-picker", () => new UIFilePickerDemo())
             .Register("/demo/usb-camera", () => new UIUsbCameraDemo());
