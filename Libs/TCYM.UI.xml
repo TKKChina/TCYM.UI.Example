@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <doc>
     <assembly>
         <name>TCYM.UI</name>
@@ -262,6 +262,12 @@
         </member>
         <member name="P:TCYM.UI.Binding.UIEventBindings.TouchCancel">
             <summary>触摸取消事件回调。</summary>
+        </member>
+        <member name="P:TCYM.UI.Binding.UIEventBindings.Pen">
+            <summary>笔（触控笔）事件回调（带压力 / 倾斜 / 橡皮擦 / 笔身按钮）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Binding.UIEventBindings.FileDrop">
+            <summary>文件 / 文本拖放事件回调。</summary>
         </member>
         <member name="P:TCYM.UI.Binding.UIEventBindings.KeyDown">
             <summary>键盘按下事件回调。</summary>
@@ -627,16 +633,22 @@
             </summary>
             <param name="router">路由器实例。</param>
         </member>
+        <member name="F:TCYM.UI.Core.SDLJoystickHandler.EnableLog">
+            <summary>是否输出 [HID] 诊断日志。</summary>
+        </member>
         <member name="T:TCYM.UI.Core.SDLPlatform">
             <summary>
             封装 SDL 平台相关的功能：窗口创建、事件循环、OpenGL 上下文管理、
             以及在 GPU（OpenGL + Skia）与 CPU 回退渲染之间的切换。
-            
+
             设计要点：
             - 将底层与上层 UI 管理器分离，Platform 只负责窗口与输入/输出。
             - 在可能的情况下优先使用 GPU（Skia GL）；GPU 初始化失败时回退到 CPU 渲染。
             - 尽量在显示窗口前完成第一帧渲染以避免启动黑屏闪烁。
             </summary>
+        </member>
+        <member name="P:TCYM.UI.Core.SDLPlatform.SdlWindowHandle">
+            <summary>当前 SDL 窗口句柄（SDL_Window*）。供需要窗口的 SDL3 API（文本输入等）使用。</summary>
         </member>
         <member name="P:TCYM.UI.Core.SDLPlatform.EnableTouchMouseEvents">
             <summary>
@@ -744,6 +756,46 @@
             <summary>
             仅在启用 Touch->Mouse 时，把伪鼠标事件补发回触摸快照链路。
             </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.SDLPlatform.HandleFingerCanceled(TCYM.UI.Core.UIManager,TCYM.UI.SDL3.SDL.SDL_Event@)">
+            <summary>
+            处理触摸取消事件（SDL3 新增 SDL_EVENT_FINGER_CANCELED，SDL2 无此事件）：
+            移除该触点并派发 TouchCancel，让 UI 层撤销进行中的手势。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.SDLPlatform.HandleWindowStateEvent(TCYM.UI.Core.UIManager,TCYM.UI.SDL3.SDL.SDL_EventType)">
+            <summary>
+            处理窗口状态事件（最小化 / 最大化 / 恢复 / 所在显示器变化）：
+            尺寸或 DPI 可能已变化，重新同步窗口度量并重绘。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.SDLPlatform.UpdatePenAxis(TCYM.UI.SDL3.SDL.SDL_PenAxisEvent@)">
+            <summary>更新笔轴缓存（压力 / 倾斜等），供落笔 / 移动事件补全数据。</summary>
+        </member>
+        <member name="M:TCYM.UI.Core.SDLPlatform.HandlePenEvent(TCYM.UI.Core.UIManager,TCYM.UI.SDL3.SDL.SDL_Event@)">
+            <summary>
+            处理 SDL3 笔（触控笔）事件：换算到渲染坐标，补全压力 / 倾斜后派发 UIPenEvent。
+            SDL2 没有独立 pen 子系统，这是 SDL3 新增能力。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.SDLPlatform.HandleFileDropEvent(TCYM.UI.Core.UIManager,TCYM.UI.SDL3.SDL.SDL_Event@)">
+            <summary>
+            处理 SDL3 文件 / 文本拖放事件：在 BEGIN..COMPLETE 之间累积，COMPLETE 时统一派发；
+            拖动经过时（DROP_POSITION，SDL3 新增）派发 Over 阶段便于高亮落点。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.SDLPlatform.TryGetDropPointFromMouse(System.Single@,System.Single@)">
+            <summary>
+            该 SDL3 后端不填充拖放事件的 x/y，改用全局鼠标光标位置反推窗口内落点（窗口相对逻辑坐标）。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.SDLPlatform.GetDisplayIds">
+            <summary>
+            读取 SDL3 显示器 ID 列表（0-based 数组下标即为对外暴露的 displayIndex）。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.SDLPlatform.GetDisplayIdByIndex(System.Int32)">
+            <summary>将 0-based 显示器索引映射为 SDL3 的 SDL_DisplayID。</summary>
         </member>
         <member name="M:TCYM.UI.Core.SDLPlatform.GetCurrentDisplayIndex">
             <summary>
@@ -979,7 +1031,7 @@
             </summary>
             <returns>窗口最大化时返回 true；否则返回 false。</returns>
         </member>
-        <member name="M:TCYM.UI.Core.SDLPlatform.TryGetCurrentDisplayUsableBounds(TCYM.UI.SDL2.SDL.SDL_Rect@)">
+        <member name="M:TCYM.UI.Core.SDLPlatform.TryGetCurrentDisplayUsableBounds(TCYM.UI.SDL3.SDL.SDL_Rect@)">
             <summary>
             获取当前窗口所在显示器的可用工作区范围。
             该范围通常会排除任务栏、Dock 等系统占用区域。
@@ -1039,7 +1091,7 @@
         <member name="M:TCYM.UI.Core.SDLPlatform.ToRenderCoordinates(System.Single,System.Single)">
              <summary>
              将 SDL 逻辑坐标转换为渲染坐标。
-            
+
              在 System DPI Aware 模式下，SDL 逻辑坐标即为渲染坐标（直接透传）。
              此方法保留为抽象层，若未来切换到 Per-Monitor 模式，
              可在此处统一做坐标缩放而无需修改所有调用点。
@@ -1209,7 +1261,7 @@
             <param name="path">要打开的文件夹路径，可为相对路径。</param>
             <returns>成功启动外部进程返回 true；路径为空、不存在或启动失败返回 false。</returns>
         </member>
-        <member name="M:TCYM.UI.Core.UIApp.GetWindowId(TCYM.UI.SDL2.SDL.SDL_Event)">
+        <member name="M:TCYM.UI.Core.UIApp.GetWindowId(TCYM.UI.SDL3.SDL.SDL_Event)">
             <summary>
             从 SDL 事件中解析出窗口 Id。
             </summary>
@@ -2062,6 +2114,12 @@
         <member name="E:TCYM.UI.Core.UIElement.OnTouchCancel">
             <summary>触摸取消（不要求命中）。</summary>
         </member>
+        <member name="E:TCYM.UI.Core.UIElement.OnPen">
+            <summary>笔（触控笔）事件（带压力 / 倾斜 / 橡皮擦 / 笔身按钮，命中时触发）。</summary>
+        </member>
+        <member name="E:TCYM.UI.Core.UIElement.OnFileDrop">
+            <summary>文件 / 文本拖放事件（命中时触发）。</summary>
+        </member>
         <member name="M:TCYM.UI.Core.UIElement.OnPointerDown(System.Single,System.Single)">
             <summary>派生类可重写以处理指针按下（局部坐标）。</summary>
         </member>
@@ -2113,6 +2171,23 @@
              <summary>
             触摸事件入口：仅使用 Primary 点进行命中测试和分派。
              </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.OnPenEvent(TCYM.UI.Events.UIPenEvent)">
+            <summary>
+            笔事件入口：触发订阅者。命中测试与冒泡由 <see cref="T:TCYM.UI.Core.UIManager"/> 完成。
+            </summary>
+            <param name="e">笔事件。</param>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.OnJoystickEvent(TCYM.UI.Events.UIJoystickEvent)">
+            <summary>
+            HID 摇杆 / 手柄事件入口：触发订阅者。事件由 UIManager 广播并沿父链冒泡。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.UIElement.OnFileDropEvent(TCYM.UI.Events.UIFileDropEvent)">
+            <summary>
+            文件 / 文本拖放事件入口：触发订阅者。命中测试与冒泡由 <see cref="T:TCYM.UI.Core.UIManager"/> 完成。
+            </summary>
+            <param name="e">拖放事件。</param>
         </member>
         <member name="F:TCYM.UI.Core.UIElement._flexNaturalContentHeight">
             <summary>
@@ -2303,7 +2378,7 @@
         <member name="M:TCYM.UI.Core.UIElement.DrawRoundedSide2(SkiaSharp.SKCanvas,System.String,System.Single,System.String,SkiaSharp.SKColor,System.Single,System.Single,System.Single,System.Single)">
             <summary>
             绘制水平边（当前主要用于 top）。
-            
+
             功能：
             - 支持两端圆角：通过绘制 90° 圆弧实现；
             - 支持边框样式：solid / dashed / dotted；
@@ -2322,7 +2397,7 @@
         <member name="M:TCYM.UI.Core.UIElement.DrawRoundedBottomSide(SkiaSharp.SKCanvas,System.Single,System.String,SkiaSharp.SKColor,System.Single,System.Single,System.Single,System.Single)">
             <summary>
             绘制下边（bottom）。
-            
+
             功能：
             - 支持两端圆角：通过绘制 90° 圆弧实现；
             - 支持边框样式：solid / dashed / dotted；
@@ -2340,7 +2415,7 @@
         <member name="M:TCYM.UI.Core.UIElement.DrawRoundedVerticalSide(SkiaSharp.SKCanvas,System.Boolean,System.Single,System.String,SkiaSharp.SKColor,System.Single,System.Single,System.Single,System.Single)">
             <summary>
             绘制竖边（left/right）。
-            
+
             功能：
             - 支持边框样式：solid / dashed / dotted；
             - 参数 rTop/rBottom 用于描述上下端圆角半径（若外部由 top/bottom 负责角的圆弧，通常传 0 避免重复绘制）；
@@ -2713,6 +2788,18 @@
             将鼠标事件（SDL 转换后）派发给命中的顶层元素。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Core.UIManager.DispatchJoystickEvent(TCYM.UI.Events.UIJoystickEvent)">
+            <summary>
+            笔（触控笔）事件派发：命中测试定位目标元素，并沿父链冒泡直到被处理（SDL3 新增能力）。
+            </summary>
+            <param name="e">笔事件。</param>
+        </member>
+        <member name="M:TCYM.UI.Core.UIManager.DispatchFileDrop(TCYM.UI.Events.UIFileDropEvent)">
+            <summary>
+            文件 / 文本拖放事件派发：命中测试定位落点元素，并沿父链冒泡直到被处理（SDL3 增强）。
+            </summary>
+            <param name="e">拖放事件。</param>
+        </member>
         <member name="M:TCYM.UI.Core.UIManager.DispatchKeyboardEvent(TCYM.UI.Events.UIKeyboardEvent)">
             <summary>
             按键事件路由：优先发送给当前键盘焦点元素，否则发送给根元素。
@@ -2838,7 +2925,7 @@
             若当前帧已经被升级为整窗脏标记，则忽略该局部矩形。
             </summary>
         </member>
-        <member name="M:TCYM.UI.Core.UIManager.TryGetPartialPresentRects(TCYM.UI.SDL2.SDL.SDL_Rect[]@)">
+        <member name="M:TCYM.UI.Core.UIManager.TryGetPartialPresentRects(TCYM.UI.SDL3.SDL.SDL_Rect[]@)">
             <summary>
             当前帧是否存在可供 CPU 呈现层复用的局部更新矩形。
             </summary>
@@ -4135,6 +4222,29 @@
             打开文件夹选择器，返回所选文件夹完整路径列表。
             </summary>
         </member>
+        <member name="M:TCYM.UI.Core.UISystem.OpenFilePickerSdlAsync(TCYM.UI.Storage.FilePickerOpenOptions)">
+            <summary>
+            使用 SDL3 原生文件对话框打开文件选择器（SDL3 新增能力，SDL2 无原生对话框）。
+            与 <see cref="M:TCYM.UI.Core.UISystem.OpenFilePickerAsync(TCYM.UI.Storage.FilePickerOpenOptions)"/> 的区别在于后端由 SDL3 统一提供，无需各平台自有实现。
+            </summary>
+            <param name="options">文件选择参数。</param>
+            <returns>所选文件完整路径列表；取消或出错返回空列表。</returns>
+        </member>
+        <member name="M:TCYM.UI.Core.UISystem.OpenFolderPickerSdlAsync(TCYM.UI.Storage.FolderPickerOpenOptions)">
+            <summary>
+            使用 SDL3 原生文件对话框打开文件夹选择器（SDL3 新增能力）。
+            </summary>
+            <param name="options">文件夹选择参数。</param>
+            <returns>所选文件夹完整路径列表；取消或出错返回空列表。</returns>
+        </member>
+        <member name="M:TCYM.UI.Core.UISystem.SaveFilePickerSdlAsync(System.String,System.Collections.Generic.IReadOnlyList{TCYM.UI.Storage.FilePickerFileType})">
+            <summary>
+            使用 SDL3 原生对话框打开保存文件对话框（SDL3 新增能力）。
+            </summary>
+            <param name="suggestedStartLocation">建议起始目录或文件名。</param>
+            <param name="filters">文件类型过滤列表。</param>
+            <returns>保存目标路径；取消或出错返回 null。</returns>
+        </member>
         <member name="M:TCYM.UI.Core.UISystem.OpenFolder(System.String)">
             <summary>
             在系统资源管理器（Windows: Explorer / macOS: Finder / Linux: xdg-open）中打开指定文件夹。
@@ -4406,7 +4516,7 @@
             <typeparam name="T">结果类型。</typeparam>
             <param name="result">返回结果。</param>
         </member>
-        <member name="M:TCYM.UI.Core.UIWindow.IsInputEvent(TCYM.UI.SDL2.SDL.SDL_Event)">
+        <member name="M:TCYM.UI.Core.UIWindow.IsInputEvent(TCYM.UI.SDL3.SDL.SDL_Event)">
             <summary>
             判断某个 SDL 事件是否属于“输入事件”。
             <para>
@@ -4414,7 +4524,7 @@
             </para>
             </summary>
         </member>
-        <member name="M:TCYM.UI.Core.UIWindow.HandleEvent(TCYM.UI.SDL2.SDL.SDL_Event)">
+        <member name="M:TCYM.UI.Core.UIWindow.HandleEvent(TCYM.UI.SDL3.SDL.SDL_Event)">
             <summary>
             处理一个 SDL 事件，并转换为框架内部的鼠标/键盘/触控事件派发到 <see cref="P:TCYM.UI.Core.UIWindow.Manager"/>。
             </summary>
@@ -4626,11 +4736,11 @@
             用于增量更新样式的类，所有属性默认为 null（表示未设置）。
             与 DefaultUIStyle 不同，UpdateUIStyle 不会有默认值干扰，
             只有显式设置的属性才会被应用到目标元素。
-            
+
             使用场景：
             - element.UpdateStyle(new UpdateUIStyle { Opacity = 1, Transition = "all 0.5s" });
             - 只会更新 Opacity 和 Transition，其他属性保持不变
-            
+
             属性跟踪：
             - 自动记录所有被设置的属性名
             - 可通过 GetModifiedProperties() 获取被修改的属性列表
@@ -4956,7 +5066,7 @@
         <member name="T:TCYM.UI.Core.WindowsDpiAwareness">
              <summary>
              Windows 平台 DPI 感知策略管理。
-            
+
              整体策略：
              - 进程级别：System DPI Aware（仅感知主屏 DPI，DWM 负责跨屏缩放/位图拉伸）。
                这是与 SDL2 + OpenGL 兼容性最好的模式：SDL 窗口尺寸 = GL 帧缓冲区尺寸 = 逻辑像素。
@@ -5000,6 +5110,26 @@
             Win32 API：设置当前线程的 DPI 感知上下文（user32.dll，Windows 10 1607+）。
             返回之前的上下文句柄。
             </summary>
+        </member>
+        <member name="T:TCYM.UI.Core.WinmmJoystickPoller">
+             <summary>
+             Windows 多媒体（winmm）摇杆轮询后备。
+
+             用于读取 SDL3 无法枚举、但在 Windows“游戏控制器(joy.cpl)”中可见的传统/OEM 摇杆
+             （例如某些三防笔记本内置摇杆“3D J”，仅经 winmm 的 joyGetPosEx 暴露，
+             SDL3 的 XInput/DirectInput/RawInput/WGI/HIDAPI 后端均看不到它们）。
+
+             winmm 没有事件机制，需每帧轮询并与上一帧状态比较后合成 <see cref="T:TCYM.UI.Events.UIJoystickEvent"/>。
+             通过 VID/PID 与 SDL 已处理的设备去重，避免同一设备产生重复事件。
+             非 Windows 平台自动禁用。
+             </summary>
+        </member>
+        <member name="M:TCYM.UI.Core.WinmmJoystickPoller.Poll(TCYM.UI.Core.UIManager,System.Collections.Generic.HashSet{System.Int32})">
+            <summary>
+            轮询 winmm 摇杆一次并派发事件。应每帧调用。
+            </summary>
+            <param name="manager">用于派发事件的 UI 管理器。</param>
+            <param name="sdlVidPids">SDL 已识别设备的 (VID&lt;&lt;16|PID) 集合，用于去重；可为 null。</param>
         </member>
         <member name="T:TCYM.UI.Elements.BadgeSize">
             <summary>
@@ -5327,6 +5457,857 @@
         <member name="P:TCYM.UI.Elements.UIBadge.StatusMetrics.FontSize">
             <summary>
             状态文本字号。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Carousel.CarouselDotPlacement">
+            <summary>
+            Carousel 指示点面板的显示位置。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.CarouselDotPlacement.Top">
+            <summary>
+            指示点显示在轮播区域顶部。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.CarouselDotPlacement.Bottom">
+            <summary>
+            指示点显示在轮播区域底部。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.CarouselDotPlacement.Start">
+            <summary>
+            指示点显示在轮播区域起始侧，当前布局中对应左侧。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.CarouselDotPlacement.End">
+            <summary>
+            指示点显示在轮播区域结束侧，当前布局中对应右侧。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Carousel.CarouselEffect">
+            <summary>
+            Carousel 轮播切换效果。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.CarouselEffect.ScrollX">
+            <summary>
+            横向滑动切换。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.CarouselEffect.Fade">
+            <summary>
+            淡入淡出切换。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Elements.Carousel.UICarousel">
+            <summary>
+            Carousel 走马灯组件，参考 Ant Design Carousel 的核心交互模型。
+            支持自动播放、箭头、指示点、拖拽、淡入淡出、无限循环以及自定义指示点模板。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._viewport">
+            <summary>
+            裁剪轮播页的视口容器。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._slideHost">
+            <summary>
+            承载所有轮播页插槽的内部轨道。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._dragCaptureLayer">
+            <summary>
+            覆盖在轮播内容上方的透明拖拽捕获层，确保鼠标拖拽不会被 slide 子元素截获。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._dotsHost">
+            <summary>
+            承载指示点按钮的内部容器。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._prevArrow">
+            <summary>
+            上一项箭头按钮。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._nextArrow">
+            <summary>
+            下一项箭头按钮。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._slideSlots">
+            <summary>
+            与 Items 一一对应的轮播页插槽。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._items">
+            <summary>
+            用户传入的轮播内容集合。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._styleOverrides">
+            <summary>
+            用户显式设置的容器样式，用于热更新比较。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._activeIndex">
+            <summary>
+            当前激活轮播项索引。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._fromIndex">
+            <summary>
+            当前切换动画的起始索引。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._targetIndex">
+            <summary>
+            当前切换动画的目标索引。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._transitionDirection">
+            <summary>
+            当前切换方向，1 为下一项，-1 为上一项。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._transitionProgress">
+            <summary>
+            当前切换动画进度，范围为 0 到 1。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._transitioning">
+            <summary>
+            是否正在执行切换动画。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._autoplayElapsed">
+            <summary>
+            自动播放累计时间，单位秒。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._pointerInside">
+            <summary>
+            指针是否悬停在组件内部。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._dragging">
+            <summary>
+            是否处于拖拽过程。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._dragStartX">
+            <summary>
+            拖拽起始 X 坐标。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._dragStartY">
+            <summary>
+            拖拽起始 Y 坐标。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._dragDeltaX">
+            <summary>
+            当前拖拽横向偏移。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._dragDeltaY">
+            <summary>
+            当前拖拽纵向偏移。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._dragStarted">
+            <summary>
+            当前拖拽是否已经判定为横向拖拽。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._activeTouchId">
+            <summary>
+            当前触摸拖拽关联的触点 ID。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._dotsDirty">
+            <summary>
+            指示点是否需要在下一次布局前重建。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._activeDotProgress">
+            <summary>
+            默认进度指示点中的进度条元素，用于自动播放时只更新尺寸，避免每帧重建 dots。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.#ctor">
+            <summary>
+            初始化 Carousel 组件并创建内部视口、指示点和箭头节点。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.Style">
+            <summary>
+            容器样式。外部赋值时保留 Carousel 所需的定位和裁剪能力。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.Items">
+            <summary>
+            轮播项内容集合。每一项可以是任意 UIElement。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.DefaultActiveIndex">
+            <summary>
+            默认激活项索引，初始化或热更新时使用。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.ActiveIndex">
+            <summary>
+            当前激活项索引。设置后会立即跳转到对应轮播项。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.Arrows">
+            <summary>
+            是否显示左右切换箭头。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.ArrowAlwaysVisible">
+            <summary>
+            箭头是否始终显示。为 false 时，仅当鼠标悬停在 Carousel 上才显示箭头。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.Autoplay">
+            <summary>
+            是否自动播放。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.AutoPlay">
+            <summary>
+            是否自动播放，兼容 TCYM 其他组件的 AutoPlay 命名。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.AutoplaySpeed">
+            <summary>
+            自动播放间隔，单位毫秒。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.DotDuration">
+            <summary>
+            自动播放时是否在指示点上显示进度。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.PauseOnHover">
+            <summary>
+            鼠标悬停时是否暂停自动播放。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.AdaptiveHeight">
+            <summary>
+            是否根据当前轮播项高度自适应容器高度。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.DotPlacement">
+            <summary>
+            指示点面板显示位置。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._dotPlacement">
+            <summary>
+            当前指示点面板显示位置。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.DotPosition">
+            <summary>
+            指示点位置别名，对齐 Ant Design 的 dotPosition 用法。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.Dots">
+            <summary>
+            是否显示指示点。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._dots">
+            <summary>
+            是否显示指示点面板。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.DotTemplate">
+            <summary>
+            自定义指示点模板。返回的 UIElement 会被包裹为可点击指示点。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._dotTemplate">
+            <summary>
+            用户自定义指示点模板回调。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.DotColor">
+            <summary>
+            默认指示点颜色。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.ActiveDotColor">
+            <summary>
+            激活指示点颜色。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.DotWidth">
+            <summary>
+            默认指示点宽度。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.ActiveDotWidth">
+            <summary>
+            激活指示点宽度。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.DotHeight">
+            <summary>
+            指示点高度。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.DotGap">
+            <summary>
+            指示点之间的间距。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.DotOffset">
+            <summary>
+            指示点距离容器边缘的偏移。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.Draggable">
+            <summary>
+            是否允许拖拽切换。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Elements.Carousel.UICarousel._draggable">
+            <summary>
+            当前是否允许拖拽切换。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.Fade">
+            <summary>
+            是否启用淡入淡出效果。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.Infinite">
+            <summary>
+            是否无限循环切换。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.Speed">
+            <summary>
+            切换动画时长，单位毫秒。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.Easing">
+            <summary>
+            切换缓动函数，支持 linear、ease、ease-in、ease-out、ease-in-out。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.Effect">
+            <summary>
+            轮播切换效果。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.WaitForAnimate">
+            <summary>
+            是否等待当前动画完成后再响应新的切换请求。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.BeforeChange">
+            <summary>
+            切换前触发，参数依次为当前索引和下一索引。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.AfterChange">
+            <summary>
+            切换完成后触发，参数为新的激活索引。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.OnBeforeChange">
+            <summary>
+            切换前回调别名，符合 TCYM 其他组件的 OnXxx 初始化风格。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarousel.OnAfterChange">
+            <summary>
+            切换完成回调别名，符合 TCYM 其他组件的 OnXxx 初始化风格。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.GetPreviewHotReloadStateSnapshot">
+            <summary>
+            收集会影响 Carousel 行为、布局和渲染的源码态快照。
+            </summary>
+            <returns>用于 preview hot reload 比较的状态快照。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.GetPreviewHotReloadPatchChildren">
+            <summary>
+            Carousel 的真实内容挂在 Items 和内部宿主中，由组件自行管理热更子树。
+            </summary>
+            <returns>空集合，表示不让通用 patcher 递归进入内部节点。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.StampPreviewHotReloadSourceStateTags">
+            <summary>
+            给当前激活索引打源码签名，避免运行态切换被无关保存覆盖。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.ApplyPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
+            <summary>
+            把新的源码配置同步到当前 Carousel，并尽量保留运行态当前页。
+            </summary>
+            <param name="nextElement">新源码树中的 Carousel 节点。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.GoTo(System.Int32,System.Boolean)">
+            <summary>
+            跳转到指定轮播项。
+            </summary>
+            <param name="slideNumber">目标轮播项索引。</param>
+            <param name="dontAnimate">是否跳过动画。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.Next">
+            <summary>
+            切换到下一项。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.Prev">
+            <summary>
+            切换到上一项。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.Measure(System.Single,System.Single)">
+            <summary>
+            测量 Carousel 尺寸，并在未设置高度时提供默认高度。
+            </summary>
+            <param name="availableWidth">可用宽度。</param>
+            <param name="availableHeight">可用高度。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.Layout(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            布局 Carousel 内部视口、轮播页、指示点和箭头。
+            </summary>
+            <param name="x">局部 X。</param>
+            <param name="y">局部 Y。</param>
+            <param name="width">布局宽度。</param>
+            <param name="height">布局高度。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.Update(System.Single)">
+            <summary>
+            推进轮播动画与自动播放计时。
+            </summary>
+            <param name="deltaSeconds">距离上一帧的时间，单位秒。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.HasActiveAnimation">
+            <summary>
+            报告 Carousel 需要连续重绘的动画状态。
+            </summary>
+            <returns>存在切换、拖拽或可见自动播放进度动画时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.HandleDragCapturePointerPressed(TCYM.UI.Events.UIPointerEvent)">
+            <summary>
+            将拖拽捕获层的按下事件转发给 Carousel 拖拽逻辑。
+            </summary>
+            <param name="e">捕获层收到的统一指针事件。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.HandleDragCapturePointerMoved(TCYM.UI.Events.UIPointerEvent)">
+            <summary>
+            将拖拽捕获层的移动事件转发给 Carousel 拖拽逻辑。
+            </summary>
+            <param name="e">捕获层收到的统一指针事件。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.HandleDragCapturePointerReleased(TCYM.UI.Events.UIPointerEvent)">
+            <summary>
+            将拖拽捕获层的抬起事件转发给 Carousel 拖拽逻辑。
+            </summary>
+            <param name="e">捕获层收到的统一指针事件。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.OnPointerDown(System.Single,System.Single)">
+            <summary>
+            鼠标或触摸按下时记录拖拽起点。
+            </summary>
+            <param name="x">局部 X。</param>
+            <param name="y">局部 Y。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.OnPointerMove(System.Single,System.Single)">
+            <summary>
+            指针移动时更新拖拽偏移。
+            </summary>
+            <param name="x">局部 X。</param>
+            <param name="y">局部 Y。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.OnPointerUp(System.Single,System.Single)">
+            <summary>
+            指针抬起时根据拖拽距离决定是否切换。
+            </summary>
+            <param name="x">局部 X。</param>
+            <param name="y">局部 Y。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.OnTouchEvent(TCYM.UI.Events.UITouchEvent)">
+            <summary>
+            触摸事件入口，用于在触摸拖拽时维持同一触点的移动链路。
+            </summary>
+            <param name="e">触摸事件。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.CreateContainerStyle">
+            <summary>
+            创建 Carousel 默认容器样式。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.CreateDotsHostStyle">
+            <summary>
+            创建指示点宿主默认样式。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.CreateArrowButton(System.String,System.String,System.Action)">
+            <summary>
+            创建箭头按钮。
+            </summary>
+            <param name="text">箭头文本。</param>
+            <param name="className">按钮类名。</param>
+            <param name="action">点击动作。</param>
+            <returns>配置好的箭头按钮。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.CreateArrowStyle">
+            <summary>
+            创建箭头按钮默认样式。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.RebuildSlides">
+            <summary>
+            根据 Items 重建轮播页宿主。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.RebuildDots">
+            <summary>
+            重新生成指示点面板。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.CreateDotButton(System.Int32)">
+            <summary>
+            创建单个指示点按钮。
+            </summary>
+            <param name="index">指示点索引。</param>
+            <returns>包裹后的可点击指示点。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.ResolveDotContentSize(TCYM.UI.Core.UIElement)">
+            <summary>
+            解析自定义指示点内容的尺寸，用于让点击热区覆盖整个模板。
+            </summary>
+            <param name="dotContent">用户模板或默认指示点内容。</param>
+            <returns>指示点内容尺寸。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.GetDefaultDotContentSize(System.Boolean)">
+            <summary>
+            按当前方向计算默认指示点内容尺寸。
+            </summary>
+            <param name="active">是否按激活态尺寸计算。</param>
+            <returns>默认指示点内容尺寸。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.ResolveStyleLength(System.Nullable{TCYM.UI.Core.UnitValue},System.Single)">
+            <summary>
+            将样式长度解析为逻辑像素尺寸。
+            </summary>
+            <param name="length">样式长度。</param>
+            <param name="fallbackBasis">百分比或 calc 的回退基准。</param>
+            <returns>解析后的尺寸。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.CreateDefaultDot(System.Boolean)">
+            <summary>
+            创建默认指示点外观。
+            </summary>
+            <param name="active">是否激活。</param>
+            <returns>默认指示点元素。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.UpdateActiveDotProgress">
+            <summary>
+            更新默认自动播放进度条尺寸，避免为了进度变化反复重建整个指示点面板。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.CreateDotContext(System.Int32)">
+            <summary>
+            构造自定义指示点上下文。
+            </summary>
+            <param name="index">指示点索引。</param>
+            <returns>指示点上下文。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.StartTransition(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            开始一次轮播切换。
+            </summary>
+            <param name="nextIndex">目标索引。</param>
+            <param name="direction">切换方向，1 为下一项，-1 为上一项。</param>
+            <param name="dontAnimate">是否跳过动画。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.AdvanceTransition(System.Single)">
+            <summary>
+            推进当前切换动画。
+            </summary>
+            <param name="deltaSeconds">帧间隔秒数。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.FinishTransition">
+            <summary>
+            完成当前切换动画并触发完成回调。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.AdvanceAutoplay(System.Single)">
+            <summary>
+            推进自动播放计时。
+            </summary>
+            <param name="deltaSeconds">帧间隔秒数。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.LayoutSlideSlots(System.Single,System.Single)">
+            <summary>
+            布局所有轮播页，并根据当前效果设置位置与透明度。
+            </summary>
+            <param name="width">视口宽度。</param>
+            <param name="height">视口高度。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.LayoutScrollSlides(System.Single,System.Single)">
+            <summary>
+            布局横向滚动效果下的轮播页。
+            </summary>
+            <param name="width">视口宽度。</param>
+            <param name="height">视口高度。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.LayoutFadeSlides(System.Single,System.Single)">
+            <summary>
+            布局淡入淡出效果下的轮播页。
+            </summary>
+            <param name="width">视口宽度。</param>
+            <param name="height">视口高度。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.ShouldDisplayScrollSlide(System.Int32,System.Single)">
+            <summary>
+            判断滚动模式下指定轮播页是否需要参与本帧布局和渲染。
+            </summary>
+            <param name="index">轮播页索引。</param>
+            <param name="relative">轮播页相对当前视口的位置。</param>
+            <returns>需要显示时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.SetSlideSlotDisplayed(TCYM.UI.Elements.UIView,System.Boolean)">
+            <summary>
+            切换轮播页插槽的显示状态，隐藏不可见页以跳过其子树的布局和渲染。
+            </summary>
+            <param name="slot">轮播页插槽。</param>
+            <param name="displayed">是否显示。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.LayoutDots(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            布局指示点面板。
+            </summary>
+            <param name="contentX">内容区 X。</param>
+            <param name="contentY">内容区 Y。</param>
+            <param name="contentWidth">内容区宽度。</param>
+            <param name="contentHeight">内容区高度。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.LayoutArrows(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            布局左右箭头。
+            </summary>
+            <param name="contentX">内容区 X。</param>
+            <param name="contentY">内容区 Y。</param>
+            <param name="contentWidth">内容区宽度。</param>
+            <param name="contentHeight">内容区高度。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.ApplyArrowTransform(TCYM.UI.Elements.UIButton,System.String)">
+            <summary>
+            应用箭头按钮的视觉变换，用同一组 chevron 字符适配横向和纵向箭头。
+            </summary>
+            <param name="button">需要变换的箭头按钮。</param>
+            <param name="transformCss">CSS 风格 transform 字符串。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.SyncChromeVisibility">
+            <summary>
+            同步箭头和指示点的显示状态。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.SyncDragCaptureLayerVisibility">
+            <summary>
+            同步拖拽捕获层的显示状态和光标，避免 slide 子元素截获拖拽事件。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.SetActiveIndexSilently(System.Int32,System.Boolean)">
+            <summary>
+            安静地设置当前激活索引，不触发外部切换回调。
+            </summary>
+            <param name="index">目标索引。</param>
+            <param name="rebuildDots">是否重建指示点。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.NormalizeActiveIndex">
+            <summary>
+            在轮播项数量变化后规整当前索引。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.NormalizeIndex(System.Int32)">
+            <summary>
+            将任意索引规整到合法轮播项范围内。
+            </summary>
+            <param name="index">原始索引。</param>
+            <returns>合法索引。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.CanStep(System.Int32)">
+            <summary>
+            判断指定方向是否可以继续切换。
+            </summary>
+            <param name="direction">切换方向。</param>
+            <returns>可以切换时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.ResolveDirection(System.Int32,System.Int32)">
+            <summary>
+            根据两个索引推断最自然的切换方向。
+            </summary>
+            <param name="from">当前索引。</param>
+            <param name="to">目标索引。</param>
+            <returns>1 表示向后，-1 表示向前。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.GetRelativeIndexForActive(System.Int32)">
+            <summary>
+            计算当前激活项视角下指定索引的相对位置。
+            </summary>
+            <param name="index">轮播项索引。</param>
+            <returns>相对位置，0 表示当前页。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.GetRelativeIndexForTransition(System.Int32)">
+            <summary>
+            计算切换动画过程中指定索引的相对位置。
+            </summary>
+            <param name="index">轮播项索引。</param>
+            <returns>相对位置。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.ClampDragDelta(System.Single)">
+            <summary>
+            限制拖拽偏移，非无限模式下在边界加入阻尼。
+            </summary>
+            <param name="deltaX">原始拖拽偏移。</param>
+            <returns>应用阻尼后的偏移。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.IsAutoplayPaused">
+            <summary>
+            判断当前是否应暂停自动播放。
+            </summary>
+            <returns>需要暂停时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.SetPointerInside(System.Boolean)">
+            <summary>
+            记录指针是否悬停在组件内。
+            </summary>
+            <param name="inside">是否在组件内。</param>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.GetAutoplayProgress">
+            <summary>
+            获取自动播放进度。
+            </summary>
+            <returns>0 到 1 的进度值。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.IsVerticalDots">
+            <summary>
+            判断当前指示点布局是否为垂直方向。
+            </summary>
+            <returns>垂直方向返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.IsVerticalScroll">
+            <summary>
+            判断当前滑动切换方向是否为垂直方向。
+            </summary>
+            <returns>侧边指示点布局下返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.Ease(System.Single)">
+            <summary>
+            按 Easing 配置计算缓动进度。
+            </summary>
+            <param name="t">线性进度。</param>
+            <returns>缓动后的进度。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.MeasureActiveItemHeight(System.Single,System.Single)">
+            <summary>
+            测量当前激活轮播项高度。
+            </summary>
+            <param name="availableWidth">可用宽度。</param>
+            <param name="availableHeight">可用高度。</param>
+            <returns>测量出的高度。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.ShouldApplySourceActiveIndex(System.String,System.String)">
+            <summary>
+            判断源码中的激活索引是否应该覆盖当前运行态索引。
+            </summary>
+            <param name="currentSignature">当前索引签名。</param>
+            <param name="nextSignature">源码索引签名。</param>
+            <returns>应该应用源码索引时返回 true。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.BuildItemsSignature(System.Collections.Generic.IEnumerable{TCYM.UI.Core.UIElement})">
+            <summary>
+            构造 Items 集合签名。
+            </summary>
+            <param name="items">轮播项集合。</param>
+            <returns>稳定签名。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.BuildFloatSignature(System.Single)">
+            <summary>
+            构造浮点值签名。
+            </summary>
+            <param name="value">浮点值。</param>
+            <returns>稳定字符串。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.BuildDelegateSignature(System.Delegate)">
+            <summary>
+            构造委托签名。
+            </summary>
+            <param name="callback">委托实例。</param>
+            <returns>稳定字符串。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.CloneStyleForHotReload(TCYM.UI.Core.UIStyle)">
+            <summary>
+            克隆热更新样式对象，避免直接复用 next 树实例。
+            </summary>
+            <param name="style">源样式。</param>
+            <returns>克隆后的样式。</returns>
+        </member>
+        <member name="M:TCYM.UI.Elements.Carousel.UICarousel.ApproximatelyEqual(System.Single,System.Single)">
+            <summary>
+            比较两个浮点数是否足够接近。
+            </summary>
+            <param name="left">左值。</param>
+            <param name="right">右值。</param>
+            <returns>近似相等时返回 true。</returns>
+        </member>
+        <member name="T:TCYM.UI.Elements.Carousel.UICarouselDotContext">
+            <summary>
+            自定义 Carousel 指示点模板的上下文。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarouselDotContext.Index">
+            <summary>
+            当前指示点索引。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarouselDotContext.ActiveIndex">
+            <summary>
+            当前激活轮播项索引。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarouselDotContext.Count">
+            <summary>
+            轮播项总数。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarouselDotContext.IsActive">
+            <summary>
+            当前指示点是否处于激活态。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarouselDotContext.AutoplayProgress">
+            <summary>
+            当前自动播放进度，范围为 0 到 1。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarouselDotContext.DotColor">
+            <summary>
+            默认指示点颜色。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarouselDotContext.ActiveDotColor">
+            <summary>
+            激活指示点颜色。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Elements.Carousel.UICarouselDotContext.GoTo">
+            <summary>
+            切换到当前指示点对应轮播项的方法。
             </summary>
         </member>
         <member name="T:TCYM.UI.Elements.CodeEditor.CodeEditorLanguage">
@@ -9066,14 +10047,14 @@
                  OnOk = () => { /* 返回 false 可阻止关闭 */ return true; },
                  OnCancel = () => { /* 用户取消 */ },
              });
-            
+
              // 2) 语义化便捷方法
              UIModal.Info("通知", "系统更新已完成。");
              UIModal.Success("成功", "保存成功!");
              UIModal.Error("错误", "连接服务器失败。");
              UIModal.Warning("警告", "磁盘空间不足。");
              UIModal.Confirm("删除确认", "确定要删除该项目吗？该操作不可恢复。", okType: ModalOkType.Danger, onOk: () => { /*...*/ });
-            
+
              // 3) 全局配置
              UIModal.Config(new ModalGlobalConfig { Mask = true, ZIndex = 9500 });
              </code>
@@ -15687,7 +16668,7 @@
         </member>
         <member name="M:TCYM.UI.Elements.Tooltip.UITooltip.#ctor">
             <summary>
-            初始化 Tooltip。 
+            初始化 Tooltip。
             </summary>
         </member>
         <member name="P:TCYM.UI.Elements.Tooltip.UITooltip.Open">
@@ -16371,6 +17352,7 @@
             <param name="depth">节点深度</param>
             <param name="isLastChild">是否是最后一个子节点</param>
             <param name="ancestorIsLastList">祖先节点是否是最后一个子节点的列表</param>
+            <param name="parentNode">逻辑父节点。</param>
         </member>
         <member name="M:TCYM.UI.Elements.Tree.UITreeNode.CanPreviewHotReloadPatchFrom(TCYM.UI.Core.UIElement)">
             <summary>
@@ -16848,7 +17830,7 @@
              <summary>
              箭头与触发器之间的间隙（像素）。
              目的是让菜单面板与 arrow 留出空间，避免 arrow 覆盖在面板内容上。
-            
+
              当前实现通过勾股定理计算 45° 旋转方块的“投影高度”，
              从而得到一个近似的间隙值。
              </summary>
@@ -16910,7 +17892,7 @@
              菜单当前是否处于打开状态。
              - true：打开并显示菜单
              - false：关闭并隐藏菜单
-            
+
              外部修改该属性会触发 UpdateOverlayForStateChange，并按规则回调 OnOpenChange。
              </summary>
         </member>
@@ -16924,7 +17906,7 @@
              <summary>
              菜单显示状态改变时触发。
              参数：true=打开，false=关闭。
-            
+
              说明：按照需求约定，某些“由触发器点击导致的关闭”可能不触发（由调用处决定）。
              </summary>
         </member>
@@ -16976,7 +17958,7 @@
         <member name="M:TCYM.UI.Elements.UIDropdown.UpdateOverlayForStateChange(System.Boolean)">
              <summary>
              根据 _open 状态创建/显示/隐藏 overlay，并注册/注销 UIManager 的 overlay outside-click 处理。
-            
+
              triggerOnOpenChange：
              - true：本次状态变化需要触发 OnOpenChange 回调
              - false：本次状态变化不触发回调（例如某些由触发器点击导致的关闭）
@@ -17016,7 +17998,7 @@
              默认布局：
              - left：与触发器左边对齐
              - top：位于触发器下方（abs.y + Height），并叠加 ArrowGap
-            
+
              AutoAdjustOverflow=true 时：
              - 若菜单会溢出窗口底部，则尝试翻转到触发器上方
              - 若菜单会溢出窗口右侧，则进行水平夹取
@@ -18435,6 +19417,150 @@
             </summary>
             <param name="e">触摸事件</param>
         </member>
+        <member name="T:TCYM.UI.Events.UIFileDropEvent">
+            <summary>
+            文件 / 文本拖放事件（把文件或文本从系统拖入窗口）。
+            SDL3 对拖放做了增强：新增了拖动过程中的位置更新（DROP_POSITION），因此本事件带有落点坐标。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIFileDropEvent.Phase">
+            <summary>拖放事件阶段。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIFileDropEvent.Position">
+            <summary>当前拖放 / 落点位置（渲染坐标）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIFileDropEvent.Files">
+            <summary>拖入的文件路径列表（文本拖放时为空）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIFileDropEvent.Text">
+            <summary>拖入的纯文本（文件拖放时为 null）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIFileDropEvent.Handled">
+            <summary>是否已被处理。</summary>
+        </member>
+        <member name="M:TCYM.UI.Events.UIFileDropEvent.#ctor(TCYM.UI.Events.UIFileDropPhase,SkiaSharp.SKPoint,System.Collections.Generic.IReadOnlyList{System.String},System.String)">
+            <summary>
+            创建文件 / 文本拖放事件。
+            </summary>
+            <param name="phase">拖放阶段。</param>
+            <param name="position">落点位置（渲染坐标）。</param>
+            <param name="files">文件路径列表。</param>
+            <param name="text">纯文本内容。</param>
+        </member>
+        <member name="T:TCYM.UI.Events.UIFileDropPhase">
+            <summary>拖放事件阶段。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIFileDropPhase.Over">
+            <summary>拖动经过窗口（位置更新，尚未松手）。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIFileDropPhase.Drop">
+            <summary>已松手完成拖放（携带文件 / 文本）。</summary>
+        </member>
+        <member name="T:TCYM.UI.Events.UIJoystickEventType">
+            <summary>
+            HID 摇杆 / 手柄事件类型。
+            涵盖 SDL3 Joystick（底层原始摇杆）与 Gamepad（标准映射手柄）两类事件。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIJoystickEventType.DeviceAdded">
+            <summary>设备已连接。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIJoystickEventType.DeviceRemoved">
+            <summary>设备已断开。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIJoystickEventType.AxisMotion">
+            <summary>轴变化（摇杆 / 扳机移动）。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIJoystickEventType.HatMotion">
+            <summary>帽子（方向键）变化。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIJoystickEventType.ButtonDown">
+            <summary>按钮按下。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIJoystickEventType.ButtonUp">
+            <summary>按钮抬起。</summary>
+        </member>
+        <member name="T:TCYM.UI.Events.UIHIDDeviceType">
+            <summary>
+            HID 设备类型，区分底层摇杆与标准映射手柄。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIHIDDeviceType.Joystick">
+            <summary>底层原始摇杆（Joystick，轴 / 按钮 / 帽子编号由设备决定）。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIHIDDeviceType.Gamepad">
+            <summary>标准映射游戏手柄（Gamepad，跨设备统一按钮 / 轴名称）。</summary>
+        </member>
+        <member name="T:TCYM.UI.Events.UIJoystickHatState">
+            <summary>
+            帽子（方向键）状态。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIJoystickHatState.Centered">
+            <summary>居中（未按下）。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIJoystickHatState.Up">
+            <summary>上。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIJoystickHatState.Right">
+            <summary>右。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIJoystickHatState.Down">
+            <summary>下。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIJoystickHatState.Left">
+            <summary>左。</summary>
+        </member>
+        <member name="T:TCYM.UI.Events.UIJoystickEvent">
+            <summary>
+            HID 摇杆 / 手柄事件。
+            同时支持 SDL3 Joystick（原始轴 / 按钮编号）和 Gamepad（标准映射）两种数据模型。
+            轴值范围：-32768 ~ 32767（Int16），可按需归一化到 -1.0 ~ 1.0。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIJoystickEvent.Type">
+            <summary>事件类型。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIJoystickEvent.DeviceType">
+            <summary>设备类型（Joystick / Gamepad）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIJoystickEvent.DeviceId">
+            <summary>设备实例 ID（SDL_JoystickID，同一设备 Joystick 和 Gamepad 共享此 ID）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIJoystickEvent.Axis">
+            <summary>轴编号（仅 AxisMotion 有效；Gamepad 时为 SDL_GamepadAxis 值）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIJoystickEvent.AxisValue">
+            <summary>轴值（-32768~32767，仅 AxisMotion 有效）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIJoystickEvent.AxisNormalized">
+            <summary>归一化轴值（-1.0~1.0，仅 AxisMotion 有效，便于上层直接使用）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIJoystickEvent.Hat">
+            <summary>帽子编号（仅 HatMotion 有效）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIJoystickEvent.HatState">
+            <summary>帽子状态（仅 HatMotion 有效）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIJoystickEvent.Button">
+            <summary>按钮编号（仅 ButtonDown / ButtonUp 有效；Gamepad 时为 SDL_GamepadButton 值）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIJoystickEvent.Timestamp">
+            <summary>事件时间戳（Unix 毫秒）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIJoystickEvent.Handled">
+            <summary>是否已被处理。</summary>
+        </member>
+        <member name="M:TCYM.UI.Events.UIJoystickEvent.#ctor(TCYM.UI.Events.UIJoystickEventType,TCYM.UI.Events.UIHIDDeviceType,System.Int32,System.Int32,System.Int16,System.Int32,TCYM.UI.Events.UIJoystickHatState,System.Int32,System.Int64)">
+            <summary>
+            创建摇杆 / 手柄事件。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Events.UIJoystickEvent.ToString">
+            <summary>
+            返回事件的字符串表示，便于调试。
+            </summary>
+        </member>
         <member name="T:TCYM.UI.Events.UIKeyboardEventType">
             <summary>
             键盘事件类型
@@ -18713,6 +19839,92 @@
             重写String
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:TCYM.UI.Events.UIPenEventType">
+            <summary>
+            笔（触控笔 / 数位笔）事件类型。
+            该事件来自 SDL3 新增的 pen 子系统，SDL2 时代没有独立的笔事件（只能混在鼠标 / 触摸里）。
+            </summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIPenEventType.ProximityIn">
+            <summary>笔进入感应范围（悬停在屏幕上方但未接触）。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIPenEventType.ProximityOut">
+            <summary>笔离开感应范围。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIPenEventType.Down">
+            <summary>笔尖接触屏幕（落笔）。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIPenEventType.Up">
+            <summary>笔尖离开屏幕（抬笔）。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIPenEventType.Move">
+            <summary>笔移动（悬停或接触时）。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIPenEventType.ButtonDown">
+            <summary>笔身按钮按下。</summary>
+        </member>
+        <member name="F:TCYM.UI.Events.UIPenEventType.ButtonUp">
+            <summary>笔身按钮抬起。</summary>
+        </member>
+        <member name="T:TCYM.UI.Events.UIPenEvent">
+            <summary>
+            笔（触控笔）事件。相较鼠标 / 触摸，额外携带压力、倾斜、橡皮擦端与笔身按钮等真实笔数据。
+            </summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPenEvent.Type">
+            <summary>事件类型。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPenEvent.Position">
+            <summary>笔位置（渲染坐标）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPenEvent.Pressure">
+            <summary>笔尖压力（0~1，非压感设备落笔时通常为 1）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPenEvent.TiltX">
+            <summary>X 方向倾斜角（度，约 -90~90）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPenEvent.TiltY">
+            <summary>Y 方向倾斜角（度，约 -90~90）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPenEvent.IsEraser">
+            <summary>是否正在使用橡皮擦端。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPenEvent.IsTipDown">
+            <summary>笔尖是否接触屏幕。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPenEvent.Button">
+            <summary>触发的笔身按钮编号（仅 ButtonDown / ButtonUp 有效，其它为 0）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPenEvent.PenId">
+            <summary>笔设备 ID（区分多支笔）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPenEvent.Timestamp">
+            <summary>事件时间戳（Unix 毫秒）。</summary>
+        </member>
+        <member name="P:TCYM.UI.Events.UIPenEvent.Handled">
+            <summary>是否已被处理；置 true 后可阻止父级容器的默认行为。</summary>
+        </member>
+        <member name="M:TCYM.UI.Events.UIPenEvent.#ctor(TCYM.UI.Events.UIPenEventType,SkiaSharp.SKPoint,System.Single,System.Single,System.Single,System.Boolean,System.Boolean,System.Int32,System.Int64,System.Int64)">
+            <summary>
+            创建笔事件。
+            </summary>
+            <param name="type">事件类型。</param>
+            <param name="position">笔位置（渲染坐标）。</param>
+            <param name="pressure">笔尖压力（0~1）。</param>
+            <param name="tiltX">X 方向倾斜角（度）。</param>
+            <param name="tiltY">Y 方向倾斜角（度）。</param>
+            <param name="isEraser">是否使用橡皮擦端。</param>
+            <param name="isTipDown">笔尖是否接触屏幕。</param>
+            <param name="button">笔身按钮编号（仅按钮事件有效）。</param>
+            <param name="penId">笔设备 ID。</param>
+            <param name="timestamp">事件时间戳（Unix 毫秒，0 表示取当前时间）。</param>
+        </member>
+        <member name="M:TCYM.UI.Events.UIPenEvent.ToString">
+            <summary>
+            返回笔事件的字符串表示，便于调试。
+            </summary>
+            <returns>笔事件的字符串表示。</returns>
         </member>
         <member name="T:TCYM.UI.Events.UIPointerEventType">
             <summary>
@@ -19284,7 +20496,7 @@
              全局 SKFont 共享池：按 (typeface, sizeBucket) 复用一份 SKFont 实例。
              渲染热路径上每帧 new SKFont 是较大的开销（包含字形度量缓存初始化），
              通过共享池显著减少分配与释放成本。
-            
+
              使用约定：
              - 调用方 **不** 需要 Dispose 返回的实例。
              - 不要在多线程中同时修改返回 SKFont 的属性（Skew/Edging/Subpixel 等）；
@@ -19598,7 +20810,7 @@
         </member>
         <member name="T:TCYM.UI.Helpers.UIClipboard">
             <summary>
-            跨平台剪贴板帮助类（基于 SDL2，Windows / Linux / macOS 通用）。
+            跨平台剪贴板帮助类（基于 SDL3，Windows / Linux / macOS 通用）。
             </summary>
         </member>
         <member name="M:TCYM.UI.Helpers.UIClipboard.SetText(System.String)">
@@ -19683,123 +20895,876 @@
             - 页面缓存（节点不移除）
             </summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN">
+        <member name="T:TCYM.UI.SDL3.SDL">
+             <summary>
+             SDL3 精简 P/Invoke 绑定（仅包含 TCYM.UI 实际使用到的 API）。
+             由自研 SDL2 绑定升级而来：库名 SDL2 -> SDL3，函数签名/枚举/事件模型均按 SDL3 调整。
+
+             重要差异（相对 SDL2）：
+             - SDL_bool 已移除，改用原生 bool（1 字节，marshal 为 UnmanagedType.I1）。
+             - 多数函数返回 bool（true=成功）而非 int（0=成功）。
+             - SDL_GetTicks 返回 Uint64。
+             - 事件类型改名（SDL_EVENT_*），SDL_WINDOWEVENT 拆分为独立顶层事件。
+             - 事件结构含 Uint64 时间戳、鼠标坐标为 float、文本事件 text 为 char* 指针。
+             - 文本输入/剪贴板/属性等 API 签名变化。
+             </summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_WindowFlags">
             <summary>
-            全屏窗口
+            SDL3 窗口标志（Uint64）。仅保留常用值。
+            注意：SDL2 的 SDL_WINDOW_ALLOW_HIGHDPI 在 SDL3 改为 SDL_WINDOW_HIGH_PIXEL_DENSITY；
+            SDL_WINDOW_SHOWN 已移除（窗口默认显示，需隐藏用 SDL_WINDOW_HIDDEN）。
             </summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL">
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_DisplayMode">
+            <summary>SDL3 显示模式结构（布局与 SDL2 不同）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Point.x">
+            <summary>X 坐标（整数像素）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Point.y">
+            <summary>Y 坐标（整数像素）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Rect.x">
+            <summary>左上角 X 坐标。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Rect.y">
+            <summary>左上角 Y 坐标。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Rect.w">
+            <summary>宽度。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Rect.h">
+            <summary>高度。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_FPoint.x">
+            <summary>X 坐标（浮点）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_FPoint.y">
+            <summary>Y 坐标（浮点）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_FRect.x">
+            <summary>左上角 X 坐标（浮点）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_FRect.y">
+            <summary>左上角 Y 坐标（浮点）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_FRect.w">
+            <summary>宽度（浮点）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_FRect.h">
+            <summary>高度（浮点）。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_EventType">
+            <summary>SDL3 事件类型（部分）。窗口事件在 SDL3 中是独立的顶层事件类型。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_FIRST">
+            <summary>事件范围起始标记。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_QUIT">
+            <summary>请求退出（例如用户关闭应用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_TERMINATING">
+            <summary>应用即将被终止。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_LOW_MEMORY">
+            <summary>系统内存紧张提醒。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_DISPLAY_ORIENTATION">
+            <summary>显示方向变化（横竖屏切换等）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_SHOWN">
+            <summary>窗口显示。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_HIDDEN">
+            <summary>窗口隐藏。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_EXPOSED">
+            <summary>窗口需要重绘。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_MOVED">
+            <summary>窗口位置变化。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_RESIZED">
+            <summary>逻辑尺寸变化。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED">
+            <summary>像素尺寸变化（高 DPI 下常见）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_METAL_VIEW_RESIZED">
+            <summary>Metal 视图尺寸变化（macOS/iOS）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_MINIMIZED">
+            <summary>最小化。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_MAXIMIZED">
+            <summary>最大化。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_RESTORED">
+            <summary>从最小化/最大化恢复。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_MOUSE_ENTER">
+            <summary>鼠标进入窗口。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_MOUSE_LEAVE">
+            <summary>鼠标离开窗口。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_FOCUS_GAINED">
+            <summary>获得输入焦点。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_FOCUS_LOST">
+            <summary>失去输入焦点。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_CLOSE_REQUESTED">
+            <summary>请求关闭窗口。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_HIT_TEST">
+            <summary>命中测试回调触发。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_WINDOW_DISPLAY_CHANGED">
+            <summary>所在显示器变化。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_KEY_DOWN">
+            <summary>按键按下。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_KEY_UP">
+            <summary>按键抬起。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_TEXT_EDITING">
+            <summary>输入法编辑中（组合态文本）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_TEXT_INPUT">
+            <summary>输入法提交文本。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_KEYMAP_CHANGED">
+            <summary>键盘布局映射变化。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_MOUSE_MOTION">
+            <summary>鼠标移动。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_MOUSE_BUTTON_DOWN">
+            <summary>鼠标按键按下。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_MOUSE_BUTTON_UP">
+            <summary>鼠标按键抬起。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_MOUSE_WHEEL">
+            <summary>鼠标滚轮。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_FINGER_DOWN">
+            <summary>手指按下。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_FINGER_UP">
+            <summary>手指抬起。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_FINGER_MOTION">
+            <summary>手指移动。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_FINGER_CANCELED">
+            <summary>触摸被系统取消（SDL3 新增，SDL2 无此事件）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_DROP_FILE">
+            <summary>拖入的一个文件（每个文件一条）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_DROP_TEXT">
+            <summary>拖入的纯文本。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_DROP_BEGIN">
+            <summary>一次拖放开始（后续跟随若干 DROP_FILE/DROP_TEXT）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_DROP_COMPLETE">
+            <summary>一次拖放结束。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_DROP_POSITION">
+            <summary>拖动过程中光标位置更新（SDL3 新增）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_PEN_PROXIMITY_IN">
+            <summary>笔进入感应范围（悬停）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_PEN_PROXIMITY_OUT">
+            <summary>笔离开感应范围。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_PEN_DOWN">
+            <summary>笔尖接触（落笔）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_PEN_UP">
+            <summary>笔尖抬起。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_PEN_BUTTON_DOWN">
+            <summary>笔身按钮按下。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_PEN_BUTTON_UP">
+            <summary>笔身按钮抬起。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_PEN_MOTION">
+            <summary>笔移动。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_PEN_AXIS">
+            <summary>笔轴变化（压力 / 倾斜 / 旋转等）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_USER">
+            <summary>用户自定义事件起始值。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_EventType.SDL_EVENT_LAST">
+            <summary>事件范围结束标记。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseWheelDirection.SDL_MOUSEWHEEL_NORMAL">
+            <summary>正常方向滚动。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseWheelDirection.SDL_MOUSEWHEEL_FLIPPED">
+            <summary>反向（翻转）滚动方向。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_CommonEvent">
             <summary>
-            支持 OpenGL 上下文
+            所有 SDL 事件共享的公共头部。
+            包含事件类型、保留字段和时间戳。
             </summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN">
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_CommonEvent.type">
+            <summary>事件类型。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_CommonEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_CommonEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_WindowEvent">
             <summary>
-            显示窗口（可见）
+            SDL3 窗口事件结构。
+            SDL3 将窗口事件拆分为顶层 SDL_EVENT_WINDOW_* 事件类型。
             </summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_HIDDEN">
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_WindowEvent.type">
+            <summary>事件类型（通常为 SDL_EVENT_WINDOW_*）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_WindowEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_WindowEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_WindowEvent.windowID">
+            <summary>触发事件的窗口 ID。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_WindowEvent.data1">
+            <summary>事件附加整型参数 1（具体语义依事件而定）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_WindowEvent.data2">
+            <summary>事件附加整型参数 2（具体语义依事件而定）。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_KeyboardEvent">
             <summary>
-            隐藏窗口（不可见）
+            SDL3 键盘事件结构。
+            同时包含物理键位（Scancode）和逻辑键值（Keycode）。
             </summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_BORDERLESS">
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_KeyboardEvent.type">
+            <summary>事件类型（SDL_EVENT_KEY_DOWN / SDL_EVENT_KEY_UP）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_KeyboardEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_KeyboardEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_KeyboardEvent.windowID">
+            <summary>触发事件的窗口 ID。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_KeyboardEvent.which">
+            <summary>键盘设备 ID（SDL_KeyboardID）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_KeyboardEvent.scancode">
+            <summary>物理扫描码（与键位位置相关）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_KeyboardEvent.key">
+            <summary>逻辑键码（与当前键盘布局相关）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_KeyboardEvent.mod">
+            <summary>按下时的修饰键状态。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_KeyboardEvent.raw">
+            <summary>平台原始键码。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_KeyboardEvent.down">
+            <summary>是否按下（1 表示按下）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_KeyboardEvent.repeat">
+            <summary>是否为按键自动重复（1 表示重复）。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_TextInputEvent">
             <summary>
-            无边框窗口（去掉标题栏和边框）
+            SDL3 文本输入事件。
+            文本内容为 UTF-8 指针，通常在事件处理时即时读取。
             </summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_RESIZABLE">
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TextInputEvent.type">
+            <summary>事件类型（SDL_EVENT_TEXT_INPUT）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TextInputEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TextInputEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TextInputEvent.windowID">
+            <summary>触发事件的窗口 ID。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TextInputEvent.text">
+            <summary>UTF-8 文本指针（const char*）。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_TextEditingEvent">
             <summary>
-            可调整大小的窗口
+            SDL3 文本编辑事件（输入法组合态）。
+            适用于 IME 候选/组合输入过程中的中间文本。
             </summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_MINIMIZED">
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TextEditingEvent.type">
+            <summary>事件类型（SDL_EVENT_TEXT_EDITING）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TextEditingEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TextEditingEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TextEditingEvent.windowID">
+            <summary>触发事件的窗口 ID。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TextEditingEvent.text">
+            <summary>组合中的 UTF-8 文本指针（const char*）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TextEditingEvent.start">
+            <summary>组合文本起始位置。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TextEditingEvent.length">
+            <summary>组合文本长度。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_MouseMotionEvent">
             <summary>
-            窗口最小化（最小化状态）
+            SDL3 鼠标移动事件。
+            SDL3 使用 float 坐标，支持高精度输入。
             </summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_MAXIMIZED">
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseMotionEvent.type">
+            <summary>事件类型（SDL_EVENT_MOUSE_MOTION）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseMotionEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseMotionEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseMotionEvent.windowID">
+            <summary>触发事件的窗口 ID。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseMotionEvent.which">
+            <summary>鼠标设备 ID（SDL_MouseID）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseMotionEvent.state">
+            <summary>当前按下的鼠标按键状态位（SDL_MouseButtonFlags）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseMotionEvent.x">
+            <summary>当前 X 坐标。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseMotionEvent.y">
+            <summary>当前 Y 坐标。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseMotionEvent.xrel">
+            <summary>X 方向相对位移。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseMotionEvent.yrel">
+            <summary>Y 方向相对位移。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_MouseButtonEvent">
             <summary>
-            窗口最大化（最大化状态）
+            SDL3 鼠标按键事件。
+            包含按键、点击次数以及触发时坐标。
             </summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_INPUT_GRABBED">
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseButtonEvent.type">
+            <summary>事件类型（SDL_EVENT_MOUSE_BUTTON_DOWN / SDL_EVENT_MOUSE_BUTTON_UP）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseButtonEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseButtonEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseButtonEvent.windowID">
+            <summary>触发事件的窗口 ID。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseButtonEvent.which">
+            <summary>鼠标设备 ID（SDL_MouseID）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseButtonEvent.button">
+            <summary>鼠标按键编号。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseButtonEvent.down">
+            <summary>是否按下（1 表示按下）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseButtonEvent.clicks">
+            <summary>点击次数（如双击为 2）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseButtonEvent.padding">
+            <summary>对齐填充字节。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseButtonEvent.x">
+            <summary>触发时 X 坐标。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseButtonEvent.y">
+            <summary>触发时 Y 坐标。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_MouseWheelEvent">
             <summary>
-            窗口抓取输入（鼠标输入被限制在窗口内）
+            SDL3 鼠标滚轮事件。
+            包含滚动增量、方向以及触发时鼠标位置。
             </summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_INPUT_FOCUS">
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseWheelEvent.type">
+            <summary>事件类型（SDL_EVENT_MOUSE_WHEEL）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseWheelEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseWheelEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseWheelEvent.windowID">
+            <summary>触发事件的窗口 ID。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseWheelEvent.which">
+            <summary>鼠标设备 ID（SDL_MouseID）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseWheelEvent.x">
+            <summary>X 方向滚动增量。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseWheelEvent.y">
+            <summary>Y 方向滚动增量。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseWheelEvent.direction">
+            <summary>滚动方向（SDL_MouseWheelDirection）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseWheelEvent.mouse_x">
+            <summary>触发时鼠标 X 坐标。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_MouseWheelEvent.mouse_y">
+            <summary>触发时鼠标 Y 坐标。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_TouchFingerEvent">
             <summary>
-            窗口具有输入焦点（键盘输入焦点）
+            SDL3 触摸手指事件。
+            坐标和位移均为归一化浮点值。
             </summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_MOUSE_FOCUS">
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TouchFingerEvent.type">
+            <summary>事件类型（SDL_EVENT_FINGER_*）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TouchFingerEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TouchFingerEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TouchFingerEvent.touchID">
+            <summary>触摸设备 ID（SDL_TouchID）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TouchFingerEvent.fingerID">
+            <summary>手指 ID（SDL_FingerID）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TouchFingerEvent.x">
+            <summary>归一化 X 坐标。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TouchFingerEvent.y">
+            <summary>归一化 Y 坐标。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TouchFingerEvent.dx">
+            <summary>X 方向归一化位移。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TouchFingerEvent.dy">
+            <summary>Y 方向归一化位移。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TouchFingerEvent.pressure">
+            <summary>压力值（通常 0~1）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_TouchFingerEvent.windowID">
+            <summary>关联窗口 ID。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_QuitEvent">
             <summary>
-            窗口具有鼠标焦点
+            SDL3 退出事件。
+            当应用接收到退出请求时触发。
             </summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_FULLSCREEN_DESKTOP">
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_QuitEvent.type">
+            <summary>事件类型（SDL_EVENT_QUIT）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_QuitEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_QuitEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_UserEvent">
             <summary>
-            全屏窗口，使用当前桌面分辨率（相当于 borderless fullscreen）
+            SDL3 用户自定义事件。
+            可通过 SDL_PushEvent 推送应用自定义消息。
             </summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_FOREIGN">
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_UserEvent.type">
+            <summary>事件类型（通常从 SDL_EVENT_USER 开始）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_UserEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_UserEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_UserEvent.windowID">
+            <summary>关联窗口 ID。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_UserEvent.code">
+            <summary>用户自定义整型代码。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_UserEvent.data1">
+            <summary>用户自定义指针参数 1。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_UserEvent.data2">
+            <summary>用户自定义指针参数 2。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_PenAxis">
+            <summary>笔轴类型（SDL3 新增）。用于 <see cref="T:TCYM.UI.SDL3.SDL.SDL_PenAxisEvent"/>。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxis.SDL_PEN_AXIS_PRESSURE">
+            <summary>压力（0~1）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxis.SDL_PEN_AXIS_XTILT">
+            <summary>X 方向倾斜角（度，-90~90）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxis.SDL_PEN_AXIS_YTILT">
+            <summary>Y 方向倾斜角（度，-90~90）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxis.SDL_PEN_AXIS_DISTANCE">
+            <summary>笔尖到表面的距离（0~1）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxis.SDL_PEN_AXIS_ROTATION">
+            <summary>笔身旋转（度）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxis.SDL_PEN_AXIS_SLIDER">
+            <summary>滑块（airbrush 等，0~1）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxis.SDL_PEN_AXIS_TANGENTIAL_PRESSURE">
+            <summary>切向压力。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxis.SDL_PEN_AXIS_COUNT">
+            <summary>轴数量。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_PenInputFlags">
+            <summary>笔输入状态位标志（SDL3 新增，pen_state 字段）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenInputFlags.SDL_PEN_INPUT_DOWN">
+            <summary>笔尖接触表面。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenInputFlags.SDL_PEN_INPUT_BUTTON_1">
+            <summary>笔身按钮 1 按下。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenInputFlags.SDL_PEN_INPUT_BUTTON_2">
+            <summary>笔身按钮 2 按下。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenInputFlags.SDL_PEN_INPUT_BUTTON_3">
+            <summary>笔身按钮 3 按下。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenInputFlags.SDL_PEN_INPUT_BUTTON_4">
+            <summary>笔身按钮 4 按下。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenInputFlags.SDL_PEN_INPUT_BUTTON_5">
+            <summary>笔身按钮 5 按下。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenInputFlags.SDL_PEN_INPUT_ERASER_TIP">
+            <summary>正在使用橡皮擦端。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_PenProximityEvent">
+            <summary>SDL3 笔悬停进入 / 离开事件。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenProximityEvent.type">
+            <summary>事件类型（SDL_EVENT_PEN_PROXIMITY_IN / OUT）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenProximityEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenProximityEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenProximityEvent.windowID">
+            <summary>触发事件的窗口 ID。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenProximityEvent.which">
+            <summary>笔设备 ID（SDL_PenID）。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_PenMotionEvent">
+            <summary>SDL3 笔移动事件。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenMotionEvent.type">
+            <summary>事件类型（SDL_EVENT_PEN_MOTION）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenMotionEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenMotionEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenMotionEvent.windowID">
+            <summary>触发事件的窗口 ID。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenMotionEvent.which">
+            <summary>笔设备 ID（SDL_PenID）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenMotionEvent.pen_state">
+            <summary>笔输入状态位（SDL_PenInputFlags）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenMotionEvent.x">
+            <summary>X 坐标（窗口内浮点像素）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenMotionEvent.y">
+            <summary>Y 坐标（窗口内浮点像素）。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_PenTouchEvent">
+            <summary>SDL3 笔尖接触 / 抬起事件。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenTouchEvent.type">
+            <summary>事件类型（SDL_EVENT_PEN_DOWN / UP）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenTouchEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenTouchEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenTouchEvent.windowID">
+            <summary>触发事件的窗口 ID。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenTouchEvent.which">
+            <summary>笔设备 ID（SDL_PenID）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenTouchEvent.pen_state">
+            <summary>笔输入状态位（SDL_PenInputFlags）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenTouchEvent.x">
+            <summary>X 坐标（窗口内浮点像素）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenTouchEvent.y">
+            <summary>Y 坐标（窗口内浮点像素）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenTouchEvent.eraser">
+            <summary>是否使用橡皮擦端（1 表示是）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenTouchEvent.down">
+            <summary>是否接触（1 表示落笔，0 表示抬起）。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_PenButtonEvent">
+            <summary>SDL3 笔身按钮事件。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenButtonEvent.type">
+            <summary>事件类型（SDL_EVENT_PEN_BUTTON_DOWN / UP）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenButtonEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenButtonEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenButtonEvent.windowID">
+            <summary>触发事件的窗口 ID。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenButtonEvent.which">
+            <summary>笔设备 ID（SDL_PenID）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenButtonEvent.pen_state">
+            <summary>笔输入状态位（SDL_PenInputFlags）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenButtonEvent.x">
+            <summary>X 坐标（窗口内浮点像素）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenButtonEvent.y">
+            <summary>Y 坐标（窗口内浮点像素）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenButtonEvent.button">
+            <summary>按钮编号。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenButtonEvent.down">
+            <summary>是否按下（1 表示按下）。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_PenAxisEvent">
+            <summary>SDL3 笔轴变化事件（压力 / 倾斜 / 旋转等）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxisEvent.type">
+            <summary>事件类型（SDL_EVENT_PEN_AXIS）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxisEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxisEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxisEvent.windowID">
+            <summary>触发事件的窗口 ID。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxisEvent.which">
+            <summary>笔设备 ID（SDL_PenID）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxisEvent.pen_state">
+            <summary>笔输入状态位（SDL_PenInputFlags）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxisEvent.x">
+            <summary>X 坐标（窗口内浮点像素）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxisEvent.y">
+            <summary>Y 坐标（窗口内浮点像素）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxisEvent.axis">
+            <summary>变化的轴（SDL_PenAxis）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_PenAxisEvent.value">
+            <summary>该轴的新值。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_DropEvent">
+            <summary>SDL3 拖放事件（文件 / 文本拖入窗口）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_DropEvent.type">
+            <summary>事件类型（SDL_EVENT_DROP_*）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_DropEvent.reserved">
+            <summary>保留字段（由 SDL 内部使用）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_DropEvent.timestamp">
+            <summary>事件时间戳（SDL3 为 Uint64）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_DropEvent.windowID">
+            <summary>目标窗口 ID。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_DropEvent.x">
+            <summary>拖放位置 X（仅 DROP_POSITION 有效，窗口内相对坐标）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_DropEvent.y">
+            <summary>拖放位置 Y（仅 DROP_POSITION 有效，窗口内相对坐标）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_DropEvent.source">
+            <summary>拖放来源应用名（char*，可能为 NULL）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_DropEvent.data">
+            <summary>拖放数据（char*，文件路径或文本，UTF-8）。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_Event">
             <summary>
-            外部窗口（不是由 SDL 创建的窗口）
+            SDL3 事件联合体。
+            固定 128 字节，使用 Explicit 布局在 C# 中模拟 C 联合体。
             </summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_ALLOW_HIGHDPI">
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.type">
+            <summary>事件类型快捷字段。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.common">
+            <summary>公共事件头部视图。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.window">
+            <summary>窗口事件视图。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.key">
+            <summary>键盘事件视图。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.edit">
+            <summary>文本编辑事件视图。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.text">
+            <summary>文本输入事件视图。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.motion">
+            <summary>鼠标移动事件视图。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.button">
+            <summary>鼠标按键事件视图。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.wheel">
+            <summary>鼠标滚轮事件视图。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.tfinger">
+            <summary>触摸事件视图。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.pproximity">
+            <summary>笔悬停事件视图。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.ptouch">
+            <summary>笔接触事件视图。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.pmotion">
+            <summary>笔移动事件视图。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.pbutton">
+            <summary>笔按钮事件视图。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.paxis">
+            <summary>笔轴事件视图。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.drop">
+            <summary>拖放事件视图。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.quit">
+            <summary>退出事件视图。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_Event.user">
+            <summary>用户事件视图。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_DialogFileFilter">
+            <summary>文件对话框过滤器（name + pattern，pattern 形如 "png;jpg" 或 "*"）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_DialogFileFilter.name">
+            <summary>过滤器显示名（const char*，UTF-8）。</summary>
+        </member>
+        <member name="F:TCYM.UI.SDL3.SDL.SDL_DialogFileFilter.pattern">
+            <summary>过滤器模式（const char*，UTF-8，分号分隔扩展名，"*" 表示全部）。</summary>
+        </member>
+        <member name="T:TCYM.UI.SDL3.SDL.SDL_DialogFileCallback">
             <summary>
-            允许高 DPI（Retina 等高分屏）支持（需要 SDL 2.0.1+）
+            文件对话框结果回调。
+            filelist 为 NULL 表示出错；非 NULL 时是以 NULL 结尾的 C 字符串数组指针，
+            若数组首元素为 NULL 表示用户取消。filter 为选中的过滤器索引（-1 表示未知）。
             </summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_MOUSE_CAPTURE">
+        <member name="T:TCYM.UI.SDL3.SDLJoystick">
             <summary>
-            支持鼠标捕获（需要 SDL 2.0.4+）
+            SDL3 摇杆（Joystick）与游戏手柄（Gamepad）HID 设备 P/Invoke 绑定。
+            SDL3 将 Joystick 和 Gamepad 拆分为两个子系统：
+            - Joystick：底层原始摇杆设备，提供轴 / 帽子 / 按钮的原始数据。
+            - Gamepad：基于标准映射的高层手柄 API，跨设备统一按钮 / 轴名称。
+            大多数现代 HID 游戏手柄同时被两个子系统支持。
             </summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_ALWAYS_ON_TOP">
-            <summary>
-            窗口始终置顶（需要 SDL 2.0.5+）
-            </summary>
+        <member name="T:TCYM.UI.SDL3.SDLJoystick.SDL_JoyDeviceEvent">
+            <summary>摇杆设备连接 / 断开事件。</summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_SKIP_TASKBAR">
-            <summary>
-            窗口不显示在任务栏中（需要 SDL 2.0.5+）
-            </summary>
+        <member name="T:TCYM.UI.SDL3.SDLJoystick.SDL_JoyAxisEvent">
+            <summary>摇杆轴事件。</summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_UTILITY">
-            <summary>
-            实用窗口（如工具面板窗口，需 SDL 2.0.5+）
-            </summary>
+        <member name="T:TCYM.UI.SDL3.SDLJoystick.SDL_JoyHatEvent">
+            <summary>摇杆帽子（方向键）事件。</summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_TOOLTIP">
-            <summary>
-            工具提示窗口（需 SDL 2.0.5+）
-            </summary>
+        <member name="T:TCYM.UI.SDL3.SDLJoystick.SDL_JoyButtonEvent">
+            <summary>摇杆按钮事件。</summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_POPUP_MENU">
-            <summary>
-            弹出菜单窗口（需 SDL 2.0.5+）
-            </summary>
+        <member name="T:TCYM.UI.SDL3.SDLJoystick.SDL_GamepadDeviceEvent">
+            <summary>手柄设备连接 / 断开事件。</summary>
         </member>
-        <member name="F:TCYM.UI.SDL2.SDL.SDL_WindowFlags.SDL_WINDOW_VULKAN">
-            <summary>
-            支持 Vulkan 渲染（需 SDL 2.0.6+）
-            </summary>
+        <member name="T:TCYM.UI.SDL3.SDLJoystick.SDL_GamepadAxisEvent">
+            <summary>手柄轴事件。</summary>
         </member>
-        <member name="M:TCYM.UI.SDL2.SDL.SDL_GetNumTouchDevices">
-            \brief Get the number of registered touch devices.
+        <member name="T:TCYM.UI.SDL3.SDLJoystick.SDL_GamepadButtonEvent">
+            <summary>手柄按钮事件。</summary>
         </member>
-        <member name="M:TCYM.UI.SDL2.SDL.SDL_GetTouchDevice(System.Int32)">
-            \brief Get the touch ID with the given index, or 0 if the index is invalid.
+        <member name="T:TCYM.UI.SDL3.SDLJoystick.SDL_GamepadAxis">
+            <summary>SDL3 标准手柄轴枚举。</summary>
         </member>
-        <member name="M:TCYM.UI.SDL2.SDL.SDL_GetNumTouchFingers(System.Int64)">
-            \brief Get the number of active fingers for a given touch device.
-        </member>
-        <member name="M:TCYM.UI.SDL2.SDL.SDL_GetTouchFinger(System.Int64,System.Int32)">
-            \brief Get the finger object of the given touch, with the given index.
-            Returns pointer to SDL_Finger.
+        <member name="T:TCYM.UI.SDL3.SDLJoystick.SDL_GamepadButton">
+            <summary>SDL3 标准手柄按钮枚举。</summary>
         </member>
         <member name="T:TCYM.UI.Storage.FilePickerFileType">
             <summary>
@@ -19882,6 +21847,44 @@
         <member name="P:TCYM.UI.Storage.FolderPickerOpenOptions.SuggestedStartLocation">
             <summary>
             建议的起始目录。
+            </summary>
+        </member>
+        <member name="T:TCYM.UI.Storage.Sdl3FileDialog">
+            <summary>
+            基于 SDL3 原生文件对话框（SDL_ShowOpenFileDialog / SaveFileDialog / OpenFolderDialog）的文件选择封装。
+            这是 SDL3 新增能力（SDL2 没有原生文件对话框），跨平台由 SDL3 统一提供，作为 <c>NativePickerService</c> 之外的可选后端。
+            注意：必须在 SDL 主线程调用；结果通过 SDL 事件循环异步回调返回。
+            </summary>
+        </member>
+        <member name="M:TCYM.UI.Storage.Sdl3FileDialog.OpenFilesAsync(TCYM.UI.Storage.FilePickerOpenOptions)">
+            <summary>
+            打开文件选择对话框（可多选、可按类型过滤）。
+            </summary>
+            <param name="options">文件选择参数（复用现有 <see cref="T:TCYM.UI.Storage.FilePickerOpenOptions"/>）。</param>
+            <returns>所选文件完整路径列表；取消或出错返回空列表。</returns>
+        </member>
+        <member name="M:TCYM.UI.Storage.Sdl3FileDialog.OpenFoldersAsync(System.Boolean,System.String)">
+            <summary>
+            打开文件夹选择对话框（可多选）。
+            </summary>
+            <param name="allowMultiple">是否允许多选。</param>
+            <param name="suggestedStartLocation">建议起始目录。</param>
+            <returns>所选文件夹完整路径列表；取消或出错返回空列表。</returns>
+        </member>
+        <member name="M:TCYM.UI.Storage.Sdl3FileDialog.SaveFileAsync(System.String,System.Collections.Generic.IReadOnlyList{TCYM.UI.Storage.FilePickerFileType})">
+            <summary>
+            打开保存文件对话框，返回单个目标路径。
+            </summary>
+            <param name="suggestedStartLocation">建议起始目录或文件名。</param>
+            <param name="filters">文件类型过滤列表。</param>
+            <returns>保存目标路径；取消或出错返回 null。</returns>
+        </member>
+        <member name="M:TCYM.UI.Storage.Sdl3FileDialog.ReadFileList(System.IntPtr)">
+            <summary>读取 SDL 回调返回的 <c>const char* const*</c> 文件列表（NULL 结尾）。</summary>
+        </member>
+        <member name="M:TCYM.UI.Storage.Sdl3FileDialog.JoinPatterns(System.Collections.Generic.IReadOnlyList{System.String})">
+            <summary>
+            将 <c>*.png</c> 形式的模式转换为 SDL3 需要的分号分隔、无点扩展名（例如 <c>png;jpg</c>）。
             </summary>
         </member>
         <member name="T:DirectShowLib.DirectShowGeneratedDeviceProbe">

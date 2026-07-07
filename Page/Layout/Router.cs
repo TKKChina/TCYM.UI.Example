@@ -30,6 +30,9 @@ using TCYM.UI.Example.Page.component.Image;
 using TCYM.UI.Example.Page.component.CodeEditor;
 using TCYM.UI.Example.Page.component.Splitter;
 using TCYM.UI.Example.Page.component.Watermark;
+using TCYM.UI.Example.Page.component.Carousel;
+using TCYM.UI.Example.Page.component.Sdl3;
+using TCYM.UI.Example.Page.component.Gamepad;
 
 namespace TCYM.UI.Example.Page.Layout
 {
@@ -48,6 +51,7 @@ namespace TCYM.UI.Example.Page.Layout
             .Register("/demo/slider", () => new UISliderDemo())
             .Register("/demo/splitter", () => new UISplitterDemo())
             .Register("/demo/tabs", () => new UITabsDemo())
+            .Register("/demo/carousel", () => new UICarouselDemo(), false)
             .Register("/demo/pagination", () => new UIPaginationDemo())
             .Register("/demo/select", () => new UISelectDemo())
             .Register("/demo/dropdown", () => new UIDropdownDemo())
@@ -68,7 +72,9 @@ namespace TCYM.UI.Example.Page.Layout
             .Register("/demo/watermark", () => new UIWatermarkDemo())
             .Register("/demo/virtual-scroll-view", () => new UIVirtualScrollViewDemo())
             .Register("/demo/file-picker", () => new UIFilePickerDemo())
-            .Register("/demo/usb-camera", () => new UIUsbCameraDemo());
+            .Register("/demo/usb-camera", () => new UIUsbCameraDemo())
+            .Register("/demo/sdl3", () => new UISdl3FeaturesDemo())
+            .Register("/demo/gamepad", () => new UIGamepadDemo());
             
             return router;
         }

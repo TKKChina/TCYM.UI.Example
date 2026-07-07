@@ -29,6 +29,7 @@ namespace TCYM.UI.Example.Page.Layout
                             "slider" => "/demo/slider",
                             "splitter" => "/demo/splitter",
                             "tabs" => "/demo/tabs",
+                            "carousel" => "/demo/carousel",
                             "pagination" => "/demo/pagination",
                             "dropdown" => "/demo/dropdown",
                             "select" => "/demo/select",
@@ -51,6 +52,8 @@ namespace TCYM.UI.Example.Page.Layout
                             "virtualScrollView" => "/demo/virtual-scroll-view",
                             "filePicker" => "/demo/file-picker",
                             "usbCamera" => "/demo/usb-camera",
+                            "sdl3" => "/demo/sdl3",
+                            "gamepad" => "/demo/gamepad",
                             _ => "/demo/button"
                         };
                         router.Push(path);

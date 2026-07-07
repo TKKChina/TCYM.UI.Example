@@ -48,7 +48,7 @@ namespace TCYM.UI.Example.Page.Layout
                             new("menu", "导航菜单") { Icon = "&#xe607;"},
                             new("pagination", "分页") { Icon = "&#xe697;" },
                             new ("dropdown", "下拉菜单") { Icon = "&#xe695;" },
-                            new ("tabs", "标签页") { Icon = "&#xe6d4;" }
+                            new ("tabs", "标签页") { Icon = "&#xe6d4;" },
                         }),
                         MenuItem.Group("group-data-entry", "数据录入", new List<MenuItem>
                         {
@@ -72,6 +72,7 @@ namespace TCYM.UI.Example.Page.Layout
                             new("tag", "标签") { Icon = "&#xe6a7;" },
                             new("table", "表格") { Icon = "&#xe6a9;",Badge = new UIBadge { CountText = "更新",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#28b5ec")} },
                             new("tree", "树形") { Icon = "&#xe67b;" },
+                            new ("carousel", "走马灯") { Icon = "&#xeb5c;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
                             new ("segmented", "分段选择") { Icon = "&#xe61a;",Badge = new UIBadge { CountText = "NEW",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d")} },
                             new("svg", "SVG 矢量图") { Icon = "&#xeba4;" },
                         }),
@@ -87,6 +88,8 @@ namespace TCYM.UI.Example.Page.Layout
                             MenuItem.Divider("group-other-divider-top"),
                             new("filePicker", "文件选择") { Icon = "&#xea3e;",Badge = new UIBadge { CountText = "更新",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#28b5ec")} },
                            new("usbCamera", "USB 摄像头") { Icon = "&#xe965;" },
+                           new("sdl3", "SDL3 新特性") { Icon = "&#xe61d;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
+                           new("gamepad", "手柄可视化") { Icon = "&#xe62a;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
                           
                         })
                     },

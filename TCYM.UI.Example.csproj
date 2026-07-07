@@ -34,6 +34,7 @@
     <None Remove="Page\com.css" />
     <None Remove="Page\component\Badge\style.css" />
     <None Remove="Page\component\Button\style.css" />
+    <None Remove="Page\component\Carousel\style.css" />
     <None Remove="Page\component\Checkbox\style.css" />
     <None Remove="Page\component\CodeEditor\style.css" />
     <None Remove="Page\component\DatePicker\style.css" />
@@ -77,7 +78,7 @@
     </Content>
   </ItemGroup>
 
-  <!-- 根据不同的运行时标识符复制相应的 SDL2 本地库 -->
+  <!-- 复制 SDL3 本地库到输出目录，供独立展示仓库运行。 -->
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\Fonts\iconfont.ttf" />
@@ -87,8 +88,10 @@
     <EmbeddedResource Include="Page\component\Button\style.css">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="Page\component\Carousel\style.css" />
     <EmbeddedResource Include="Assets\Images\vsg.svg" />
     <EmbeddedResource Include="Assets\Images\work.svg" />
+    <EmbeddedResource Include="Assets\Images\xbox.png" />
     <EmbeddedResource Include="Page\component\Badge\style.css" />
     <EmbeddedResource Include="Page\component\FilePicker\style.css" />
     <EmbeddedResource Include="Page\component\Label\style.css" />
@@ -142,10 +145,10 @@
     <None Update="Libs\TCYM.UI.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Libs\Linux\libSDL2-2.0.so.0">
+    <None Update="Libs\Linux\libSDL3.so.0">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Libs\Win\SDL2.dll">
+    <None Update="Libs\Win\SDL3.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
