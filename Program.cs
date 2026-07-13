@@ -26,6 +26,27 @@ internal class Program
         // 支持AOT 环境下的属性访问
         TCYM.UI.Binding.Generated.GeneratedBindingAccessors_TCYM_UI_Example.InitGenerated();
 
+        //UI 工作时捕获到异常后触发
+        UISystem.UnhandledException += (sender, e) =>
+        {
+            Console.WriteLine($"报错: {e.Exception}");
+        };
+
+        // 全局未捕获异常处理
+        AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+        {
+            var exception = e.ExceptionObject as Exception;
+            if (exception != null)
+            {
+                Console.WriteLine($"未捕获异常: {exception.Message}\n{exception.StackTrace}");
+            }
+            else
+            {
+                Console.WriteLine("未捕获异常: 未知异常对象");
+            }
+        };
+
+
         // === 全局通配符默认样式：字体16px，颜色 #000000 ===
         UISystem.RegisterGlobalDefaultsCss("*{font-size:16px;color: rgba(0,0,0,1);}");
         UISystem.LoadStyleFile("res://TCYM.UI.Example/Page.com.css");
