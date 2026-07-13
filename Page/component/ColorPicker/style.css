@@ -1,0 +1,86 @@
+.color-picker-demo-view {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  padding-right: 10px;
+  padding-bottom: 20px;
+}
+
+.color-picker-demo-view .color-picker-demo-title {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.color-picker-demo-view .color-picker-demo-title-sub {
+  width: 100%;
+  height: 20px;
+  margin-top: 4px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.color-picker-demo-view .color-picker-demo-desc {
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+.color-picker-demo-view .color-picker-demo-card {
+  width: 100%;
+  margin-top: 10px;
+  padding: 16px;
+  padding-bottom: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+.color-picker-demo-view .color-picker-card-title {
+  margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.88);
+}
+
+.color-picker-demo-view .color-picker-card-desc {
+  width: calc(100% - 20px);
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.color-picker-showcase {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+}
+
+.color-picker-event-result {
+  min-width: 280px;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  font-size: 13px;
+  color: #1677ff;
+  background: #e6f4ff;
+  border: 1px solid #91caff;
+  border-radius: 6px;
+}

@@ -58,6 +58,7 @@ namespace TCYM.UI.Example.Page.Layout
                             new("checkbox", "多选框") { Icon = "&#xe66d;" },
                             new("radio", "单选框") { Icon = "&#xe71f;" },
                             new("datepicker", "日期选择框") { Icon = "&#xe629;" },
+                            new("colorPicker", "颜色选择器") { Icon = "&#xe615;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
                             new("switch", "开关") { Icon = "&#xed5f;" },
                             new("input", "输入框") { Icon = "&#xe790;" },
                             new("codeEditor", "代码编辑器") { Icon = "&#xe61d;" },
@@ -66,31 +67,31 @@ namespace TCYM.UI.Example.Page.Layout
                         {
                             MenuItem.Divider("group-data-display-divider-top"),
                             new("badge", "徽标数") { Icon = "&#xe61c;" },
-                            new("image", "图片") { Icon = "&#xe60d;", Badge = new UIBadge { CountText = "更新",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#28b5ec")} },
+                            new("image", "图片") { Icon = "&#xe60d;"},
                             new("virtualScrollView", "虚拟滚动") { Icon = "&#xe610;" },
                             new("tooltip", "文字提示") { Icon = "&#xe6e0;" },
                             new("tag", "标签") { Icon = "&#xe6a7;" },
                             new("table", "表格") { Icon = "&#xe6a9;",Badge = new UIBadge { CountText = "更新",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#28b5ec")} },
                             new("tree", "树形") { Icon = "&#xe67b;" },
                             new ("carousel", "走马灯") { Icon = "&#xeb5c;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
-                            new ("segmented", "分段选择") { Icon = "&#xe61a;",Badge = new UIBadge { CountText = "NEW",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d")} },
-                            new("svg", "SVG 矢量图") { Icon = "&#xeba4;" },
+                            new ("segmented", "分段选择") { Icon = "&#xe61a;"},
+                            new("svg", "SVG 矢量图") { Icon = "&#xeba4;"},
                         }),
                         MenuItem.Group("group-feedback", "反馈", new List<MenuItem>
                         {
                             MenuItem.Divider("group-feedback-divider-top"),
                             new("message", "消息") { Icon = "&#xe671;" },
-                            new("modal", "对话框") { Icon = "&#xe6ad;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
-                            new("watermark", "水印") { Icon = "&#xe62c;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
+                            new("modal", "对话框") { Icon = "&#xe6ad;" },
+                            new("progress", "进度条") { Icon = "&#xe61e;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
+                            new("watermark", "水印") { Icon = "&#xe62c;"},
                         }),
                         MenuItem.Group("group-other", "其他", new List<MenuItem>
                         {
                             MenuItem.Divider("group-other-divider-top"),
-                            new("filePicker", "文件选择") { Icon = "&#xea3e;",Badge = new UIBadge { CountText = "更新",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#28b5ec")} },
-                           new("usbCamera", "USB 摄像头") { Icon = "&#xe965;" },
-                           new("sdl3", "SDL3 新特性") { Icon = "&#xe61d;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
-                           new("gamepad", "手柄可视化") { Icon = "&#xe62a;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
-                          
+                            new("sdl3", "SDL3 新特性") { Icon = "&#xe61d;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
+                            new("gamepad", "手柄可视化") { Icon = "&#xe72a;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
+                            new("filePicker", "文件选择") { Icon = "&#xea3e;" },
+                            new("usbCamera", "USB 摄像头") { Icon = "&#xe965;" },
                         })
                     },
                     OnSelect = (keys, item) =>

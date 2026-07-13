@@ -37,6 +37,7 @@
     <None Remove="Page\component\Carousel\style.css" />
     <None Remove="Page\component\Checkbox\style.css" />
     <None Remove="Page\component\CodeEditor\style.css" />
+    <None Remove="Page\component\ColorPicker\style.css" />
     <None Remove="Page\component\DatePicker\style.css" />
     <None Remove="Page\component\Dropdown\style.css" />
     <None Remove="Page\component\FilePicker\style.css" />
@@ -49,6 +50,7 @@
     <None Remove="Page\component\Menu\style.css" />
     <None Remove="Page\component\Message\style.css" />
     <None Remove="Page\component\Modal\style.css" />
+    <None Remove="Page\component\Progress\style.css" />
     <None Remove="Page\component\Radio\style.css" />
     <None Remove="Page\component\Select\style.css" />
     <None Remove="Page\component\Segmented\style.css" />
@@ -97,6 +99,7 @@
     <EmbeddedResource Include="Page\component\Label\style.css" />
     <EmbeddedResource Include="Page\component\Message\style.css" />
     <EmbeddedResource Include="Page\component\Modal\style.css" />
+    <EmbeddedResource Include="Page\component\Progress\style.css" />
     <EmbeddedResource Include="Page\component\FloatButton\style.css" />
     <EmbeddedResource Include="Page\component\Svg\style.css" />
     <EmbeddedResource Include="Page\component\Svg\svg-animation.css" />
@@ -106,6 +109,7 @@
     <EmbeddedResource Include="Page\component\Tree\style.css" />
     <EmbeddedResource Include="Page\component\Checkbox\style.css" />
     <EmbeddedResource Include="Page\component\CodeEditor\style.css" />
+    <EmbeddedResource Include="Page\component\ColorPicker\style.css" />
     <EmbeddedResource Include="Page\component\DatePicker\style.css" />
     <EmbeddedResource Include="Page\component\Dropdown\style.css" />
     <EmbeddedResource Include="Page\component\Icon\iconfont.json" />
@@ -129,22 +133,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SkiaSharp" Version="4.148.0" />
-    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="4.148.0" />
+    <PackageReference Include="TCYM.UI" Version="0.1.1.16" />
+    <PackageReference Include="TCYM.UI.Generator" Version="0.1.1.14">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="TCYM.UI">
-      <HintPath>Libs\TCYM.UI.dll</HintPath>
-      <Private>true</Private>
-    </Reference>
-    <Analyzer Include="Libs\TCYM.UI.Generator.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Libs\TCYM.UI.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Libs\Linux\libSDL3.so.0">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -152,10 +148,5 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
-  <!--<ItemGroup>-->
-    <!-- 发布时候使用 -->
-  <!--<Analyzer Include="Libs\TCYM.UI.Generator.dll" />-->
-  <!--</ItemGroup>-->
 
 </Project>

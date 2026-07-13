@@ -12,23 +12,23 @@ namespace TCYM.UI.Example.Page.component.Watermark
         internal UIWatermarkDemo()
         {
             UISystem.LoadStyleFile(DemoCssPath);
-            ClassName = new List<string> { "watermark-demo-view" };
+            ClassName = "watermark-demo-view";
             Children = new()
             {
                 new UILabel
                 {
                     Text = "Watermark 水印",
-                    ClassName = new List<string> { "watermark-demo-title" },
+                    ClassName = "watermark-demo-title",
                 },
                 new UILabel
                 {
                     Text = "在页面上添加文本或图片等水印信息。",
-                    ClassName = new List<string> { "watermark-demo-title-sub" },
+                    ClassName = "watermark-demo-title-sub",
                 },
                 new UILabel
                 {
                     Text = "使用 Watermark 组件可以在内容区域上添加半透明水印，适用于版权保护、信息标识等场景。支持自定义内容、旋转角度、间距、偏移和字体样式。",
-                    ClassName = new List<string> { "watermark-demo-desc" },
+                    ClassName = "watermark-demo-desc",
                 },
                 new BasicSection(),
                 new RotateSection(),
@@ -45,14 +45,14 @@ namespace TCYM.UI.Example.Page.component.Watermark
         {
             return new UIView
             {
-                ClassName = new List<string> { "watermark-content-block" },
+                ClassName = "watermark-content-block",
                 Children = new()
                 {
-                    new UIView { ClassName = new List<string> { "watermark-content-title" } },
-                    new UIView { ClassName = new List<string> { "watermark-content-line" } },
-                    new UIView { ClassName = new List<string> { "watermark-content-line" } },
-                    new UIView { ClassName = new List<string> { "watermark-content-line" } },
-                    new UIView { ClassName = new List<string> { "watermark-content-line-short" } },
+                    new UIView { ClassName = "watermark-content-title" },
+                    new UIView { ClassName = "watermark-content-line" },
+                    new UIView { ClassName = "watermark-content-line" },
+                    new UIView { ClassName = "watermark-content-line" },
+                    new UIView { ClassName = "watermark-content-line-short" },
                 }
             };
         }
@@ -64,14 +64,14 @@ namespace TCYM.UI.Example.Page.component.Watermark
         {
             return new UIView
             {
-                ClassName = new List<string> { "watermark-item-wrapper" },
+                ClassName = "watermark-item-wrapper",
                 Children = new()
                 {
                     watermark,
                     new UILabel
                     {
                         Text = label,
-                        ClassName = new List<string> { "watermark-item-label" },
+                        ClassName = "watermark-item-label",
                     }
                 }
             };
@@ -84,28 +84,28 @@ namespace TCYM.UI.Example.Page.component.Watermark
         {
             internal BasicSection()
             {
-                ClassName = new List<string> { "watermark-demo-card" };
+                ClassName = "watermark-demo-card";
                 Children = new()
                 {
                     new UILabel
                     {
                         Text = "基础用法",
-                        ClassName = new List<string> { "watermark-card-title" }
+                        ClassName = "watermark-card-title"
                     },
                     new UILabel
                     {
                         Text = "默认显示水印内容为「TCYM.UI」，旋转角度 -22 度。可以通过 Content 属性自定义水印文本。",
-                        ClassName = new List<string> { "watermark-card-desc" }
+                        ClassName = "watermark-card-desc"
                     },
                     new UIView
                     {
-                        ClassName = new List<string> { "watermark-showcase" },
+                        ClassName = "watermark-showcase",
                         Children = new()
                         {
                             CreateWatermarkCard(
                                 new UIWatermark
                                 {
-                                    ClassName = new List<string> { "watermark-item-card" },
+                                    ClassName = "watermark-item-card",
                                     Children = { CreatePlaceholderContent() }
                                 },
                                 "默认水印"),
@@ -113,7 +113,7 @@ namespace TCYM.UI.Example.Page.component.Watermark
                             CreateWatermarkCard(
                                 new UIWatermark
                                 {
-                                    ClassName = new List<string> { "watermark-item-card" },
+                                    ClassName = "watermark-item-card",
                                     Content = "TCYM.UI 测试",
                                     Children = { CreatePlaceholderContent() }
                                 },
@@ -131,28 +131,28 @@ namespace TCYM.UI.Example.Page.component.Watermark
         {
             internal RotateSection()
             {
-                ClassName = new List<string> { "watermark-demo-card" };
+                ClassName = "watermark-demo-card";
                 Children = new()
                 {
                     new UILabel
                     {
                         Text = "旋转角度",
-                        ClassName = new List<string> { "watermark-card-title" }
+                        ClassName = "watermark-card-title"
                     },
                     new UILabel
                     {
                         Text = "通过 Rotate 属性设置水印旋转角度，默认 -22 度。可以设置为 0 度（水平）、-45 度等。",
-                        ClassName = new List<string> { "watermark-card-desc" }
+                        ClassName = "watermark-card-desc"
                     },
                     new UIView
                     {
-                        ClassName = new List<string> { "watermark-showcase" },
+                        ClassName = "watermark-showcase",
                         Children = new()
                         {
                             CreateWatermarkCard(
                                 new UIWatermark
                                 {
-                                    ClassName = new List<string> { "watermark-item-card" },
+                                    ClassName = "watermark-item-card",
                                     Rotate = 0,
                                     Children = { CreatePlaceholderContent() }
                                 },
@@ -161,7 +161,7 @@ namespace TCYM.UI.Example.Page.component.Watermark
                             CreateWatermarkCard(
                                 new UIWatermark
                                 {
-                                    ClassName = new List<string> { "watermark-item-card" },
+                                    ClassName = "watermark-item-card",
                                     Rotate = -22,
                                     Children = { CreatePlaceholderContent() }
                                 },
@@ -170,7 +170,7 @@ namespace TCYM.UI.Example.Page.component.Watermark
                             CreateWatermarkCard(
                                 new UIWatermark
                                 {
-                                    ClassName = new List<string> { "watermark-item-card" },
+                                    ClassName = "watermark-item-card",
                                     Rotate = -45,
                                     Children = { CreatePlaceholderContent() }
                                 },
@@ -188,28 +188,28 @@ namespace TCYM.UI.Example.Page.component.Watermark
         {
             internal GapSection()
             {
-                ClassName = new List<string> { "watermark-demo-card" };
+                ClassName = "watermark-demo-card";
                 Children = new()
                 {
                     new UILabel
                     {
                         Text = "间距与偏移",
-                        ClassName = new List<string> { "watermark-card-title" }
+                        ClassName = "watermark-card-title"
                     },
                     new UILabel
                     {
                         Text = "通过 GapX / GapY 设置水印之间的间距，通过 OffsetX / OffsetY 设置水印相对于左上角的偏移量。",
-                        ClassName = new List<string> { "watermark-card-desc" }
+                        ClassName = "watermark-card-desc"
                     },
                     new UIView
                     {
-                        ClassName = new List<string> { "watermark-showcase" },
+                        ClassName = "watermark-showcase",
                         Children = new()
                         {
                             CreateWatermarkCard(
                                 new UIWatermark
                                 {
-                                    ClassName = new List<string> { "watermark-item-card" },
+                                    ClassName = "watermark-item-card",
                                     GapX = 12,
                                     GapY = 8,
                                     Children = { CreatePlaceholderContent() }
@@ -219,7 +219,7 @@ namespace TCYM.UI.Example.Page.component.Watermark
                             CreateWatermarkCard(
                                 new UIWatermark
                                 {
-                                    ClassName = new List<string> { "watermark-item-card" },
+                                    ClassName = "watermark-item-card",
                                     GapX = 40,
                                     GapY = 30,
                                     Children = { CreatePlaceholderContent() }
@@ -229,7 +229,7 @@ namespace TCYM.UI.Example.Page.component.Watermark
                             CreateWatermarkCard(
                                 new UIWatermark
                                 {
-                                    ClassName = new List<string> { "watermark-item-card" },
+                                    ClassName = "watermark-item-card",
                                     OffsetX = 30,
                                     OffsetY = 20,
                                     Children = { CreatePlaceholderContent() }
@@ -248,28 +248,28 @@ namespace TCYM.UI.Example.Page.component.Watermark
         {
             internal CustomFontSection()
             {
-                ClassName = new List<string> { "watermark-demo-card" };
+                ClassName = "watermark-demo-card";
                 Children = new()
                 {
                     new UILabel
                     {
                         Text = "自定义字体",
-                        ClassName = new List<string> { "watermark-card-title" }
+                        ClassName = "watermark-card-title"
                     },
                     new UILabel
                     {
                         Text = "通过 FontConfig 属性配置水印字体的颜色、大小、粗细和字体族。",
-                        ClassName = new List<string> { "watermark-card-desc" }
+                        ClassName = "watermark-card-desc"
                     },
                     new UIView
                     {
-                        ClassName = new List<string> { "watermark-showcase" },
+                        ClassName = "watermark-showcase",
                         Children = new()
                         {
                             CreateWatermarkCard(
                                 new UIWatermark
                                 {
-                                    ClassName = new List<string> { "watermark-item-card" },
+                                    ClassName = "watermark-item-card",
                                     Content = "TCYM.UI",
                                     FontConfig = new WatermarkFont
                                     {
@@ -283,7 +283,7 @@ namespace TCYM.UI.Example.Page.component.Watermark
                             CreateWatermarkCard(
                                 new UIWatermark
                                 {
-                                    ClassName = new List<string> { "watermark-item-card" },
+                                    ClassName = "watermark-item-card",
                                     Content = "TCYM.UI",
                                     FontConfig = new WatermarkFont
                                     {
@@ -298,7 +298,7 @@ namespace TCYM.UI.Example.Page.component.Watermark
                             CreateWatermarkCard(
                                 new UIWatermark
                                 {
-                                    ClassName = new List<string> { "watermark-item-card" },
+                                    ClassName = "watermark-item-card"   ,
                                     Content = "TCYM.UI",
                                     FontConfig = new WatermarkFont
                                     {
@@ -323,28 +323,28 @@ namespace TCYM.UI.Example.Page.component.Watermark
         {
             internal MultiLineSection()
             {
-                ClassName = new List<string> { "watermark-demo-card" };
+                ClassName = "watermark-demo-card";
                 Children = new()
                 {
                     new UILabel
                     {
                         Text = "多行水印",
-                        ClassName = new List<string> { "watermark-card-title" }
+                        ClassName = "watermark-card-title"
                     },
                     new UILabel
                     {
                         Text = "水印内容支持较长文本，通过调整 WatermarkWidth 和 WatermarkHeight 控制水印单元大小。",
-                        ClassName = new List<string> { "watermark-card-desc" }
+                        ClassName = "watermark-card-desc"
                     },
                     new UIView
                     {
-                        ClassName = new List<string> { "watermark-showcase" },
+                        ClassName = "watermark-showcase",
                         Children = new()
                         {
                             CreateWatermarkCard(
                                 new UIWatermark
                                 {
-                                    ClassName = new List<string> { "watermark-item-card" },
+                                    ClassName = "watermark-item-card",
                                     Content = "TCYM.UI Framework",
                                     WatermarkWidth = 180,
                                     WatermarkHeight = 80,
@@ -355,7 +355,7 @@ namespace TCYM.UI.Example.Page.component.Watermark
                             CreateWatermarkCard(
                                 new UIWatermark
                                 {
-                                    ClassName = new List<string> { "watermark-item-card" },
+                                    ClassName = "watermark-item-card",
                                     Content = "版权所有 TCYM© 2026",
                                     WatermarkWidth = 160,
                                     WatermarkHeight = 70,

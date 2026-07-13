@@ -33,6 +33,8 @@ using TCYM.UI.Example.Page.component.Watermark;
 using TCYM.UI.Example.Page.component.Carousel;
 using TCYM.UI.Example.Page.component.Sdl3;
 using TCYM.UI.Example.Page.component.Gamepad;
+using TCYM.UI.Example.Page.component.Progress;
+using TCYM.UI.Example.Page.component.ColorPicker;
 
 namespace TCYM.UI.Example.Page.Layout
 {
@@ -58,6 +60,7 @@ namespace TCYM.UI.Example.Page.Layout
             .Register("/demo/checkbox", () => new UICheckboxDemo())
             .Register("/demo/radio", () => new UIRadioDemo())
             .Register("/demo/datepicker", () => new UIDatePickerDemo())
+            .Register("/demo/color-picker", () => new UIColorPickerDemo())
             .Register("/demo/switch", () => new UISwitchDemo())
             .Register("/demo/input", () => new UIInputDemo())
             .Register("/demo/code-editor", () => new UICodeEditorDemo())
@@ -69,6 +72,7 @@ namespace TCYM.UI.Example.Page.Layout
             .Register("/demo/table", () => new UITableDemo())
             .Register("/demo/message", () => new UIMessageDemo())
             .Register("/demo/modal", () => new UIModalDemo())
+            .Register("/demo/progress", () => new UIProgressDemo())
             .Register("/demo/watermark", () => new UIWatermarkDemo())
             .Register("/demo/virtual-scroll-view", () => new UIVirtualScrollViewDemo())
             .Register("/demo/file-picker", () => new UIFilePickerDemo())

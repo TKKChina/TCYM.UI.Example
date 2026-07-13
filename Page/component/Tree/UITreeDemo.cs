@@ -634,11 +634,17 @@ namespace TCYM.UI.Example.Page.component.Tree
                                                             nodes.RemoveAt(i);
                                                             return;
                                                         }
-                                                        if (nodes[i].Children != null && nodes[i].Children?.Count > 0)
-                                                            RemoveNode(nodes[i].Children);
+                                                        var children = nodes[i].Children;
+                                                        if (children is { Count: > 0 })
+                                                        {
+                                                            RemoveNode(children);
+                                                        }
                                                     }
                                                 }
-                                                RemoveNode(model.BasicNodes);
+                                                if (model.BasicNodes != null)
+                                                {
+                                                    RemoveNode(model.BasicNodes);
+                                                }
                                             }
                                         }
                                     });
