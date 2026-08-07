@@ -1,6 +1,8 @@
 ﻿using TCYM.UI.Core;
 using TCYM.UI.Elements;
+using TCYM.UI.Elements.Modal;
 using TCYM.UI.Enums;
+using TCYM.UI.Events;
 using TCYM.UI.Example.Page.Layout;
 using TCYM.UI.Helpers;
 
@@ -19,33 +21,45 @@ internal class Program
 
         // 是否启用GPU初始化日志（输出GPU相关的初始化信息和错误日志）。启用后会在控制台输出GPU设备的相关信息、驱动版本、支持的功能等，以及在GPU初始化过程中遇到的任何错误。这对于调试和优化GPU渲染性能非常有帮助，尤其是在不同平台和设备上运行时。
         UISystem.EnableGpuInitLog = true;
-        UISystem.Initialize("TCYM", 1620, 800, true, 30, resizable: true);
+        UISystem.Initialize("TCYM", 1200, 800, true, 30, resizable: true);
 
         var manager = UISystem.Manager;
         if (manager == null) return;
         // 支持AOT 环境下的属性访问
         TCYM.UI.Binding.Generated.GeneratedBindingAccessors_TCYM_UI_Example.InitGenerated();
-
-        //UI 工作时捕获到异常后触发
-        UISystem.UnhandledException += (sender, e) =>
+        //manager.OnAnyJoystickEvent += (e) =>
+        //{
+        //    switch (e.Type)
+        //    {
+        //        case UIJoystickEventType.DeviceAdded:
+        //            Console.WriteLine($"[{e.DeviceType}] 设备 {e.DeviceId} 已连接");
+        //            break;
+        //        case UIJoystickEventType.DeviceRemoved:
+        //            Console.WriteLine($"[{e.DeviceType}] 设备 {e.DeviceId} 已断开");
+        //            break;
+        //        case UIJoystickEventType.AxisMotion:
+        //            // AxisNormalized 已归一化到 -1.0 ~ 1.0，直接使用
+        //            Console.WriteLine($"[{e.DeviceType}] 设备 {e.DeviceId} 轴 {e.Axis} = {e.AxisNormalized:F3}");
+        //            break;
+        //        case UIJoystickEventType.HatMotion:
+        //            Console.WriteLine($"[{e.DeviceType}] 设备 {e.DeviceId} 帽子 {e.Hat} = {e.HatState}");
+        //            break;
+        //        case UIJoystickEventType.ButtonDown:
+        //            Console.WriteLine($"[{e.DeviceType}] 设备 {e.DeviceId} 按钮 {e.Button} 按下");
+        //            break;
+        //        case UIJoystickEventType.ButtonUp:
+        //            Console.WriteLine($"[{e.DeviceType}] 设备 {e.DeviceId} 按钮 {e.Button} 抬起");
+        //            break;
+        //    }
+        //    Console.Error.WriteLine($"[{e.DeviceType}] 设备 {e.DeviceId} 事件 {e.Type}");
+        //};
+        UISystem.UnhandledException += (_, e) =>
         {
-            Console.WriteLine($"报错: {e.Exception}");
-        };
-
-        // 全局未捕获异常处理
-        AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
-        {
-            var exception = e.ExceptionObject as Exception;
-            if (exception != null)
+            UIModal.Confirm("发生未处理异常", e.Exception.ToString(), onOk: () =>
             {
-                Console.WriteLine($"未捕获异常: {exception.Message}\n{exception.StackTrace}");
-            }
-            else
-            {
-                Console.WriteLine("未捕获异常: 未知异常对象");
-            }
+                Environment.Exit(1);
+            }, okType: ModalOkType.Danger, okText: "退出程序", cancelText: "忽略");
         };
-
 
         // === 全局通配符默认样式：字体16px，颜色 #000000 ===
         UISystem.RegisterGlobalDefaultsCss("*{font-size:16px;color: rgba(0,0,0,1);}");
@@ -58,6 +72,7 @@ internal class Program
         root.Id = "root";
         root.AddChild(new UICaptionBar()
         {
+            Id = "demo-caption-bar",
             CaptionTitle = "TCYM.UI.Demo",
             CaptionBoxStyle = new UpdateUIStyle
             {
@@ -68,8 +83,7 @@ internal class Program
                 Cursor = UICursor.Grab
             },
         });
-        root.AddChild(new Layout());
-
+        root.AddChild(new AppShell());
         try
         {
             UISystem.Run();

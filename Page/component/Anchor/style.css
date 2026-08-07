@@ -1,0 +1,223 @@
+.anchor-demo-view {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  padding-right: 10px;
+  padding-bottom: 24px;
+}
+
+.anchor-demo-title {
+  width: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.anchor-demo-subtitle {
+  width: 100%;
+  height: 22px;
+  margin-top: 4px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.anchor-demo-desc {
+  width: 100%;
+  min-height: 64px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 10px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.02);
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 13px;
+}
+
+.anchor-demo-card {
+  width: 100%;
+  margin-top: 12px;
+  padding: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.anchor-card-title {
+  width: 100%;
+  height: 26px;
+  font-size: 17px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.88);
+}
+
+.anchor-card-desc {
+  width: 100%;
+  min-height: 24px;
+  margin-bottom: 6px;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 13px;
+}
+
+.anchor-demo-status {
+  width: 100%;
+  height: 24px;
+  margin-bottom: 8px;
+  color: #1677ff;
+  font-size: 12px;
+}
+
+.anchor-basic-stage {
+  width: 100%;
+  height: 380px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 16px;
+  border: 1px solid rgba(5, 5, 5, 0.08);
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.anchor-basic-content {
+  width: calc(100% - 190px);
+  height: 920px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 20px;
+}
+
+.anchor-target {
+  width: 100%;
+  height: 172px;
+  min-height: 172px;
+  padding: 20px;
+  border: 1px solid rgba(5, 5, 5, 0.06);
+  border-radius: 10px;
+}
+
+.anchor-target-title {
+  width: 100%;
+  height: 30px;
+  font-size: 19px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.88);
+}
+
+.anchor-target-desc {
+  width: 100%;
+  min-height: 54px;
+  margin-top: 8px;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 13px;
+}
+
+.anchor-custom-scroll {
+    width: 100%;
+    overflow-x: hidden;
+    height: 340px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 16px;
+    border: 1px solid rgba(91, 143, 249, 0.18);
+    border-radius: 10px;
+    background: #fbfcff;
+}
+
+.anchor-custom-content {
+  width: calc(100% - 190px);
+  height: 1100px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 20px;
+}
+
+.anchor-custom-nav .UIAnchor-link {
+  margin-left: 8px;
+  margin-bottom: 2px;
+  padding-right: 12px;
+  border-radius: 18px;
+  color: #667085;
+  font-size: 13px;
+}
+
+.anchor-custom-nav .UIAnchor-link:hover {
+  background: linear-gradient(to right, rgba(91, 143, 249, 0.10), rgba(91, 143, 249, 0.02));
+  color: #5b8ff9;
+}
+
+.anchor-custom-nav .UIAnchor-link-active {
+  background: linear-gradient(to right, rgba(91, 143, 249, 0.18) 0%, rgba(91, 143, 249, 0.08) 68%, rgba(91, 143, 249, 0) 100%);
+  color: #5b8ff9;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.anchor-custom-nav .UIAnchor-link-disabled {
+  opacity: 0.45;
+}
+
+.anchor-custom-nav .anchor-custom-stage-link {
+  letter-spacing: 0.5px;
+}
+
+.anchor-nested-scroll {
+  width: 100%;
+  height: 420px;
+  padding: 14px;
+  border: 1px dashed rgba(22, 119, 255, 0.35);
+  border-radius: 10px;
+  background: rgba(230, 244, 255, 0.3);
+}
+
+.anchor-nested-spacer {
+  width: 100%;
+  height: 96px;
+  min-height: 96px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(22, 119, 255, 0.08), rgba(114, 46, 209, 0.08));
+}
+
+.anchor-nested-row {
+  width: 100%;
+  height: 310px;
+  min-height: 310px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.anchor-inner-scroll {
+  width: calc(100% - 196px);
+  height: 286px;
+  border: 1px solid rgba(5, 5, 5, 0.1);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.anchor-inner-content {
+  width: 100%;
+  height: 724px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+}
+
+.anchor-nested-footer {
+  width: 100%;
+  height: 126px;
+  min-height: 126px;
+  margin-top: 14px;
+  padding: 22px;
+  border-radius: 8px;
+  background: #f9f0ff;
+  color: rgba(0, 0, 0, 0.65);
+}

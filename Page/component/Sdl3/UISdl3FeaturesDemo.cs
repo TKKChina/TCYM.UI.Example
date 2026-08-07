@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using SkiaSharp;
 using TCYM.UI.Core;
 using TCYM.UI.Elements;
 using TCYM.UI.Enums;
 using TCYM.UI.Events;
 using TCYM.UI.Helpers;
+using TCYM.UI.SDL3;
 
 namespace TCYM.UI.Example.Page.component.Sdl3
 {
@@ -43,13 +43,18 @@ namespace TCYM.UI.Example.Page.component.Sdl3
 
         // ============================ 压感笔画板 ============================
 
-        private PenBoard _penBoard = null!;
+        private UIPenBoard _penBoard = null!;
         private UILabel _penStatus = null!;
 
         private UIView BuildPenSection()
         {
-            _penBoard = new PenBoard
+            string sdlVersion = GetSdlVersionText();
+            _penBoard = new UIPenBoard
             {
+                UseFixedStrokeWidth = false,
+                MinStrokeWidth = 1.5f,
+                MaxStrokeWidth = 20f,
+                PressureSmoothing = 0.65f,
                 Style = new DefaultUIStyle
                 {
                     Width = "100%",
@@ -61,15 +66,44 @@ namespace TCYM.UI.Example.Page.component.Sdl3
                     Overflow = "hidden",
                 },
             };
-            _penBoard.StatusChanged = text =>
+            _penBoard.OnPen += e =>
             {
-                _penStatus.Text = text;
+                float width = _penBoard.UseFixedStrokeWidth
+                    ? _penBoard.FixedStrokeWidth
+                    : _penBoard.MinStrokeWidth + e.Pressure *
+                        (_penBoard.MaxStrokeWidth - _penBoard.MinStrokeWidth);
+                _penStatus.Text =
+                    $"SDL={sdlVersion}  输入=Pen  事件={e.Type}  压力={e.Pressure:0.00}  线宽≈{width:0.0}px  " +
+                    $"倾斜=({e.TiltX:0.#},{e.TiltY:0.#})  " +
+                    $"橡皮擦={(e.IsEraser ? "是" : "否")}  按钮={e.Button}";
+                _penStatus.RequestRedraw();
+            };
+            _penBoard.InputSampled += (source, pressure) =>
+            {
+                // 原生 Pen 的详细状态由 OnPen 显示；此处专门显示 Windows 驱动的兼容回退链路。
+                if (source == UIPenBoardInputSource.Pen)
+                {
+                    return;
+                }
+
+                float width = _penBoard.UseFixedStrokeWidth
+                    ? _penBoard.FixedStrokeWidth
+                    : _penBoard.MinStrokeWidth + pressure *
+                        (_penBoard.MaxStrokeWidth - _penBoard.MinStrokeWidth);
+                string sourceText = source switch
+                {
+                    UIPenBoardInputSource.PenTouch => "PenTouch（笔兼容触摸）",
+                    UIPenBoardInputSource.Touch => "Touch",
+                    _ => "Mouse",
+                };
+                _penStatus.Text =
+                    $"SDL={sdlVersion}  输入={sourceText}  压力={pressure:0.00}  线宽≈{width:0.0}px";
                 _penStatus.RequestRedraw();
             };
 
             _penStatus = new UILabel
             {
-                Text = "用触控笔在画板上书写（无笔时可用鼠标）。压力越大，线条越粗。",
+                Text = $"SDL={sdlVersion}。用触控笔在画板上书写，压力越大，线条越粗。",
                 Style = new DefaultUIStyle
                 {
                     FontSize = 13,
@@ -101,6 +135,16 @@ namespace TCYM.UI.Example.Page.component.Sdl3
                         _penStatus.Text = _penBoard.EraserMode ? "橡皮擦：开（鼠标也会擦除；触控笔翻转即橡皮擦端）" : "橡皮擦：关";
                         _penStatus.RequestRedraw();
                     }),
+                    ToolButton("固定粗细", () =>
+                    {
+                        _penBoard.UseFixedStrokeWidth = !_penBoard.UseFixedStrokeWidth;
+                        _penStatus.Text = _penBoard.UseFixedStrokeWidth
+                            ? $"固定粗细：开（{_penBoard.FixedStrokeWidth:0.#} px，不使用压力）"
+                            : "固定粗细：关（根据触控笔压力改变线宽）";
+                        _penStatus.RequestRedraw();
+                    }),
+                    ToolButton("撤销", () => _penBoard.Undo()),
+                    ToolButton("重做", () => _penBoard.Redo()),
                     ToolButton("清空", () => _penBoard.Clear()),
                 },
             };
@@ -108,6 +152,22 @@ namespace TCYM.UI.Example.Page.component.Sdl3
             return Card("压感笔画板（Pen）",
                 "SDL3 新增独立的笔子系统，事件带压力 / 倾斜 / 橡皮擦端 / 笔身按钮。",
                 toolbar, _penBoard, _penStatus);
+        }
+
+        private static string GetSdlVersionText()
+        {
+            try
+            {
+                int version = SDL.SDL_GetVersion();
+                int major = version / 1_000_000;
+                int minor = version / 1_000 % 1_000;
+                int patch = version % 1_000;
+                return $"{major}.{minor}.{patch}";
+            }
+            catch
+            {
+                return "unknown";
+            }
         }
 
         private UIView ColorSwatch(string hex)
@@ -127,7 +187,7 @@ namespace TCYM.UI.Example.Page.component.Sdl3
                 },
                 Events = new()
                 {
-                    Click = _ =>
+                    PointerPressed = _ =>
                     {
                         _penBoard.StrokeColor = color;
                         _penBoard.EraserMode = false;
@@ -153,7 +213,7 @@ namespace TCYM.UI.Example.Page.component.Sdl3
                     BorderRadius = 6,
                     Cursor = UICursor.Pointer,
                 },
-                Events = new() { Click = _ => onClick() },
+                Events = new() { PointerPressed = _ => onClick() },
             };
         }
 
@@ -255,166 +315,6 @@ namespace TCYM.UI.Example.Page.component.Sdl3
                 },
                 Children = list,
             };
-        }
-
-        // ============================ 压感画板元素 ============================
-
-        /// <summary>
-        /// 压感画板：优先使用 SDL3 笔事件（真实压力 / 倾斜 / 橡皮擦），无笔时回退到鼠标 / 触摸。
-        /// </summary>
-        private sealed class PenBoard : UIView
-        {
-            private struct Pt { public float X; public float Y; public float P; }
-
-            private sealed class Stroke
-            {
-                public SKColor Color;
-                public bool IsEraser;
-                public readonly List<Pt> Points = new();
-            }
-
-            private readonly List<Stroke> _strokes = new();
-            private Stroke? _current;
-            private bool _mouseDown;
-            private long _lastPenTicks;
-
-            /// <summary>当前画笔颜色。</summary>
-            public SKColor StrokeColor = ColorHelper.ParseColor("#2260ff");
-
-            /// <summary>橡皮擦模式（供鼠标使用；触控笔用翻转的橡皮擦端自动识别）。</summary>
-            public bool EraserMode;
-
-            /// <summary>板底色（用于橡皮擦覆盖）。</summary>
-            private readonly SKColor _boardColor = ColorHelper.ParseColor("#ffffff");
-
-            /// <summary>状态文本回调（压力 / 倾斜 / 橡皮擦）。</summary>
-            public Action<string>? StatusChanged;
-
-            /// <summary>清空画板。</summary>
-            public void Clear()
-            {
-                _strokes.Clear();
-                _current = null;
-                RequestRedraw();
-            }
-
-            // ---- SDL3 笔事件（带压力）----
-            public override void OnPenEvent(UIPenEvent e)
-            {
-                base.OnPenEvent(e);
-                _lastPenTicks = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-
-                var b = GetAbsoluteBounds();
-                float lx = e.Position.X - b.Left;
-                float ly = e.Position.Y - b.Top;
-
-                switch (e.Type)
-                {
-                    case UIPenEventType.Down:
-                        BeginStroke(lx, ly, e.Pressure, e.IsEraser);
-                        break;
-                    case UIPenEventType.Move:
-                        if (e.IsTipDown && _current != null) AppendPoint(lx, ly, e.Pressure);
-                        break;
-                    case UIPenEventType.Up:
-                        EndStroke();
-                        break;
-                }
-
-                StatusChanged?.Invoke(
-                    $"笔：{e.Type}  压力={e.Pressure:0.00}  倾斜=({e.TiltX:0.#},{e.TiltY:0.#})  橡皮擦={(e.IsEraser ? "是" : "否")}  按钮={e.Button}");
-            }
-
-            // ---- 鼠标 / 触摸回退（无压力，压力取 0.5）----
-            public override void OnPointerDown(float x, float y)
-            {
-                base.OnPointerDown(x, y);
-                if (IsRecentPen()) return; // 忽略笔合成的鼠标事件，避免重复绘制
-                _mouseDown = true;
-                BeginStroke(x, y, 0.5f, EraserMode);
-            }
-
-            public override void OnPointerMove(float x, float y)
-            {
-                base.OnPointerMove(x, y);
-                if (!_mouseDown || _current == null) return;
-                if (IsRecentPen()) return;
-                AppendPoint(x, y, 0.5f);
-            }
-
-            public override void OnPointerUp(float x, float y)
-            {
-                base.OnPointerUp(x, y);
-                if (!_mouseDown) return;
-                _mouseDown = false;
-                EndStroke();
-            }
-
-            private bool IsRecentPen() => DateTimeOffset.Now.ToUnixTimeMilliseconds() - _lastPenTicks < 250;
-
-            private void BeginStroke(float x, float y, float pressure, bool eraser)
-            {
-                _current = new Stroke { Color = StrokeColor, IsEraser = eraser };
-                _current.Points.Add(new Pt { X = x, Y = y, P = pressure });
-                _strokes.Add(_current);
-                RequestRedraw();
-            }
-
-            private void AppendPoint(float x, float y, float pressure)
-            {
-                if (_current == null) return;
-                var last = _current.Points[_current.Points.Count - 1];
-                // 简单去抖：太近的点跳过
-                if ((x - last.X) * (x - last.X) + (y - last.Y) * (y - last.Y) < 1.5f) return;
-                _current.Points.Add(new Pt { X = x, Y = y, P = pressure });
-                RequestRedraw();
-            }
-
-            private void EndStroke()
-            {
-                _current = null;
-            }
-
-            protected override void RenderContent(SKCanvas canvas)
-            {
-                base.RenderContent(canvas);
-
-                if (_strokes.Count == 0)
-                {
-                    return;
-                }
-
-                using var paint = new SKPaint
-                {
-                    IsAntialias = true,
-                    Style = SKPaintStyle.Stroke,
-                    StrokeCap = SKStrokeCap.Round,
-                    StrokeJoin = SKStrokeJoin.Round,
-                };
-
-                foreach (var s in _strokes)
-                {
-                    paint.Color = s.IsEraser ? _boardColor : s.Color;
-
-                    if (s.Points.Count == 1)
-                    {
-                        var p = s.Points[0];
-                        float r = s.IsEraser ? 10f : 1.5f + p.P * 6f;
-                        using var dot = new SKPaint { IsAntialias = true, Style = SKPaintStyle.Fill, Color = paint.Color };
-                        canvas.DrawCircle(p.X, p.Y, r, dot);
-                        continue;
-                    }
-
-                    for (int i = 1; i < s.Points.Count; i++)
-                    {
-                        var a = s.Points[i - 1];
-                        var c = s.Points[i];
-                        float pr = (a.P + c.P) * 0.5f;
-                        paint.StrokeWidth = s.IsEraser ? 20f : 2f + pr * 12f;
-                        canvas.DrawLine(a.X, a.Y, c.X, c.Y, paint);
-                    }
-                }
-            }
         }
 
         // ============================ 拖放落点元素 ============================

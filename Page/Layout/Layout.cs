@@ -1,6 +1,7 @@
 ﻿using TCYM.UI.Core;
 using TCYM.UI.Core.Routing;
 using TCYM.UI.Elements;
+using TCYM.UI.Elements.Message;
 
 namespace TCYM.UI.Example.Page.Layout
 {
@@ -8,16 +9,19 @@ namespace TCYM.UI.Example.Page.Layout
     {
         internal Layout()
         {
-            UISystem.LoadStyleFile("res://TCYM.UI.Example/Page.Layout.style.css");
             var router = Router.Create();
-            //router.Push("/demo/button");
-            ClassName = new List<string> { "main-view" };
+            ClassName = "main-view";
             Children = new()
             {
                 new Menu
                 {
                     SelectChange = (keys, item) =>  
                     { 
+                        if (item.Key == "logout")
+                        {
+                            Logout();
+                            return;
+                        }
                         var path = item.Key switch
                         {
                             "button" => "/demo/button",
@@ -50,22 +54,33 @@ namespace TCYM.UI.Example.Page.Layout
                             "message" => "/demo/message",
                             "modal" => "/demo/modal",
                             "progress" => "/demo/progress",
-                            "watermark" => "/demo/watermark",
                             "virtualScrollView" => "/demo/virtual-scroll-view",
                             "filePicker" => "/demo/file-picker",
-                            "usbCamera" => "/demo/usb-camera",
                             "sdl3" => "/demo/sdl3",
                             "gamepad" => "/demo/gamepad",
+                            "usbCamera" => "/demo/usb-camera",
+                            "watermark" => "/demo/watermark",
+                            "anchor" => "/demo/anchor",
                             _ => "/demo/button"
                         };
-                        router.Push(path);
+                        UIRouterNavigator.Navigate(path);
                     }
                 },
                 new UIRouterView(router)
                 {
-                   ClassName = new List<string> { "router-view" }
+                   ClassName = "router-view"
                 }
             };
+
+            //router.ReplaceById("demo_button");
+        }
+
+        private static void Logout()
+        {
+            UISystem.Manager?.GetElementById<UICaptionBar>("demo-caption-bar")?.AddClass("login-caption-bar");
+            UIRouterNavigator.NavigateById("login", replace: true);
+            UISystem.SetWindowSize(1200, 800);
+            UIMessage.Info("已退出登录");
         }
     }
 }

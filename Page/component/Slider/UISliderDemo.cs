@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using SkiaSharp;
 using TCYM.UI.Core;
 using TCYM.UI.Elements;
@@ -37,6 +39,7 @@ namespace TCYM.UI.Example.Page.component.Slider
                     ClassName = new List<string> { "slider-demo-desc" }
                 },
                 new BasicSliderDemo(),
+                new AsyncEventSliderDemo(),
                 new MarksSliderDemo(),
                 new RangeSliderDemo(),
                 new DisabledSliderDemo(),
@@ -84,6 +87,80 @@ namespace TCYM.UI.Example.Page.component.Slider
                     },
                     valueLabel,
                 };
+            }
+        }
+
+        // ═══════════ 异步事件 ═══════════
+        sealed class AsyncEventSliderDemo : UIView, IDisposable
+        {
+            private readonly UILabel _saveStatusLabel;
+            private int _saveVersion;
+            private volatile bool _disposed;
+
+            /// <summary>创建展示异步滑块事件绑定方式的示例卡片。</summary>
+            internal AsyncEventSliderDemo()
+            {
+                ClassName = new List<string> { "slider-demo-card" };
+                _saveStatusLabel = new UILabel
+                {
+                    Text = "等待调整",
+                    ClassName = new List<string> { "slider-value-label" }
+                };
+
+                Children = new()
+                {
+                    new UILabel
+                    {
+                        Text = "异步事件",
+                        ClassName = new List<string> { "slider-card-title", "label-title" }
+                    },
+                    new UILabel
+                    {
+                        Text = "OnChangeAsync 可以直接绑定返回 Task 的方法。快速拖动时只保留最后一次保存结果。",
+                        ClassName = new List<string> { "slider-card-desc" }
+                    },
+                    new UISlider
+                    {
+                        DefaultValue = 30,
+                        Min = 0,
+                        Max = 100,
+                        Step = 1,
+                        Style = new DefaultUIStyle
+                        {
+                            Width = "100%",
+                            Height = 40,
+                        },
+                        OnChangeAsync = HandleValueChangedAsync,
+                    },
+                    _saveStatusLabel,
+                };
+            }
+
+            /// <summary>
+            /// 模拟异步保存滑块值；连续变化时仅让最后一次保存结果更新界面。
+            /// </summary>
+            /// <param name="value">当前滑块值。</param>
+            private async Task HandleValueChangedAsync(float value)
+            {
+                int version = Interlocked.Increment(ref _saveVersion);
+                if (_disposed) return;
+
+                _saveStatusLabel.Text = $"保存中：{(int)value}";
+                await Task.Delay(350).ConfigureAwait(false);
+
+                UIDispatcher.Invoke(() =>
+                {
+                    if (_disposed || version != Volatile.Read(ref _saveVersion)) return;
+                    _saveStatusLabel.Text = $"已保存：{(int)value}";
+                });
+            }
+
+            /// <summary>停止示例后续的异步界面更新。</summary>
+            public void Dispose()
+            {
+                if (_disposed) return;
+                _disposed = true;
+                Interlocked.Increment(ref _saveVersion);
             }
         }
 

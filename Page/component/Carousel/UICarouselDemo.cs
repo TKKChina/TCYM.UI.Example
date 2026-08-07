@@ -24,7 +24,7 @@ namespace TCYM.UI.Example.Page.component.Carousel
                 },
                 new UILabel
                 {
-                    Text = "一组轮播内容区域，支持自动播放、箭头、拖拽、淡入淡出和自定义指示点。",
+                    Text = "一组轮播内容区域，支持自动播放、箭头、拖拽、卡片化、淡入淡出和自定义指示点。",
                     ClassName = new List<string> { "carousel-demo-title-sub" },
                 },
                 new UILabel
@@ -36,6 +36,7 @@ namespace TCYM.UI.Example.Page.component.Carousel
                 new AutoplayCarouselSection(),
                 new DraggableCarouselSection(),
                 new CustomDotsCarouselSection(),
+                new CardCarouselSection(),
                 new FadeCarouselSection(),
             };
         }
@@ -199,6 +200,52 @@ namespace TCYM.UI.Example.Page.component.Carousel
                 {
                     CreateSectionTitle("Fade 效果", "label-red"),
                     CreateSectionDescription("Effect=Fade 时轮播页使用淡入淡出切换；WaitForAnimate 可用于阻止动画未完成时的重复切换。"),
+                    carousel,
+                };
+            }
+        }
+
+        private class CardCarouselSection : UIView
+        {
+            internal CardCarouselSection()
+            {
+                ClassName = new List<string> { "carousel-demo-card" };
+
+                var carousel = new UICarousel
+                {
+                    Effect = CarouselEffect.Card,
+                    Arrows = false,
+                    Autoplay = true,
+                    AutoplaySpeed = 2800,
+                    Draggable = true,
+                    Speed = 520,
+                    Easing = "ease-in-out",
+                    CardWidthRatio = 0.6f,
+                    CardHeightRatio = 0.68f,
+                    CardInactiveOpacity = 0.4f,
+                    DotPlacement = CarouselDotPlacement.Bottom,
+                    DotWidth = 6,
+                    ActiveDotWidth = 6,
+                    DotHeight = 6,
+                    DotGap = 8,
+                    DotOffset = 16,
+                    ActiveDotColor = ColorHelper.ParseColor("#c9cdd4"),
+                    DotColor = ColorHelper.ParseColor("#e5e6eb"),
+                    Style = new UpdateUIStyle
+                    {
+                        Height = 300,
+                        BorderRadius = 4,
+                        BackgroundColor = ColorHelper.ParseColor("#ffffff"),
+                        BorderWidth = 1,
+                        BorderColor = ColorHelper.ParseColor("#e2e8f0"),
+                    },
+                    Items = CreateSlides("卡片模式", "#0369a1", "#7c3aed", "#0f766e", "#c2410c"),
+                };
+
+                Children = new()
+                {
+                    CreateSectionTitle("卡片化", "label-purple"),
+                    CreateSectionDescription("Effect=Card 使用 Arco 风格的卡片化切换：当前项居中，两侧项通过景深投影缩放并贴合容器中线。"),
                     carousel,
                 };
             }

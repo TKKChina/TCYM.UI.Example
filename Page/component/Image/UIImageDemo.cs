@@ -9,6 +9,7 @@ namespace TCYM.UI.Example.Page.component.Image
     internal class UIImageDemo : UIScrollView
     {
         private const string DemoCssPath = "res://TCYM.UI.Example/Page.component.Image.style.css";
+        private const string DemoRemoteSource = "https://tcym.top:8035/tcym/UI/landscapePictures.png";
         private static readonly string DemoPngSource = UIFileHelper.ResolveAssetPath("Assets", "Images", "tu.png");
         private static readonly string DemoGifSource = UIFileHelper.ResolveAssetPath("Assets", "Images", "gif.gif");
 
@@ -30,10 +31,11 @@ namespace TCYM.UI.Example.Page.component.Image
                 },
                 new UILabel
                 {
-                    Text = "UIImage 可通过 Source 加载 res://、绝对路径或相对路径，也可直接传入 ImageBytes。GIF、APNG、动画 WebP 等多帧格式会自动播放；工具条支持常显或悬停显示，并提供放大、缩小、旋转、重置和复制操作。",
+                    Text = "UIImage 可通过 Source 加载 http://、https://、res://、绝对路径或相对路径，也可直接传入 ImageBytes。远程加载支持可定制占位样式与文字；GIF、APNG、动画 WebP 等多帧格式会自动播放。",
                     ClassName = new List<string> { "image-demo-desc" }
                 },
                 new BasicImageSection(),
+                new RemoteImageSection(),
                 new TransformImageSection(),
                 new AnimatedImageSection(),
             };
@@ -65,6 +67,40 @@ namespace TCYM.UI.Example.Page.component.Image
                                     Height = 460,
                                     BorderRadius = 8,
                                     BackgroundColor = ColorHelper.ParseColor("#f6f8fb"),
+                                    BorderWidth = 1,
+                                    BorderColor = ColorHelper.ParseColor("#d7dde8")
+                                }
+                            }
+                        }
+                    }
+                };
+            }
+        }
+
+        private class RemoteImageSection : UIView
+        {
+            internal RemoteImageSection()
+            {
+                ClassName = new List<string> { "image-demo-card" };
+                Children = new()
+                {
+                    CreateSectionTitle("远程图片与加载占位"),
+                    CreateSectionDescription("Source 可直接设置 HTTP(S) URL。LoadingText 可替换加载文字，LoadingBackgroundColor、LoadingHighlightColor、LoadingTextColor 和 LoadingFontSize 可调整加载样式。"),
+                    new UIView
+                    {
+                        ClassName = new List<string> { "image-showcase" },
+                        Children = new()
+                        {
+                            new UIImage
+                            {
+                                Source = DemoRemoteSource,
+                                LoadingText = "正在获取图片...",
+                                ObjectFit = UIImageFit.Cover,
+                                Style = new DefaultUIStyle
+                                {
+                                    Width = 360,
+                                    Height = 240,
+                                    BorderRadius = 8,
                                     BorderWidth = 1,
                                     BorderColor = ColorHelper.ParseColor("#d7dde8")
                                 }

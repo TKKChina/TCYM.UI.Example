@@ -35,6 +35,7 @@ namespace TCYM.UI.Example.Page.component.Badge
                 new OffsetAndSizeSection(),
                 new StatusSection(),
                 new ColorSection(),
+                new RibbonSection(),
             };
         }
 
@@ -79,6 +80,45 @@ namespace TCYM.UI.Example.Page.component.Badge
                 Children = new()
                 {
                     badge,
+                    new UILabel
+                    {
+                        Text = label,
+                        TextAlign = "center",
+                        ClassName = new List<string> { "badge-item-label" },
+                    }
+                }
+            };
+        }
+
+        private static UIView CreateRibbonTarget(string title, string description)
+        {
+            return new UIView
+            {
+                ClassName = new List<string> { "badge-ribbon-target" },
+                Children = new()
+                {
+                    new UILabel
+                    {
+                        Text = title,
+                        ClassName = new List<string> { "badge-ribbon-target-title" },
+                    },
+                    new UILabel
+                    {
+                        Text = description,
+                        ClassName = new List<string> { "badge-ribbon-target-desc" },
+                    }
+                }
+            };
+        }
+
+        private static UIView CreateRibbonCard(UIElement ribbon, string label)
+        {
+            return new UIView
+            {
+                ClassName = new List<string> { "badge-ribbon-item" },
+                Children = new()
+                {
+                    ribbon,
                     new UILabel
                     {
                         Text = label,
@@ -364,6 +404,83 @@ namespace TCYM.UI.Example.Page.component.Badge
                                 BadgeColor = ColorHelper.ParseColor("#722ed1"),
                                 Children = new() { CreateTargetBox("紫") }
                             }, "Purple"),
+                        }
+                    },
+                };
+            }
+        }
+
+        /// <summary>
+        /// 缎带徽标
+        /// </summary>
+        private class RibbonSection : UIView
+        {
+            internal RibbonSection()
+            {
+                ClassName = new List<string> { "badge-demo-card" };
+                Children = new()
+                {
+                    new UILabel
+                    {
+                        Text = "缎带",
+                        ClassName = new List<string> { "badge-card-title", "label-title" }
+                    },
+                    new UILabel
+                    {
+                        Text = "使用 UIBadge.Ribbon 包裹内容。支持 Start / End 两侧位置、Color 快速换色，以及通过 RibbonStyle 自定义尺寸、渐变、圆角、边框和阴影。",
+                        ClassName = new List<string> { "badge-card-desc" }
+                    },
+                    new UIView
+                    {
+                        ClassName = new List<string> { "badge-showcase", "badge-ribbon-showcase" },
+                        Children = new()
+                        {
+                            CreateRibbonCard(new UIBadge.Ribbon
+                            {
+                                Text = "Hippies",
+                                Children = new()
+                                {
+                                    CreateRibbonTarget("默认缎带", "默认位于内容右上角")
+                                }
+                            }, "Placement.End"),
+
+                            CreateRibbonCard(new UIBadge.Ribbon
+                            {
+                                Text = "START",
+                                Placement = BadgeRibbonPlacement.Start,
+                                Color = ColorHelper.ParseColor("#eb2f96"),
+                                Children = new()
+                                {
+                                    CreateRibbonTarget("起始侧", "颜色可以直接通过 Color 设置")
+                                }
+                            }, "Placement.Start + Color"),
+
+                            CreateRibbonCard(new UIBadge.Ribbon
+                            {
+                                Text = "PRO",
+                                OffsetY = 12,
+                                FoldSize = 10,
+                                FoldColor = ColorHelper.ParseColor("#30156f"),
+                                RibbonStyle = new UpdateUIStyle
+                                {
+                                    Height = 30,
+                                    PaddingLeft = 16,
+                                    PaddingRight = 16,
+                                    FontSize = 13,
+                                    BackgroundGradient = "linear-gradient(135deg, #9254de, #531dab)",
+                                    Color = SKColors.White,
+                                    BorderRadius = 6,
+                                    BorderWidth = 1,
+                                    BorderColor = ColorHelper.ParseColor("rgba(255, 255, 255, 0.42)"),
+                                    BoxShadowColor = ColorHelper.ParseColor("rgba(83, 29, 171, 0.35)"),
+                                    BoxShadowBlur = 8,
+                                    BoxShadowOffsetY = 3,
+                                },
+                                Children = new()
+                                {
+                                    CreateRibbonTarget("完整自定义", "RibbonStyle、折角和偏移均可调整")
+                                }
+                            }, "自定义 RibbonStyle"),
                         }
                     },
                 };

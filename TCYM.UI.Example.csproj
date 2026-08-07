@@ -5,9 +5,15 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <TCYMSourcePreviewComponentRoot>Page/component</TCYMSourcePreviewComponentRoot>
+    <TCYMSourcePreviewDefaultEntry>Page/Layout/AppShell.cs</TCYMSourcePreviewDefaultEntry>
+    <TCYMSourcePreviewGlobalCss>Page/com.css</TCYMSourcePreviewGlobalCss>
     <PublishAot>true</PublishAot>
+    <StripSymbols>true</StripSymbols>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <NoWarn>$(NoWarn);IL2072;IL2075;IL2104;IL3053</NoWarn>
+    <RuntimeIdentifiers>win-x64;win-arm64;linux-x64;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
     <!-- Windows EXE 图标（写入可执行文件资源） -->
     <ApplicationIcon>Assets\Images\app.ico</ApplicationIcon>
   </PropertyGroup>
@@ -32,6 +38,8 @@
     <None Remove="Assets\Images\gif.gif" />
     <None Remove="Assets\Images\tu.png" />
     <None Remove="Page\com.css" />
+    <None Remove="Page\Layout\login.css" />
+    <None Remove="Page\component\Anchor\style.css" />
     <None Remove="Page\component\Badge\style.css" />
     <None Remove="Page\component\Button\style.css" />
     <None Remove="Page\component\Carousel\style.css" />
@@ -80,7 +88,7 @@
     </Content>
   </ItemGroup>
 
-  <!-- 复制 SDL3 本地库到输出目录，供独立展示仓库运行。 -->
+  <!-- SDL3 本地库由 TCYM.UI NuGet 包按运行平台提供。 -->
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\Fonts\iconfont.ttf" />
@@ -95,6 +103,7 @@
     <EmbeddedResource Include="Assets\Images\work.svg" />
     <EmbeddedResource Include="Assets\Images\xbox.png" />
     <EmbeddedResource Include="Page\component\Badge\style.css" />
+    <EmbeddedResource Include="Page\component\Anchor\style.css" />
     <EmbeddedResource Include="Page\component\FilePicker\style.css" />
     <EmbeddedResource Include="Page\component\Label\style.css" />
     <EmbeddedResource Include="Page\component\Message\style.css" />
@@ -130,23 +139,17 @@
     <EmbeddedResource Include="Page\Layout\style.css">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+    <EmbeddedResource Include="Page\Layout\login.css">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="TCYM.UI" Version="0.1.1.16" />
+    <PackageReference Include="TCYM.UI" Version="0.1.1.17" />
     <PackageReference Include="TCYM.UI.Generator" Version="0.1.1.14">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Libs\Linux\libSDL3.so.0">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Libs\Win\SDL3.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>
