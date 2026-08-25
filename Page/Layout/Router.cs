@@ -1,4 +1,4 @@
-﻿using TCYM.UI.Core.Routing;
+using TCYM.UI.Core.Routing;
 using TCYM.UI.Example.Page.component.Button;
 using TCYM.UI.Example.Page.component.Dropdown;
 using TCYM.UI.Example.Page.component.Icon;
@@ -11,6 +11,7 @@ using TCYM.UI.Example.Page.component.Select;
 using TCYM.UI.Example.Page.component.Checkbox;
 using TCYM.UI.Example.Page.component.Radio;
 using TCYM.UI.Example.Page.component.DatePicker;
+using TCYM.UI.Example.Page.component.TimePicker;
 using TCYM.UI.Example.Page.component.Switch;
 using TCYM.UI.Example.Page.component.Input;
 using TCYM.UI.Example.Page.component.Tree;
@@ -21,6 +22,7 @@ using TCYM.UI.Example.Page.component.Tag;
 using TCYM.UI.Example.Page.component.Svg;
 using TCYM.UI.Example.Page.component.Table;
 using TCYM.UI.Example.Page.component.Message;
+using TCYM.UI.Example.Page.component.Notification;
 using TCYM.UI.Example.Page.component.Modal;
 using TCYM.UI.Example.Page.component.Label;
 using TCYM.UI.Example.Page.component.UsbCamera;
@@ -36,6 +38,8 @@ using TCYM.UI.Example.Page.component.Carousel;
 using TCYM.UI.Example.Page.component.Progress;
 using TCYM.UI.Example.Page.component.ColorPicker;
 using TCYM.UI.Example.Page.component.Anchor;
+using TCYM.UI.Example.Page.component.Glass;
+using TCYM.UI.Example.Page.component.Timeline;
 using TCYM.UI.Elements;
 
 namespace TCYM.UI.Example.Page.Layout
@@ -59,6 +63,7 @@ namespace TCYM.UI.Example.Page.Layout
                         new() { Id = "demo_float_button", Path = "float-button", Name = "FloatButton", Element = UIRoute.LazyLoad(() => new UIFloatButtonDemo()) },
                         new() { Id = "demo_icon", Path = "icon", Name = "Icon", Element = UIRoute.LazyLoad(() => new UIIconDemo()) },
                         new() { Id = "demo_label", Path = "label", Name = "Label", Element = UIRoute.LazyLoad(() => new UILabelDemo()) },
+                        new() { Id = "demo_glass", Path = "glass", Name = "CSS Glass", Element = UIRoute.LazyLoad(() => new UIGlassDemo()), KeepAlive = false },
                         new() { Id = "demo_image", Path = "image", Name = "Image", Element = UIRoute.LazyLoad(() => new UIImageDemo()), KeepAlive = false },
                         new() { Id = "demo_menu", Path = "menu", Name = "Menu", Element = UIRoute.LazyLoad(() => new UIMenuDemo()) },
                         new() { Id = "demo_segmented", Path = "segmented", Name = "Segmented", Element = UIRoute.LazyLoad(() => new UISegmentedDemo()) },
@@ -72,6 +77,7 @@ namespace TCYM.UI.Example.Page.Layout
                         new() { Id = "demo_checkbox", Path = "checkbox", Name = "Checkbox", Element = UIRoute.LazyLoad(() => new UICheckboxDemo()) },
                         new() { Id = "demo_radio", Path = "radio", Name = "Radio", Element = UIRoute.LazyLoad(() => new UIRadioDemo()) },
                         new() { Id = "demo_datepicker", Path = "datepicker", Name = "DatePicker", Element = UIRoute.LazyLoad(() => new UIDatePickerDemo()) },
+                        new() { Id = "demo_timepicker", Path = "time-picker", Name = "TimePicker", Element = UIRoute.LazyLoad(() => new UITimePickerDemo()) },
                         new() { Id = "demo_color_picker", Path = "color-picker", Name = "ColorPicker", Element = UIRoute.LazyLoad(() => new UIColorPickerDemo()) },
                         new() { Id = "demo_switch", Path = "switch", Name = "Switch", Element = UIRoute.LazyLoad(() => new UISwitchDemo()) },
                         new() { Id = "demo_input", Path = "input", Name = "Input", Element = UIRoute.LazyLoad(() => new UIInputDemo()) },
@@ -82,7 +88,9 @@ namespace TCYM.UI.Example.Page.Layout
                         new() { Id = "demo_tag", Path = "tag", Name = "Tag", Element = UIRoute.LazyLoad(() => new UITagDemo()) },
                         new() { Id = "demo_svg", Path = "svg", Name = "Svg", Element = UIRoute.LazyLoad(() => new UISvgDemo()) },
                         new() { Id = "demo_table", Path = "table", Name = "Table", Element = UIRoute.LazyLoad(() => new UITableDemo()) },
+                        new() { Id = "demo_timeline", Path = "timeline", Name = "Timeline", Element = UIRoute.LazyLoad(() => new UITimelineDemo()) },
                         new() { Id = "demo_message", Path = "message", Name = "Message", Element = UIRoute.LazyLoad(() => new UIMessageDemo()) },
+                        new() { Id = "demo_notification", Path = "notification", Name = "Notification", Element = UIRoute.LazyLoad(() => new UINotificationDemo()), KeepAlive = false },
                         new() { Id = "demo_modal", Path = "modal", Name = "Modal", Element = UIRoute.LazyLoad(() => new UIModalDemo()) },
                         new() { Id = "demo_progress", Path = "progress", Name = "Progress", Element = UIRoute.LazyLoad(() => new UIProgressDemo()) },
                         new() { Id = "demo_watermark", Path = "watermark", Name = "Watermark", Element = UIRoute.LazyLoad(() => new UIWatermarkDemo()) },

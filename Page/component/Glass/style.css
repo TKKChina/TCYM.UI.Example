@@ -1,0 +1,396 @@
+.glass-demo-view {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  padding-right: 10px;
+  padding-bottom: 24px;
+}
+
+.glass-demo-view .glass-demo-title {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.90);
+}
+
+.glass-demo-view .glass-demo-title-sub {
+  width: 100%;
+  height: 20px;
+  margin-top: 4px;
+  color: rgba(0, 0, 0, 0.80);
+  font-size: 14px;
+}
+
+.glass-demo-view .glass-demo-desc {
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 10px 16px;
+  border: 1px solid rgba(21, 94, 239, 0.14);
+  border-radius: 8px;
+  background: rgba(21, 94, 239, 0.05);
+  color: rgba(0, 0, 0, 0.72);
+  font-size: 13px;
+}
+
+.glass-demo-view .glass-demo-card {
+  width: 100%;
+  margin-top: 12px;
+  padding: 16px;
+  padding-bottom: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.glass-demo-view .glass-card-title {
+  width: 100%;
+  margin-bottom: 4px;
+  color: rgba(0, 0, 0, 0.88);
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.glass-demo-view .glass-card-desc {
+  width: calc(100% - 20px);
+  margin-bottom: 14px;
+  color: rgba(0, 0, 0, 0.68);
+  font-size: 13px;
+}
+
+.glass-scene-row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.glass-scene {
+  position: relative;
+  width: calc(50% - 9px);
+  min-width: 400px;
+  height: 350px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: 24px;
+  corner-curve: continuous;
+  background: linear-gradient(135deg, #07142f 0%, #153467 52%, #10162f 100%);
+}
+
+.glass-orb {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+.glass-orb-blue {
+  left: -38px;
+  top: 55px;
+  width: 185px;
+  height: 185px;
+  background: linear-gradient(135deg, #2f80ff 0%, #55d6ff 100%);
+}
+
+.glass-orb-violet {
+  right: -24px;
+  top: -42px;
+  width: 190px;
+  height: 190px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+}
+
+.glass-orb-warm {
+  right: 24%;
+  bottom: -75px;
+  width: 165px;
+  height: 165px;
+  background: linear-gradient(135deg, #ffcc66 0%, #ff6b8a 100%);
+}
+
+.glass-stage-watermark {
+  position: absolute;
+  left: 18px;
+  bottom: 16px;
+  width: 90%;
+  z-index: 0;
+  pointer-events: none;
+  color: rgba(255, 255, 255, 0.20);
+  font-size: 23px;
+  font-weight: bold;
+  letter-spacing: 4px;
+}
+
+.glass-guide-x {
+  position: absolute;
+  left: 4%;
+  top: 50%;
+  width: 92%;
+  height: 3px;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.glass-guide-y {
+  position: absolute;
+  left: 50%;
+  top: 5%;
+  width: 3px;
+  height: 90%;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(255, 210, 74, 0.88);
+}
+
+.glass-panel {
+  position: absolute;
+  left: 11%;
+  top: 14%;
+  width: 78%;
+  height: 72%;
+  z-index: 2;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #ffffff;
+}
+
+
+
+.frosted-glass {
+  backdrop-filter: blur(18px) saturate(145%) brightness(105%);
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.30);
+  border-radius: 24px;
+  corner-curve: continuous;
+  box-shadow: 0 18px 46px rgba(3, 10, 30, 0.24);
+  animation: glass-demo-panel-float 1.5s ease-in-out infinite;
+}
+
+@keyframes glass-demo-panel-float {
+    0%, 100% {
+        transform: translateY(-15px); /* 最高点 */
+    }
+
+    50% {
+        transform: translateY(15px); /* 最低点 */
+    }
+}
+
+
+.liquid-glass {
+  backdrop-filter: blur(18px) saturate(145%) brightness(105%);
+  -tcym-backdrop-refraction: 12px;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.30);
+  border-radius: 24px;
+  corner-curve: continuous;
+  box-shadow: 0 18px 46px rgba(3, 10, 30, 0.24);
+}
+
+.liquid-glass:hover {
+  -tcym-backdrop-refraction: 18px;
+}
+
+.glass-panel-eyebrow {
+  width: auto;
+  padding: 5px 10px;
+  border: 1px solid rgba(255, 255, 255,0.3);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.glass-panel-title {
+  width: 100%;
+  margin-top: 18px;
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.glass-panel-description {
+  width: 100%;
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  line-height: 21px;
+}
+
+.glass-panel-footer {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 18px;
+  height: 28px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.glass-panel-chip {
+  width: auto;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(3, 10, 30, 0.20);
+  color: rgba(255, 255, 255, 0.80);
+  font-size: 10px;
+}
+
+.glass-panel-metric {
+  width: auto;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 12px;
+}
+
+.glass-compare-stage {
+  position: relative;
+  width: 100%;
+  height: 270px;
+  padding: 30px;
+  overflow: hidden;
+  border-radius: 20px;
+  corner-curve: continuous;
+  background: linear-gradient(125deg, #eff6ff 0%, #f5f3ff 48%, #fff7ed 100%);
+}
+
+.glass-ribbon {
+  position: absolute;
+  height: 82px;
+  pointer-events: none;
+  border-radius: 999px;
+  transform: rotate(-12deg);
+}
+
+.glass-ribbon-blue {
+  left: -45px;
+  top: 42px;
+  width: 420px;
+  background: linear-gradient(90deg, #2563eb 0%, #38bdf8 100%);
+}
+
+.glass-ribbon-pink {
+  right: -70px;
+  top: 62px;
+  width: 410px;
+  background: linear-gradient(90deg, #a855f7 0%, #fb7185 100%);
+}
+
+.glass-ribbon-green {
+  left: 30%;
+  bottom: -18px;
+  width: 360px;
+  background: linear-gradient(90deg, #10b981 0%, #facc15 100%);
+}
+
+.glass-compare-watermark {
+  position: absolute;
+  left: 20px;
+  top: 18px;
+  width: 94%;
+  pointer-events: none;
+  color: rgba(15, 23, 42, 0.26);
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+
+.glass-compare-row {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 18px;
+}
+
+.glass-compare-tile {
+  width: calc(33.333% - 14px);
+  min-width: 220px;
+  height: 170px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 20px;
+  corner-curve: continuous;
+}
+
+.plain-glass {
+  backdrop-filter: none;
+  -tcym-backdrop-refraction: 0;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.42);
+}
+
+.compact-frosted-glass {
+  backdrop-filter: blur(12px) saturate(150%) brightness(105%);
+  background: rgba(255, 255, 255, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  box-shadow: 0 14px 34px rgba(48, 46, 90, 0.15);
+}
+
+.dark-glass {
+  backdrop-filter: blur(16px) saturate(125%) brightness(82%) contrast(110%);
+  background: rgba(7, 15, 38, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 14px 34px rgba(7, 15, 38, 0.24);
+}
+
+.glass-compare-title {
+  width: 100%;
+  color: #0f172a;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.glass-compare-description {
+  width: 100%;
+  margin-top: 8px;
+  color: rgba(15, 23, 42, 0.70);
+  font-size: 12px;
+}
+
+.glass-compare-value {
+  width: auto;
+  margin-top: 24px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.42);
+  color: rgba(15, 23, 42, 0.72);
+  font-size: 10px;
+}
+
+.dark-glass .glass-compare-title {
+  color: #ffffff;
+}
+
+.dark-glass .glass-compare-description {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.dark-glass .glass-compare-value {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.glass-code-editor {
+  width: 100%;
+  height: 470px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 14px;
+  corner-curve: continuous;
+  overflow: hidden;
+}

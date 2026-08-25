@@ -29,9 +29,9 @@ namespace TCYM.UI.Example.Page.component.Icon
     {
         private const string DemoCssPath = "res://TCYM.UI.Example/Page.component.Icon.style.css";
 
-        private const string CSharpCode = "new UIView\n{\n    ClassName = new List<string> { \"icon-demo-card\" },\n    Children = new()\n    {\n        new UIView\n        {\n            Style = new DefaultUIStyle\n            {\n                Width = 130,\n                Height = 130,\n                Display = \"flex\",\n                JustifyContent = \"center\",\n                AlignItems = \"center\",\n                BorderColor = ColorHelper.ParseColor(\"#8b8989\"),\n                BorderWidth = 1,\n                BorderRadius = 8,\n                BorderStyle = \"dashed\",\n                PointerEvents = \"box-only\",\n            },\n            Children = new()\n            {\n                new UIIcon\n                {\n                    Content = \"&#xe612;\",\n                    Style = new DefaultUIStyle\n                    {\n                        FontFamily = UIFontManager.Get(\"TCYMIconFont\"),\n                        Color = ColorHelper.ParseColor(\"#555\"),\n                        FontSize = 20,\n                        Width = 30,\n                        Height = 30,\n                    }\n                }\n            }\n        }\n    }\n};";
+        private const string CSharpCode = "new UIIcon\n{\n    Content = \"&#xe612;\",\n    ClassName = new List<string> { \"icon-demo-item\" },\n    Style = new DefaultUIStyle\n    {\n        FontFamily = UIFontManager.Get(\"TCYMIconFont\"),\n        Before = new DefaultUIStyle\n        {\n            Content = \"图标名称\",\n            Opacity = 0.1f,\n            Position = \"absolute\",\n            FontSize = 14,\n            Left = \"50%\",\n            TransformCss = \"translateX(-50%)\",\n            Bottom = 8\n        }\n    }\n};";
 
-        private const string CssCode = ".icon-demo-card {\n    width: 100%;\n    padding: 10px;\n    display: flex;\n    gap: 10px;\n    flex-wrap: wrap;\n    border: 1px solid rgba(0,0,0,0.06);\n    border-radius: 6px;\n    margin-top: 10px;\n}";
+        private const string CssCode = ".icon-demo-item {\n    width: 130px;\n    height: 130px;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    position: relative;\n    color: #555;\n    font-size: 20px;\n    border: 1px dashed #8b8989;\n    border-radius: 8px;\n}\n\n.icon-demo-item:hover {\n    color: #fff;\n    font-size: 30px;\n    background-color: #1677ff;\n    transition: all 0.15s ease-out;\n}";
 
         private bool _codeVisible = false;
         private UIView _codePanel;
@@ -165,26 +165,16 @@ namespace TCYM.UI.Example.Page.component.Icon
                 ClassName = new List<string> { "icon-demo-card" };
                 foreach (var icon in IconMap)
                 {
-                    AddChild(new UIView
+                    AddChild(new UIIcon
                     {
+                        Content = $"&#x{icon.unicode};", // 解析为 Unicode 字符引用 或者 $"\\u{icon.unicode}" 转义序列
+                        ClassName = new List<string> { "icon-demo-item" },
                         Style = new DefaultUIStyle
                         {
-                            //Width = UIStyleParser.ParseUnitPublic("calc((100% - 15px) / 4 )"),
-                            Width = 130,
-                            Height = 130,
-                            Display = "flex",
-                            JustifyContent = "center",
-                            AlignItems = "center",
-                            Position = "relative",
-                            BorderColor = ColorHelper.ParseColor("#8b8989"),
-                            BorderWidth = 1,
-                            BorderRadius = 8,
-                            BorderStyle = "dashed",
-                            PointerEvents = "box-only",
+                            FontFamily = UIFontManager.Get("TCYMIconFont"),
                             Before = new DefaultUIStyle
                             {
                                Content = icon.name,
-                               Color = ColorHelper.ParseColor("#8b8989"),
                                Opacity = 0.1f,
                                Position = "absolute",
                                FontSize = 14,
@@ -192,70 +182,10 @@ namespace TCYM.UI.Example.Page.component.Icon
                                Left = "50%",
                                TransformCss = "translateX(-50%)",
                                Bottom = 8
-                            },
-                            Hover = new DefaultUIStyle
-                            {
-                                BackgroundColor = ColorHelper.ParseColor("#1677ff"),
-                            }
-                        },
-                        Children = new()
-                        {
-                            new UIIcon
-                            {
-                                Content = $"&#x{icon.unicode};", // 解析为 Unicode 字符引用 或者 $"\\u{icon.unicode}" 转义序列
-                                Style = new DefaultUIStyle
-                                {
-                                    FontFamily = UIFontManager.Get("TCYMIconFont"),
-                                    Color = ColorHelper.ParseColor("#555"),
-                                    Display = "flex",
-                                    AlignItems = "center",
-                                    JustifyContent = "center",
-                                    FontSize = 20,
-                                    Width = 30,
-                                    Height = 30,
-                                }
                             }
                         },
                         Events = new()
                         {
-                            MouseEnter = (e) =>
-                            {
-                                if (e.Element?.Children != null)
-                                {
-                                    foreach (var item in e.Element.Children)
-                                    {
-                                        item.UpdateStyle(new UpdateUIStyle
-                                        {
-                                            Color = SKColors.White,
-                                            TransformCss = "scale(1.5)",
-                                            Transition = "transform 0.1s ease-out",
-                                        });
-                                    }
-                                }
-                                if (e.Element?.Style?.Before != null)
-                                {
-                                    e.Element.Style.Before.Color = SKColors.White;
-                                }
-                            },
-                            MouseLeave = (e) =>
-                            {
-                                if (e.Element?.Children != null)
-                                {
-                                    foreach (var item in e.Element.Children)
-                                    {
-                                        item.UpdateStyle(new UpdateUIStyle
-                                        {
-                                            Color = ColorHelper.ParseColor("#555"),
-                                            TransformCss = "scale(1)",
-                                            Transition = "transform 0.2s ease-out",
-                                        });
-                                    }
-                                }
-                                if (e.Element?.Style?.Before != null)
-                                {
-                                    e.Element.Style.Before.Color = ColorHelper.ParseColor("#8b8989");
-                                }
-                            },
                             Click = (e) =>
                             {
                                 // 点击图标时赋值到剪贴板

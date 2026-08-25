@@ -29,12 +29,13 @@ namespace TCYM.UI.Example.Page.component.FloatButton
           },
           new UILabel
           {
-            Text = "这版实现参考 Ant Design 的 FloatButton，支持 fixed 定位、描述型按钮、Tooltip、Badge、按钮组，以及基于 UIScrollView 的回到顶部按钮。页面右下角有真实固定示例，可直接交互。",
+            Text = "这版实现参考 Ant Design 的 FloatButton，支持 fixed 定位、描述型按钮、Tooltip、Badge、按钮组，以及基于 UIScrollView 的回到顶部按钮。回到顶部按钮可开启 ShowProgress，在按钮边缘以进度环展示当前滚动进度。页面右下角有真实固定示例，可直接交互。",
             ClassName = new List<string> { "float-button-demo-desc" },
           },
           new BasicSection(),
           new DecoratedSection(),
           new GroupSection(),
+          new BackTopSection(),
           new UIFloatBackTop
           {
             Target = this,
@@ -42,6 +43,7 @@ namespace TCYM.UI.Example.Page.component.FloatButton
             IconFont = UIFontManager.Get("IconFontExample"),
             VisibilityHeight = 200,
             OffsetBottom = 30,
+            ShowProgress = true,
           }
       };
     }
@@ -129,6 +131,27 @@ namespace TCYM.UI.Example.Page.component.FloatButton
               },
             }
           }
+        };
+      }
+    }
+
+    private class BackTopSection : UIView
+    {
+      internal BackTopSection()
+      {
+        ClassName = new List<string> { "float-button-demo-card" };
+        Children = new()
+        {
+          new UILabel
+          {
+              Text = "回到顶部与滚动进度",
+              ClassName = new List<string> { "float-button-card-title", "label-red" }
+          },
+          new UILabel
+          {
+              Text = "UIFloatBackTop 开启 ShowProgress 后，会在按钮边缘以进度环展示当前滚动进度：进度 = 已滚动距离 / 可滚动距离，从 12 点方向顺时针增长，与 Ant Design BackTop 的 showProgress 行为一致。进度环跟随按钮边框圆角，颜色可用 ProgressColor 自定义。滚动本页即可看到右下角按钮边缘的进度环变化。",
+              ClassName = new List<string> { "float-button-card-desc" }
+          },
         };
       }
     }

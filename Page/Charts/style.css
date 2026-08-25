@@ -1,0 +1,121 @@
+/* 图表示例的二级导航与路由承载区。 */
+.charts-page {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    padding: 10px;
+}
+
+.charts-router-view {
+    width: calc(100% - 270px);
+    margin-left: 10px;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* 独立 Bar 总览页面，不复用或扩张 Line 示例的专用样式。 */
+.bar-chart-demo {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    padding-right: 8px;
+    padding-bottom: 22px;
+}
+
+.bar-chart-demo-title {
+    width: 100%;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    font-size: 30px;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.9);
+}
+
+.bar-chart-demo-subtitle {
+    width: 100%;
+    min-height: 24px;
+    margin-top: 4px;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.72);
+}
+
+.bar-chart-demo-description {
+    width: 100%;
+    min-height: 42px;
+    margin-top: 10px;
+    padding: 10px 14px;
+    border: 1px solid #d3adf7;
+    border-radius: 7px;
+    background: #f9f0ff;
+    color: #531dab;
+    font-size: 13px;
+}
+
+.bar-chart-action-row {
+    width: 100%;
+    min-height: 40px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.bar-chart-update-button {
+    min-width: 112px;
+    height: 32px;
+    padding-left: 14px;
+    padding-right: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #722ed1;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #531dab;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.bar-chart-update-button:hover {
+    color: #ffffff;
+    background: #722ed1;
+}
+
+.bar-chart-status {
+    min-height: 24px;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.bar-chart-preview-card {
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px 16px 16px 16px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+.bar-chart-preview-help {
+    width: 100%;
+    min-height: 24px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.58);
+}
+
+.bar-chart-preview-scroll {
+    width: 100%;
+    min-height: 570px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border: 1px solid rgba(114, 46, 209, 0.16);
+    border-radius: 8px;
+    background: #fafcff;
+}
+
+.bar-chart-canvas {
+    flex-shrink: 0;
+}

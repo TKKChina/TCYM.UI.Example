@@ -112,7 +112,7 @@
     padding: 5px 15px;
     background: #1677FF;
     color: #FFFFFF;
-    padding-left: 25px;
+    padding-left: 27px;
     position: relative;
 }
 
@@ -120,7 +120,7 @@
     pointer-events: none;
     font-family: "TCYMIconFont";
     position: absolute;
-    left: -18px;
+    left: -20px;
     top: 50%;
     font-size: 18px;
     width: 20px;
@@ -134,8 +134,8 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
 }
 
 .code-toolbar-icon {

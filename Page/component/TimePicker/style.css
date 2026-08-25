@@ -1,0 +1,85 @@
+.timepicker-demo-view {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  padding-right: 10px;
+  padding-bottom: 20px;
+}
+
+.timepicker-demo-view .timepicker-demo-title {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.timepicker-demo-view .timepicker-demo-subtitle {
+  width: 100%;
+  height: 20px;
+  margin-top: 4px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.timepicker-demo-view .timepicker-demo-desc {
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 10px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.02);
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.timepicker-demo-view .timepicker-demo-card {
+  width: 100%;
+  margin-top: 10px;
+  padding: 16px;
+  padding-bottom: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.timepicker-demo-view .timepicker-card-title {
+  margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.88);
+}
+
+.timepicker-demo-view .timepicker-card-desc {
+  width: calc(100% - 20px);
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.timepicker-demo-view .timepicker-showcase {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.timepicker-demo-view .timepicker-event-group {
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.timepicker-demo-view .timepicker-event-status {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.65);
+}

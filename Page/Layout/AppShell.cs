@@ -1,3 +1,4 @@
+using Page.Charts;
 using TCYM.UI.Core;
 using TCYM.UI.Core.Routing;
 using TCYM.UI.Elements;
@@ -30,9 +31,16 @@ namespace TCYM.UI.Example.Page.Layout
                     Id = "app",
                     Path = "/app",
                     Name = "主界面",
-                    KeepAlive = false,
-                    ReclaimMemoryOnLeave = true,
-                    Element = UIRoute.LazyLoad(() => new Layout())
+                    KeepAlive = true,
+                    Element = UIRoute.LazyLoad(() => new Layout(router))
+                },
+                new UIRouteRecord
+                {
+                    Id = "charts",
+                    Path = "/charts",
+                    Name = "图表",
+                    KeepAlive = true,
+                    Element = UIRoute.LazyLoad(() => new ChartPage())
                 }
             ]);
 

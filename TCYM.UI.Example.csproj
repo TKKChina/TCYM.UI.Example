@@ -1,4 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- AotAnywhere: 使用内置 Zig 工具链，从 Windows/macOS/Linux 交叉发布 Native AOT 到多平台 RID。 -->
+  <Sdk Name="StuDev.AotAnywhere" Version="1.0.4" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -37,6 +40,10 @@
     <None Remove="Assets\Fonts\iconfont.ttf" />
     <None Remove="Assets\Images\gif.gif" />
     <None Remove="Assets\Images\tu.png" />
+    <None Remove="Page\Charts\Lines\style.css" />
+    <None Remove="Page\Charts\Bars\style.css" />
+    <None Remove="Page\Charts\Pie\style.css" />
+    <None Remove="Page\Charts\style.css" />
     <None Remove="Page\com.css" />
     <None Remove="Page\Layout\login.css" />
     <None Remove="Page\component\Anchor\style.css" />
@@ -47,9 +54,11 @@
     <None Remove="Page\component\CodeEditor\style.css" />
     <None Remove="Page\component\ColorPicker\style.css" />
     <None Remove="Page\component\DatePicker\style.css" />
+    <None Remove="Page\component\TimePicker\style.css" />
     <None Remove="Page\component\Dropdown\style.css" />
     <None Remove="Page\component\FilePicker\style.css" />
     <None Remove="Page\component\FloatButton\style.css" />
+    <None Remove="Page\component\Glass\style.css" />
     <None Remove="Page\component\Icon\iconfont.json" />
     <None Remove="Page\component\Icon\style.css" />
     <None Remove="Page\component\Image\style.css" />
@@ -57,6 +66,7 @@
     <None Remove="Page\component\Label\style.css" />
     <None Remove="Page\component\Menu\style.css" />
     <None Remove="Page\component\Message\style.css" />
+    <None Remove="Page\component\Notification\style.css" />
     <None Remove="Page\component\Modal\style.css" />
     <None Remove="Page\component\Progress\style.css" />
     <None Remove="Page\component\Radio\style.css" />
@@ -69,6 +79,7 @@
     <None Remove="Page\component\Switch\style.css" />
     <None Remove="Page\component\Table\style.css" />
     <None Remove="Page\component\Tabs\style.css" />
+    <None Remove="Page\component\Timeline\style.css" />
     <None Remove="Page\component\Pagination\style.css" />
     <None Remove="Page\component\Tag\style.css" />
     <None Remove="Page\component\Tooltip\style.css" />
@@ -92,6 +103,10 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\Fonts\iconfont.ttf" />
+    <EmbeddedResource Include="Page\Charts\Lines\style.css" />
+    <EmbeddedResource Include="Page\Charts\Bars\style.css" />
+    <EmbeddedResource Include="Page\Charts\Pie\style.css" />
+    <EmbeddedResource Include="Page\Charts\style.css" />
     <EmbeddedResource Include="Page\com.css">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -107,9 +122,11 @@
     <EmbeddedResource Include="Page\component\FilePicker\style.css" />
     <EmbeddedResource Include="Page\component\Label\style.css" />
     <EmbeddedResource Include="Page\component\Message\style.css" />
+    <EmbeddedResource Include="Page\component\Notification\style.css" />
     <EmbeddedResource Include="Page\component\Modal\style.css" />
     <EmbeddedResource Include="Page\component\Progress\style.css" />
     <EmbeddedResource Include="Page\component\FloatButton\style.css" />
+    <EmbeddedResource Include="Page\component\Glass\style.css" />
     <EmbeddedResource Include="Page\component\Svg\style.css" />
     <EmbeddedResource Include="Page\component\Svg\svg-animation.css" />
     <EmbeddedResource Include="Page\component\Table\style.css" />
@@ -120,6 +137,7 @@
     <EmbeddedResource Include="Page\component\CodeEditor\style.css" />
     <EmbeddedResource Include="Page\component\ColorPicker\style.css" />
     <EmbeddedResource Include="Page\component\DatePicker\style.css" />
+    <EmbeddedResource Include="Page\component\TimePicker\style.css" />
     <EmbeddedResource Include="Page\component\Dropdown\style.css" />
     <EmbeddedResource Include="Page\component\Icon\iconfont.json" />
     <EmbeddedResource Include="Page\component\Icon\style.css" />
@@ -133,6 +151,7 @@
     <EmbeddedResource Include="Page\component\Splitter\style.css" />
     <EmbeddedResource Include="Page\component\Switch\style.css" />
     <EmbeddedResource Include="Page\component\Tabs\style.css" />
+    <EmbeddedResource Include="Page\component\Timeline\style.css" />
     <EmbeddedResource Include="Page\component\Pagination\style.css" />
     <EmbeddedResource Include="Page\component\VirtualScrollView\style.css" />
     <EmbeddedResource Include="Page\component\Watermark\style.css" />
@@ -145,7 +164,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="TCYM.UI" Version="0.1.1.17" />
+    <PackageReference Include="TCYM.UI" Version="0.1.1.18" />
+    <PackageReference Include="TCYM.UI.Chart" Version="0.1.1.21" />
     <PackageReference Include="TCYM.UI.Generator" Version="0.1.1.14">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

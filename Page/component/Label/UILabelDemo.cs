@@ -191,7 +191,7 @@ namespace TCYM.UI.Example.Page.component.Label
         {
             return CreateSectionCard(
                 "文本高亮",
-                "通过 Highlights 指定文本片段和颜色，适合搜索结果、高风险关键词、命中规则提示等场景。",
+                "Highlights 默认按 Value 精确匹配；设置 IsRegex=true 后，Value 将作为正则表达式，适合搜索结果、高风险关键词、编号和命中规则提示等场景。",
                 new UIView
                 {
                     ClassName = new List<string> { "label-showcase", "label-showcase-column" },
@@ -210,10 +210,11 @@ namespace TCYM.UI.Example.Page.component.Label
                         },
                         new UILabel
                         {
-                            Text = "风控提示：订单金额异常、设备指纹异常、登录地区异常。",
+                            Text = "风控提示：订单 ERR-1042 金额异常、设备 WARN-77 指纹异常、登录地区异常。",
                             ClassName = new List<string> { "label-highlight-sample" },
                             Highlights = new List<TextHighlight>
                             {
+                                new() { Value = @"\b(?:ERR|WARN)-\d+\b", Color = "#1677ff", IsRegex = true },
                                 new() { Value = "异常", Color = "#cf1322" },
                                 new() { Value = "风控提示", Color = "#722ed1" },
                             }

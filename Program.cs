@@ -6,14 +6,23 @@ using TCYM.UI.Events;
 using TCYM.UI.Example.Page.Layout;
 using TCYM.UI.Helpers;
 
-internal class Program
+internal static class Program
 {
+    /// <summary>初始化 UI 系统、挂接默认页面并运行桌面消息循环。</summary>
     public static void Main()
     {
-        // 是否启用帧时间日志（输出每帧的CPU和GPU时间，单位毫秒），可用于性能分析和调优。启用后会在控制台输出每帧的渲染时间信息，帮助开发者了解UI渲染的性能瓶颈。
-        UISystem.EnableFrameTimingLog = true;
-        // 是否启用渲染类型分析日志（输出每帧的渲染类型分析信息）。启用后会在控制台输出每帧的渲染类型分析结果，包括不同渲染类型的占比和性能数据。这对于优化UI渲染性能非常有帮助，尤其是在复杂UI场景下，可以帮助开发者识别哪些渲染类型可能导致性能问题。
-        UISystem.EnableRenderTypeProfile = true;
+        // 性能分析会给每个渲染节点计时并输出日志，正常演示默认关闭；需要采样时设置 TCYM_UI_PROFILE=1。
+        bool enablePerformanceProfile = string.Equals(
+            Environment.GetEnvironmentVariable("TCYM_UI_PROFILE")?? "1",
+            "1",
+            StringComparison.Ordinal);
+        UISystem.EnableFrameTimingLog = enablePerformanceProfile;
+        UISystem.EnableRenderTypeProfile = enablePerformanceProfile;
+        if (enablePerformanceProfile)
+        {
+            // 分析模式下保留轻量组件，便于观察 Chart 与常用组件的完整耗时分布。
+            UISystem.RenderTypeProfileMinimumMilliseconds = 0;
+        }
         // 帧时间日志的阈值和输出频率设置（仅在启用帧时间日志时生效）。FrameTimingLogThresholdMs 设置了日志输出的时间阈值，只有当某帧的CPU或GPU渲染时间超过这个值时才会输出日志。FrameTimingLogIntervalFrames 设置了日志输出的频率，表示每隔多少帧输出一次日志。合理设置这两个参数可以帮助开发者聚焦于性能问题较严重的帧，同时避免过多的日志输出干扰分析。
         UISystem.FrameTimingLogThresholdMs = 1;
         // 设置帧时间日志的输出频率（单位：帧）。例如，设置为1表示每帧都输出日志，设置为10表示每10帧输出一次日志。合理设置这个参数可以帮助开发者在性能分析时获得足够的数据，同时避免过多的日志输出干扰分析。
@@ -84,6 +93,7 @@ internal class Program
             },
         });
         root.AddChild(new AppShell());
+
         try
         {
             UISystem.Run();
@@ -93,4 +103,5 @@ internal class Program
             UISystem.Shutdown();
         }
     }
+
 }
