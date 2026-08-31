@@ -2,7 +2,7 @@
 
 TCYM.UI.Example 是一个可独立构建和运行的 TCYM.UI 示例工程，用于对外展示基础组件、声明式路由、Chart 图表、布局与样式、SDL3 输入事件及跨平台窗口能力。
 
-这个仓库通过 NuGet 引用 `TCYM.UI 0.1.1.18`、`TCYM.UI.Chart 0.1.1.21` 和 `TCYM.UI.Generator 0.1.1.14`，不依赖上级源码目录中的项目，因此可以单独复制、构建和发布。公开展示构建不引用 `TCYM.UI.Pro` 及其运行依赖，Player、MvGigECamera、PlayerDetection 等 Pro 示例目录不参与编译，本次也不做同步。
+这个仓库通过 NuGet 引用 `TCYM.UI 0.1.1.21`、`TCYM.UI.Chart 0.1.1.23` 和 `TCYM.UI.Generator 0.1.1.14`，不依赖上级源码目录中的项目，因此可以单独复制、构建和发布。公开仓库不包含 `TCYM.UI.Pro`、Player、PlayerDetection、MvGigECamera 等 Pro 示例源码及其运行依赖。
 
 ## 文档地址
 
@@ -25,16 +25,16 @@ TCYM.UI.Example 是一个可独立构建和运行的 TCYM.UI 示例工程，用�
 
 - 应用结构：登录演示、同级页面切换、声明式路由、延迟加载、KeepAlive 页面预加载与退出登录
 - 基础组件：按钮、锚点、Glass CSS、图标、文本、图片、菜单、分页、标签页、表格、树等
-- 数据录入：Input、Checkbox、Radio、Select、DatePicker、TimePicker、ColorPicker、Slider 等
+- 数据录入：Input、Checkbox、Radio、Select、TreeSelect、DatePicker、TimePicker、ColorPicker、Slider 等
 - 数据展示与反馈：Badge、Carousel、Timeline、Notification、进度条、消息、对话框、水印等
-- Chart 图表：基础与大数据折线图、实时折线图、堆叠/极坐标柱状图、玫瑰图、环形图等
+- Chart 图表：折线图、实时/大数据图、柱状图、堆叠/极坐标图、饼图、环形图、玫瑰图和 Gauge 仪表盘等
 - SDL3 能力：触控笔事件、文件拖放位置更新、手柄/摇杆输入可视化
 - 其他组件：分隔面板、虚拟滚动、文件选择、USB 摄像头等
 
 ## 目录说明
 
 - `Assets`：示例所需图片、字体等资源
-- `Page/component`：基础组件演示代码
+- `Page/component`：公开基础组件演示代码
 - `Page/Charts`：TCYM.UI.Chart 图表示例
 - `Page/Layout`：登录、全局路由与主布局代码
 - `Libs`：TCYM.UI 相关许可文件

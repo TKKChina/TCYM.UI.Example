@@ -25,15 +25,6 @@
     <Compile Remove="Page\component\UILabel\**" />
     <EmbeddedResource Remove="Page\component\UILabel\**" />
     <None Remove="Page\component\UILabel\**" />
-    <Compile Remove="Page\component\MvGigECamera\**" />
-    <EmbeddedResource Remove="Page\component\MvGigECamera\**" />
-    <None Remove="Page\component\MvGigECamera\**" />
-    <Compile Remove="Page\component\Player\**" />
-    <EmbeddedResource Remove="Page\component\Player\**" />
-    <None Remove="Page\component\Player\**" />
-    <Compile Remove="Page\component\PlayerDetection\**" />
-    <EmbeddedResource Remove="Page\component\PlayerDetection\**" />
-    <None Remove="Page\component\PlayerDetection\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,6 +34,7 @@
     <None Remove="Page\Charts\Lines\style.css" />
     <None Remove="Page\Charts\Bars\style.css" />
     <None Remove="Page\Charts\Pie\style.css" />
+    <None Remove="Page\Charts\Gauge\style.css" />
     <None Remove="Page\Charts\style.css" />
     <None Remove="Page\com.css" />
     <None Remove="Page\Layout\login.css" />
@@ -55,6 +47,7 @@
     <None Remove="Page\component\ColorPicker\style.css" />
     <None Remove="Page\component\DatePicker\style.css" />
     <None Remove="Page\component\TimePicker\style.css" />
+    <None Remove="Page\component\TreeSelect\style.css" />
     <None Remove="Page\component\Dropdown\style.css" />
     <None Remove="Page\component\FilePicker\style.css" />
     <None Remove="Page\component\FloatButton\style.css" />
@@ -106,6 +99,7 @@
     <EmbeddedResource Include="Page\Charts\Lines\style.css" />
     <EmbeddedResource Include="Page\Charts\Bars\style.css" />
     <EmbeddedResource Include="Page\Charts\Pie\style.css" />
+    <EmbeddedResource Include="Page\Charts\Gauge\style.css" />
     <EmbeddedResource Include="Page\Charts\style.css" />
     <EmbeddedResource Include="Page\com.css">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -133,6 +127,7 @@
     <EmbeddedResource Include="Page\component\Tag\style.css" />
     <EmbeddedResource Include="Page\component\Tooltip\style.css" />
     <EmbeddedResource Include="Page\component\Tree\style.css" />
+    <EmbeddedResource Include="Page\component\TreeSelect\style.css" />
     <EmbeddedResource Include="Page\component\Checkbox\style.css" />
     <EmbeddedResource Include="Page\component\CodeEditor\style.css" />
     <EmbeddedResource Include="Page\component\ColorPicker\style.css" />
@@ -164,8 +159,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="TCYM.UI" Version="0.1.1.18" />
-    <PackageReference Include="TCYM.UI.Chart" Version="0.1.1.21" />
+    <PackageReference Include="TCYM.UI" Version="0.1.1.21" />
+    <PackageReference Include="TCYM.UI.Chart" Version="0.1.1.23" />
     <PackageReference Include="TCYM.UI.Generator" Version="0.1.1.14">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -33,7 +33,7 @@ namespace TCYM.UI.Example.Page.Layout
                         {
                             MenuItem.Divider("group-universal-divider-top"),
                             new("button", "按钮"){ Icon = "&#xe690;" },
-                            new("floatbutton", "悬浮按钮") { Icon = "&#xe649;",Badge = new UIBadge { CountText = "更新",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#28b5ec")}},
+                            new("floatbutton", "悬浮按钮") { Icon = "&#xe649;"},
                             new("icon", "Icon 图标") { Icon = "&#xe60a;" },
                             new("label", "文本") { Icon = "&#xe651;",Badge = new UIBadge { CountText = "更新",ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#28b5ec")}},
                             new("glass", "CSS") { Icon = "&#xe6d5;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
@@ -57,6 +57,7 @@ namespace TCYM.UI.Example.Page.Layout
                             MenuItem.Divider("group-data-entry-divider-top"),
                             new("slider", "滑动条") { Icon = "&#xe6d1;" },
                             new("select", "选择器") { Icon = "&#xe70b;" },
+                            new("treeSelect", "树选择器") { Icon = "&#xe67b;", Badge = new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") } },
                             new("checkbox", "多选框") { Icon = "&#xe66d;" },
                             new("radio", "单选框") { Icon = "&#xe71f;" },
                             new("datepicker", "日期选择框") { Icon = "&#xe629;" },

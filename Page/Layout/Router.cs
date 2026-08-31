@@ -15,6 +15,7 @@ using TCYM.UI.Example.Page.component.TimePicker;
 using TCYM.UI.Example.Page.component.Switch;
 using TCYM.UI.Example.Page.component.Input;
 using TCYM.UI.Example.Page.component.Tree;
+using TCYM.UI.Example.Page.component.TreeSelect;
 using TCYM.UI.Example.Page.component.Tooltip;
 using TCYM.UI.Example.Page.component.Badge;
 using TCYM.UI.Example.Page.component.FloatButton;
@@ -73,6 +74,7 @@ namespace TCYM.UI.Example.Page.Layout
                         new() { Id = "demo_carousel", Path = "carousel", Name = "Carousel", Element = UIRoute.LazyLoad(() => new UICarouselDemo()), KeepAlive = false },
                         new() { Id = "demo_pagination", Path = "pagination", Name = "Pagination", Element = UIRoute.LazyLoad(() => new UIPaginationDemo()) },
                         new() { Id = "demo_select", Path = "select", Name = "Select", Element = UIRoute.LazyLoad(() => new UISelectDemo()) },
+                        new() { Id = "demo_tree_select", Path = "tree-select", Name = "TreeSelect", Element = UIRoute.LazyLoad(() => new UITreeSelectDemo()) },
                         new() { Id = "demo_dropdown", Path = "dropdown", Name = "Dropdown", Element = UIRoute.LazyLoad(() => new UIDropdownDemo()) },
                         new() { Id = "demo_checkbox", Path = "checkbox", Name = "Checkbox", Element = UIRoute.LazyLoad(() => new UICheckboxDemo()) },
                         new() { Id = "demo_radio", Path = "radio", Name = "Radio", Element = UIRoute.LazyLoad(() => new UIRadioDemo()) },

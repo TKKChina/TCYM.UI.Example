@@ -6,15 +6,14 @@ using TCYM.UI.Elements.Message;
 
 namespace TCYM.UI.Example.Page.Layout
 {
+    /// <summary>承载主菜单和组件示例内容，并在页面稳定后预加载图表路由。</summary>
     internal class Layout : UIView, IUIRouteLifecycle
     {
-        private readonly UIRouter _appRouter;
-        // 0=未开始，1=后台预热或等待 UI 空闲提交，2=页面预加载完成。
-        private int _chartsPreloadState;
+        private const int ChartsPreloadDelayMilliseconds = 300;
+        private CancellationTokenSource? _chartsPreloadCancellation;
 
-        internal Layout(UIRouter appRouter)
+        internal Layout()
         {
-            _appRouter = appRouter ?? throw new ArgumentNullException(nameof(appRouter));
             var router = Router.Create();
             ClassName = "main-view";
             Children = new()
@@ -44,6 +43,7 @@ namespace TCYM.UI.Example.Page.Layout
                             "pagination" => "/demo/pagination",
                             "dropdown" => "/demo/dropdown",
                             "select" => "/demo/select",
+                            "treeSelect" => "/demo/tree-select",
                             "checkbox" => "/demo/checkbox",
                             "radio" => "/demo/radio",
                             "datepicker" => "/demo/datepicker",
@@ -86,54 +86,62 @@ namespace TCYM.UI.Example.Page.Layout
             //router.ReplaceById("demo_button");
         }
 
-        /// <summary>
-        /// 主界面显示后先在线程池预热纯 Chart 管线，再把真实页面创建加入 UI 空闲队列。
-        /// </summary>
+        /// <summary>进入主界面后延迟预加载图表页，避免阻塞当前路由的首帧显示。</summary>
+        /// <param name="fromPath">进入主界面前所在的路由路径。</param>
         public void OnRouteEnter(string? fromPath)
         {
             _ = fromPath;
-            if (Interlocked.CompareExchange(ref _chartsPreloadState, 1, 0) != 0) return;
-            _ = WarmUpAndQueueChartsAsync();
+            CancelChartsPreload();
+            var cancellation = CancellationTokenSource.CreateLinkedTokenSource(LifetimeToken);
+            _chartsPreloadCancellation = cancellation;
+            _ = PreloadChartsAsync(cancellation);
         }
 
-        /// <summary>
-        /// 后台阶段不访问 UI 树；完成后只排队一次较短的 UI 页面构造与宿主尺寸准备。
-        /// </summary>
-        private async Task WarmUpAndQueueChartsAsync()
-        {
-            try
-            {
-                await ChartPage.WarmUpInBackgroundAsync().ConfigureAwait(false);
-                if (!UIDispatcher.PostIdle(() =>
-                    {
-                        bool loaded = _appRouter.PreloadById("charts");
-                        Volatile.Write(ref _chartsPreloadState, loaded ? 2 : 0);
-                    }))
-                {
-                    Volatile.Write(ref _chartsPreloadState, 0);
-                }
-            }
-            catch (Exception exception)
-            {
-                Volatile.Write(ref _chartsPreloadState, 0);
-                // 预热失败只影响性能，不影响功能；保留调试信息并让下一次进入重新尝试。
-                System.Diagnostics.Debug.WriteLine(
-                    $"[Charts.BackgroundPreload] {exception}");
-            }
-        }
-
-        /// <summary>
-        /// KeepAlive 主界面离开时不释放页面；隐藏子树由框架自动停止布局、渲染与动画扫描。
-        /// </summary>
+        /// <summary>离开主界面时取消尚未开始的图表预加载。</summary>
+        /// <param name="toPath">主界面离开后进入的目标路由路径。</param>
         public void OnRouteLeave(string? toPath)
         {
             _ = toPath;
+            CancelChartsPreload();
         }
 
-        private static void Logout()
+        /// <summary>等待主界面首帧完成后，在 UI 线程创建一次性图表预加载页。</summary>
+        private async Task PreloadChartsAsync(CancellationTokenSource cancellation)
         {
+            try
+            {
+                await Task.Delay(ChartsPreloadDelayMilliseconds, cancellation.Token);
+                cancellation.Token.ThrowIfCancellationRequested();
+                await UIRouterNavigator.PreloadByIdAsync("charts");
+            }
+            catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+            {
+            }
+            finally
+            {
+                if (ReferenceEquals(_chartsPreloadCancellation, cancellation))
+                {
+                    _chartsPreloadCancellation = null;
+                }
+                cancellation.Dispose();
+            }
+        }
+
+        /// <summary>取消当前尚未完成的图表预加载任务。</summary>
+        private void CancelChartsPreload()
+        {
+            var cancellation = _chartsPreloadCancellation;
+            _chartsPreloadCancellation = null;
+            cancellation?.Cancel();
+        }
+
+        /// <summary>退出登录，并在登录页显示后释放尚未使用的图表预加载页。</summary>
+        private void Logout()
+        {
+            CancelChartsPreload();
             UISystem.Manager?.GetElementById<UICaptionBar>("demo-caption-bar")?.AddClass("login-caption-bar");
             UIRouterNavigator.NavigateById("login", replace: true);
+            UIDispatcher.Post(() => UIRouterNavigator.DiscardPreloadedById("charts"));
             UISystem.SetWindowSize(1200, 800);
             UIMessage.Info("已退出登录");
         }

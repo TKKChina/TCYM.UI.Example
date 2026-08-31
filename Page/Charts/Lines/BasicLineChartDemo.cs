@@ -55,35 +55,16 @@ namespace Page.Charts.Lines
 
         /// <summary>创建包含 Mark 模块的图表注册表。</summary>
         /// <returns>可绘制平均值标记线的图表注册表。</returns>
-        internal static ChartRegistry CreateRegistry()
+        private static ChartRegistry CreateRegistry()
         {
             var registry = ChartModules.CreateDefaultRegistry();
             ChartMarkModule.Register(registry);
             return registry;
         }
 
-        /// <summary>
-        /// 在后台线程创建并完整构建一个临时 Engine，提前完成模块注册、配置管线和首次 JIT。
-        /// 临时 Engine 始终在创建它的线程内释放，不会进入 UI 元素树。
-        /// </summary>
-        internal static void WarmUpPipeline()
-        {
-            using var engine = new ChartEngine(CreateRegistry());
-            engine.Resize(900f, 490f);
-            engine.SetOption(
-                CreateOption(),
-                new ChartSetOptionOptions
-                {
-                    NotMerge = true,
-                    LazyUpdate = true,
-                    Silent = true,
-                });
-            engine.Prepare();
-        }
-
         /// <summary>创建基础折线图的完整配置。</summary>
         /// <returns>包含普通折线、圆形节点、数值标签和平均值标记线的图表配置。</returns>
-        internal static ChartOption CreateOption()
+        private static ChartOption CreateOption()
         {
             // 1. 创建图表和绘图区。基础折线图不需要图例。
             var option = new ChartOption

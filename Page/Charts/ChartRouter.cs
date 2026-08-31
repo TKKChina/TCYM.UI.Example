@@ -1,4 +1,5 @@
 using Page.Charts.Bars;
+using Page.Charts.Gauge;
 using Page.Charts.Lines;
 using Page.Charts.Pie;
 using TCYM.UI.Core.Routing;
@@ -9,8 +10,8 @@ namespace Page.Charts
     internal static class ChartRouter
     {
 
-        /// <summary>创建 Line、Bar 与 Pie 分类示例使用的路由表。</summary>
-        /// <returns>绑定七个 Line 页面、八个 Bar 页面和七个 Pie 页面的独立路由器。</returns>
+        /// <summary>创建 Line、Bar、Pie 与 Gauge 分类示例使用的路由表。</summary>
+        /// <returns>绑定七个 Line、八个 Bar、七个 Pie 和六个 Gauge 页面的独立路由器。</returns>
         internal static UIRouter Create()
         {
             UIRouteRecord[] routes =
@@ -22,7 +23,7 @@ namespace Page.Charts
                   Path = "lines",
                   Name = "折线图",
                   KeepAlive = false,
-                  Element = UIRoute.LazyLoad(LineChartDemoPage.CreateArea),
+                  Element = UIRoute.LazyLoad(LineChartDemoPage.CreateBasic),
                   Children =
                   [
                       new()
@@ -222,6 +223,65 @@ namespace Page.Charts
                             Name = "半圆增强展示",
                             KeepAlive = false,
                             Element = UIRoute.LazyLoad(PieChartDemoPage.CreateEnhancedHalfDonut),
+                        },
+                    ],
+                },
+                new()
+                {
+                    Id = "gauge",
+                    Path = "gauges",
+                    Name = "Gauge 仪表盘",
+                    KeepAlive = false,
+                    Element = UIRoute.LazyLoad(GaugeChartDemoPage.CreateSpeed),
+                    Children =
+                    [
+                        new()
+                        {
+                            Id = "chart_gauge_speed",
+                            Path = "speed",
+                            Name = "速度仪表盘",
+                            KeepAlive = false,
+                            Element = UIRoute.LazyLoad(GaugeChartDemoPage.CreateSpeed),
+                        },
+                        new()
+                        {
+                            Id = "chart_gauge_stage_speed",
+                            Path = "stage-speed",
+                            Name = "阶段速仪表盘",
+                            KeepAlive = false,
+                            Element = UIRoute.LazyLoad(GaugeChartDemoPage.CreateStageSpeed),
+                        },
+                        new()
+                        {
+                            Id = "chart_gauge_temperature",
+                            Path = "temperature",
+                            Name = "气温仪表盘",
+                            KeepAlive = false,
+                            Element = UIRoute.LazyLoad(GaugeChartDemoPage.CreateTemperature),
+                        },
+                        new()
+                        {
+                            Id = "chart_gauge_clock",
+                            Path = "clock",
+                            Name = "时钟仪表盘",
+                            KeepAlive = false,
+                            Element = UIRoute.LazyLoad(GaugeChartDemoPage.CreateClock),
+                        },
+                        new()
+                        {
+                            Id = "chart_gauge_custom",
+                            Path = "custom",
+                            Name = "自定义仪表",
+                            KeepAlive = false,
+                            Element = UIRoute.LazyLoad(GaugeChartDemoPage.CreateCustom),
+                        },
+                        new()
+                        {
+                            Id = "chart_gauge_pie",
+                            Path = "pie-gauge",
+                            Name = "饼仪图",
+                            KeepAlive = false,
+                            Element = UIRoute.LazyLoad(GaugeChartDemoPage.CreatePieGauge),
                         },
                     ],
                 },

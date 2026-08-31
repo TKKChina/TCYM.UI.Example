@@ -1,5 +1,5 @@
-﻿/* 各 Line 页面沿用组件 Demo 的标题、说明和白色预览卡片布局。 */
-.line-chart-demo {
+/* Gauge 页面沿用 Line、Bar 与 Pie 示例的标题、说明和白色预览卡片布局。 */
+.gauge-chart-demo {
     width: 100%;
     height: 100%;
     overflow-x: hidden;
@@ -7,7 +7,7 @@
     padding-bottom: 22px;
 }
 
-.line-chart-demo-title {
+.gauge-chart-demo-title {
     width: 100%;
     min-height: 38px;
     display: flex;
@@ -17,7 +17,7 @@
     color: rgba(0, 0, 0, 0.9);
 }
 
-.line-chart-demo-subtitle {
+.gauge-chart-demo-subtitle {
     width: 100%;
     min-height: 24px;
     margin-top: 4px;
@@ -25,19 +25,19 @@
     color: rgba(0, 0, 0, 0.72);
 }
 
-.line-chart-demo-description {
+.gauge-chart-demo-description {
     width: 100%;
     min-height: 42px;
     margin-top: 10px;
     padding: 10px 14px;
-    border: 1px solid #bae0ff;
+    border: 1px solid #d3adf7;
     border-radius: 7px;
-    background: #e6f4ff;
-    color: #0958d9;
+    background: #f9f0ff;
+    color: #531dab;
     font-size: 13px;
 }
 
-.line-chart-preview-card {
+.gauge-chart-preview-card {
     width: 100%;
     margin-top: 12px;
     padding: 14px 16px 16px 16px;
@@ -46,7 +46,7 @@
     background: #ffffff;
 }
 
-.line-chart-card-title {
+.gauge-chart-card-title {
     width: 100%;
     min-height: 24px;
     font-size: 15px;
@@ -54,7 +54,7 @@
     color: rgba(0, 0, 0, 0.86);
 }
 
-.line-chart-preview-help {
+.gauge-chart-preview-help {
     width: 100%;
     min-height: 22px;
     margin-bottom: 8px;
@@ -62,7 +62,7 @@
     color: rgba(0, 0, 0, 0.58);
 }
 
-.line-chart-preview-scroll {
+.gauge-chart-preview-scroll {
     width: 100%;
     min-height: 600px;
     display: flex;
@@ -72,7 +72,7 @@
     overflow-y: hidden;
 }
 
-.line-chart-canvas {
+.gauge-chart-canvas {
     width: 100%;
     height: 590px;
 }

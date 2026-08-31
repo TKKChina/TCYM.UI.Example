@@ -72,6 +72,16 @@ namespace Page.Charts
                             new("chart_pie_half_donut", "半环形图"),
                             new("chart_pie_enhanced_half_donut", "半圆增强展示"),
                         }, new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") }),
+                        MenuItem.Group("group-gauge", "Gauge 仪表盘", new List<MenuItem>
+                        {
+                            MenuItem.Divider("group-gauge-divider-top"),
+                            new("chart_gauge_speed", "速度仪表盘"),
+                            new("chart_gauge_stage_speed", "阶段速仪表盘"),
+                            new("chart_gauge_temperature", "气温仪表盘"),
+                            new("chart_gauge_clock", "时钟仪表盘"),
+                            new("chart_gauge_custom", "自定义仪表"),
+                            new("chart_gauge_pie", "饼仪图"),
+                        }, new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") }),
                         MenuItem.Divider("charts-navigation-divider-bottom"),
                         new("app", "返回上一级") { Icon = "&#xe7ed;", Danger = true }
                     },

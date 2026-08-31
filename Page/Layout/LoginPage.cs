@@ -231,7 +231,7 @@ namespace TCYM.UI.Example.Page.Layout
             UISystem.Manager?.GetElementById<UICaptionBar>("demo-caption-bar")?.RemoveClass("login-caption-bar");
             UIMessage.Success("登录成功");
             UIRouterNavigator.Navigate("/app/demo", replace: true);
-            UISystem.SetWindowSize(1620, 800);
+            UISystem.SetWindowSize(1620, 900);
         }
     }
 }

@@ -64,7 +64,7 @@
 
 .bar-chart-preview-scroll {
     width: 100%;
-    min-height: 500px;
+    min-height: 600px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -74,5 +74,5 @@
 
 .bar-chart-canvas {
     width: 100%;
-    height: 490px;
+    height: 590px;
 }

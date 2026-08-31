@@ -31,15 +31,17 @@ namespace TCYM.UI.Example.Page.Layout
                     Id = "app",
                     Path = "/app",
                     Name = "主界面",
-                    KeepAlive = true,
-                    Element = UIRoute.LazyLoad(() => new Layout(router))
+                    KeepAlive = false,
+                    ReclaimMemoryOnLeave = true,
+                    Element = UIRoute.LazyLoad(() => new Layout())
                 },
                 new UIRouteRecord
                 {
                     Id = "charts",
                     Path = "/charts",
                     Name = "图表",
-                    KeepAlive = true,
+                    KeepAlive = false,
+                    ReclaimMemoryOnLeave = true,
                     Element = UIRoute.LazyLoad(() => new ChartPage())
                 }
             ]);
