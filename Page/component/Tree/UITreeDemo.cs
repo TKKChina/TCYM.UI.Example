@@ -259,13 +259,13 @@ namespace TCYM.UI.Example.Page.component.Tree
                             new UITree
                             {
                                 Style = new UpdateUIStyle { Width = 260 },
-                                DataContext = new UIDataContext(model),
+                                BindingContext = model,
                                 Binding = new()
                                 {
                                     new BindingSpec
                                     {
-                                        TargetProperty = nameof(UITree.TreeData),
-                                        SourceProperty = nameof(TreeDemoModel.BasicNodes),
+                                        TargetProperty = UITree.TreeDataProperty,
+                                        SourceProperty = (TreeDemoModel vm) => vm.BasicNodes,
                                     }
                                 }
                             },
@@ -305,13 +305,13 @@ namespace TCYM.UI.Example.Page.component.Tree
                             {
                                 Style = new UpdateUIStyle { Width = 260 },
                                 Checkable = true,
-                                DataContext = new UIDataContext(model),
+                                BindingContext = model,
                                 Binding = new()
                                 {
                                     new BindingSpec
                                     {
-                                        TargetProperty = nameof(UITree.TreeData),
-                                        SourceProperty = nameof(TreeDemoModel.CheckableNodes),
+                                        TargetProperty = UITree.TreeDataProperty,
+                                        SourceProperty = (TreeDemoModel vm) => vm.CheckableNodes,
                                     }
                                 }
                             },
@@ -320,13 +320,13 @@ namespace TCYM.UI.Example.Page.component.Tree
                                 Style = new UpdateUIStyle { Width = 260 },
                                 Checkable = true,
                                 CheckboxLinked = false,
-                                DataContext = new UIDataContext(model),
+                                BindingContext = model,
                                 Binding = new()
                                 {
                                     new BindingSpec
                                     {
-                                        TargetProperty = nameof(UITree.TreeData),
-                                        SourceProperty = nameof(TreeDemoModel.BasicNodes),
+                                        TargetProperty = UITree.TreeDataProperty,
+                                        SourceProperty = (TreeDemoModel vm) => vm.BasicNodes,
                                     }
                                 }
                             },
@@ -367,13 +367,13 @@ namespace TCYM.UI.Example.Page.component.Tree
                                 Style = new UpdateUIStyle { Width = 260 },
                                 DefaultExpanded = new[] { "2" },
                                 DefaultSelected = new[] { "2-1" },
-                                DataContext = new UIDataContext(model),
+                                BindingContext = model,
                                 Binding = new()
                                 {
                                     new BindingSpec
                                     {
-                                        TargetProperty = nameof(UITree.TreeData),
-                                        SourceProperty = nameof(TreeDemoModel.BasicNodes),
+                                        TargetProperty = UITree.TreeDataProperty,
+                                        SourceProperty = (TreeDemoModel vm) => vm.BasicNodes,
                                     }
                                 }
                             },
@@ -381,13 +381,13 @@ namespace TCYM.UI.Example.Page.component.Tree
                             {
                                 Style = new UpdateUIStyle { Width = 260 },
                                 DefaultExpandAll = true,
-                                DataContext = new UIDataContext(model),
+                                BindingContext = model,
                                 Binding = new()
                                 {
                                     new BindingSpec
                                     {
-                                        TargetProperty = nameof(UITree.TreeData),
-                                        SourceProperty = nameof(TreeDemoModel.BasicNodes),
+                                        TargetProperty = UITree.TreeDataProperty,
+                                        SourceProperty = (TreeDemoModel vm) => vm.BasicNodes,
                                     }
                                 }
                             },
@@ -428,13 +428,13 @@ namespace TCYM.UI.Example.Page.component.Tree
                                 Style = new UpdateUIStyle { Width = 260 },
                                 DefaultExpanded = new[] { "folder-1-1" },
                                 LineStyle = "dashed",
-                                DataContext = new UIDataContext(model),
+                                BindingContext = model,
                                 Binding = new()
                                 {
                                     new BindingSpec
                                     {
-                                        TargetProperty = nameof(UITree.TreeData),
-                                        SourceProperty = nameof(TreeDemoModel.FileNodes),
+                                        TargetProperty = UITree.TreeDataProperty,
+                                        SourceProperty = (TreeDemoModel vm) => vm.FileNodes,
                                     }
                                 }
                             },
@@ -487,13 +487,13 @@ namespace TCYM.UI.Example.Page.component.Tree
                                         }
                                     };
                                 },
-                                DataContext = new UIDataContext(model),
+                                BindingContext = model,
                                 Binding = new()
                                 {
                                     new BindingSpec
                                     {
-                                        TargetProperty = nameof(UITree.TreeData),
-                                        SourceProperty = nameof(TreeDemoModel.BasicNodes),
+                                        TargetProperty = UITree.TreeDataProperty,
+                                        SourceProperty = (TreeDemoModel vm) => vm.BasicNodes,
                                     }
                                 }
                             },
@@ -668,13 +668,13 @@ namespace TCYM.UI.Example.Page.component.Tree
                             },
                         };
                     },
-                    DataContext = new UIDataContext(model),
+                    BindingContext = model,
                     Binding = new()
                     {
                         new BindingSpec
                         {
-                            TargetProperty = nameof(UITree.TreeData),
-                            SourceProperty = nameof(TreeDemoModel.BasicNodes),
+                            TargetProperty = UITree.TreeDataProperty,
+                            SourceProperty = (TreeDemoModel vm) => vm.BasicNodes,
                         }
                     }
                 };
@@ -752,13 +752,13 @@ namespace TCYM.UI.Example.Page.component.Tree
                     {
                         checkLabel.Text = $"勾选节点：{node.Label} (选中={isChecked}，已选数={keys.Length})";
                     },
-                    DataContext = new UIDataContext(model),
+                    BindingContext = model,
                     Binding = new()
                     {
                         new BindingSpec
                         {
-                            TargetProperty = nameof(UITree.TreeData),
-                            SourceProperty = nameof(TreeDemoModel.BasicNodes),
+                            TargetProperty = UITree.TreeDataProperty,
+                            SourceProperty = (TreeDemoModel vm) => vm.BasicNodes,
                         }
                     }
                 };

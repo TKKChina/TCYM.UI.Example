@@ -35,8 +35,10 @@
     <None Remove="Page\Charts\Bars\style.css" />
     <None Remove="Page\Charts\Pie\style.css" />
     <None Remove="Page\Charts\Gauge\style.css" />
+    <None Remove="Page\Charts\Scatter\style.css" />
     <None Remove="Page\Charts\style.css" />
     <None Remove="Page\com.css" />
+    <None Remove="Page\component\Binding\style.css" />
     <None Remove="Page\Layout\login.css" />
     <None Remove="Page\component\Anchor\style.css" />
     <None Remove="Page\component\Badge\style.css" />
@@ -100,7 +102,9 @@
     <EmbeddedResource Include="Page\Charts\Bars\style.css" />
     <EmbeddedResource Include="Page\Charts\Pie\style.css" />
     <EmbeddedResource Include="Page\Charts\Gauge\style.css" />
+    <EmbeddedResource Include="Page\Charts\Scatter\style.css" />
     <EmbeddedResource Include="Page\Charts\style.css" />
+    <EmbeddedResource Include="Page\component\Binding\style.css" />
     <EmbeddedResource Include="Page\com.css">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -159,12 +163,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="TCYM.UI" Version="0.1.1.21" />
-    <PackageReference Include="TCYM.UI.Chart" Version="0.1.1.23" />
-    <PackageReference Include="TCYM.UI.Generator" Version="0.1.1.14">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="TCYM.UI" Version="0.1.1.23" />
+    <PackageReference Include="TCYM.UI.Chart" Version="0.1.1.24" />
   </ItemGroup>
 
 </Project>

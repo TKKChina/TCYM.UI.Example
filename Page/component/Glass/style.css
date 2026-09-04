@@ -174,11 +174,11 @@
 
 @keyframes glass-demo-panel-float {
     0%, 100% {
-        transform: translateY(-15px); /* 最高点 */
+        transform: translateY(-15px); /* 鏈�楂樼偣 */
     }
 
     50% {
-        transform: translateY(15px); /* 最低点 */
+        transform: translateY(15px); /* 鏈�浣庣偣 */
     }
 }
 
@@ -386,9 +386,181 @@
   color: rgba(255, 255, 255, 0.76);
 }
 
+.glass-selector-grid {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.glass-selector-example {
+  width: calc(50% - 7px);
+  min-width: 340px;
+  min-height: 176px;
+  padding: 16px;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  border-radius: 14px;
+  corner-curve: continuous;
+  background: linear-gradient(145deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+.glass-selector-example-title {
+  width: 100%;
+  color: #0f172a;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.glass-selector-example-desc {
+  width: 100%;
+  height: 36px;
+  margin-top: 5px;
+  color: rgba(15, 23, 42, 0.66);
+  font-size: 12px;
+}
+
+.glass-selector-surface {
+  width: 100%;
+  height: 72px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  corner-curve: continuous;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+  transition: all 0.18s ease-out;
+}
+
+.glass-hover-surface {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #1e3a8a;
+}
+
+.glass-hover-surface:hover {
+  border-color: #1d4ed8;
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.24);
+}
+
+.glass-active-surface {
+  border-color: #fed7aa;
+  background: #fff7ed;
+  color: #9a3412;
+}
+
+.glass-active-surface:active {
+  border-color: #c2410c;
+  background: #ea580c;
+  color: #ffffff;
+  opacity: 0.82;
+}
+
+.glass-sibling-row {
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.glass-sibling-pill {
+  width: calc(25% - 6px);
+  min-width: 76px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(100, 116, 139, 0.22);
+  border-radius: 10px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.glass-adjacent-source,
+.glass-general-source {
+  border-color: #c4b5fd;
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.glass-adjacent-source + .glass-adjacent-target {
+  border-color: #1d4ed8;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.glass-general-source ~ .glass-general-target {
+  border-color: #047857;
+  background: #059669;
+  color: #ffffff;
+}
+
+.glass-first-child-item:first-child {
+  border-color: #7c3aed;
+  background: #8b5cf6;
+  color: #ffffff;
+}
+
+.glass-nth-child-item:nth-child(2n) {
+  border-color: #be185d;
+  background: #ec4899;
+  color: #ffffff;
+}
+
+.glass-not-item:not(.glass-not-disabled) {
+  border-color: #0f766e;
+  background: #14b8a6;
+  color: #ffffff;
+}
+
+.glass-is-item:is(.glass-is-primary, .glass-is-success) {
+  border-color: #0369a1;
+  background: #0ea5e9;
+  color: #ffffff;
+}
+
+.glass-has-surface {
+  width: 100%;
+  min-height: 72px;
+  margin-top: 10px;
+  padding: 9px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(100, 116, 139, 0.22);
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #475569;
+}
+
+.glass-has-surface:has(.glass-has-indicator) {
+  border-color: #7c3aed;
+  background: #ede9fe;
+  color: #4c1d95;
+  box-shadow: 0 10px 24px rgba(124, 58, 237, 0.18);
+}
+
+.glass-has-indicator {
+  border-color: #7c3aed;
+  background: #ffffff;
+  color: #6d28d9;
+}
+
 .glass-code-editor {
   width: 100%;
-  height: 470px;
+  height: 650px;
   border: 1px solid rgba(15, 23, 42, 0.12);
   border-radius: 14px;
   corner-curve: continuous;

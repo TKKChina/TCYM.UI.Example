@@ -2,6 +2,7 @@ using Page.Charts.Bars;
 using Page.Charts.Gauge;
 using Page.Charts.Lines;
 using Page.Charts.Pie;
+using Page.Charts.Scatter;
 using TCYM.UI.Core.Routing;
 
 namespace Page.Charts
@@ -10,8 +11,8 @@ namespace Page.Charts
     internal static class ChartRouter
     {
 
-        /// <summary>创建 Line、Bar、Pie 与 Gauge 分类示例使用的路由表。</summary>
-        /// <returns>绑定七个 Line、八个 Bar、七个 Pie 和六个 Gauge 页面的独立路由器。</returns>
+        /// <summary>创建 Line、Bar、Pie、Gauge 与 Scatter 分类示例使用的路由表。</summary>
+        /// <returns>绑定七个 Line、八个 Bar、七个 Pie、六个 Gauge 和五个 Scatter 页面的独立路由器。</returns>
         internal static UIRouter Create()
         {
             UIRouteRecord[] routes =
@@ -282,6 +283,57 @@ namespace Page.Charts
                             Name = "饼仪图",
                             KeepAlive = false,
                             Element = UIRoute.LazyLoad(GaugeChartDemoPage.CreatePieGauge),
+                        },
+                    ],
+                },
+                new()
+                {
+                    Id = "scatter",
+                    Path = "scatters",
+                    Name = "Scatter 散点图",
+                    KeepAlive = false,
+                    Element = UIRoute.LazyLoad(ScatterChartDemoPage.CreateBasic),
+                    Children =
+                    [
+                        new()
+                        {
+                            Id = "chart_scatter_basic",
+                            Path = "basic",
+                            Name = "基础散点图",
+                            KeepAlive = false,
+                            Element = UIRoute.LazyLoad(ScatterChartDemoPage.CreateBasic),
+                        },
+                        new()
+                        {
+                            Id = "chart_scatter_anscombe",
+                            Path = "anscombe",
+                            Name = "安斯库姆四重奏",
+                            KeepAlive = false,
+                            Element = UIRoute.LazyLoad(ScatterChartDemoPage.CreateAnscombeQuartet),
+                        },
+                        new()
+                        {
+                            Id = "chart_scatter_clustering",
+                            Path = "clustering",
+                            Name = "数据聚合",
+                            KeepAlive = false,
+                            Element = UIRoute.LazyLoad(ScatterChartDemoPage.CreateClustering),
+                        },
+                        new()
+                        {
+                            Id = "chart_scatter_effect",
+                            Path = "effect",
+                            Name = "涟漪特效散点图",
+                            KeepAlive = false,
+                            Element = UIRoute.LazyLoad(ScatterChartDemoPage.CreateEffect),
+                        },
+                        new()
+                        {
+                            Id = "chart_scatter_special_relation",
+                            Path = "special-relation",
+                            Name = "特殊关系图",
+                            KeepAlive = false,
+                            Element = UIRoute.LazyLoad(ScatterChartDemoPage.CreateSpecialRelation),
                         },
                     ],
                 },

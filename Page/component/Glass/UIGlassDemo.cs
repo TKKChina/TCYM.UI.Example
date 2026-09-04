@@ -53,6 +53,59 @@ namespace TCYM.UI.Example.Page.component.Glass
                 corner-curve: continuous;
                 box-shadow: 0 14px 34px rgba(7, 15, 38, 0.24);
             }
+
+            .glass-hover-surface:hover {
+                background-color: #2563eb;
+                border-color: #1d4ed8;
+                color: #ffffff;
+            }
+
+            .glass-active-surface:active {
+                background-color: #ea580c;
+                border-color: #c2410c;
+                color: #ffffff;
+                opacity: 0.82;
+            }
+
+            .glass-adjacent-source + .glass-adjacent-target {
+                background-color: #2563eb;
+                color: #ffffff;
+            }
+
+            .glass-general-source ~ .glass-general-target {
+                background-color: #059669;
+                color: #ffffff;
+            }
+
+            .glass-first-child-item:first-child {
+                border-color: #7c3aed;
+                background-color: #8b5cf6;
+                color: #ffffff;
+            }
+
+            .glass-nth-child-item:nth-child(2n) {
+                border-color: #be185d;
+                background-color: #ec4899;
+                color: #ffffff;
+            }
+
+            .glass-not-item:not(.glass-not-disabled) {
+                border-color: #0f766e;
+                background-color: #14b8a6;
+                color: #ffffff;
+            }
+
+            .glass-is-item:is(.glass-is-primary, .glass-is-success) {
+                border-color: #0369a1;
+                background-color: #0ea5e9;
+                color: #ffffff;
+            }
+
+            .glass-has-surface:has(.glass-has-indicator) {
+                border-color: #7c3aed;
+                background-color: #ede9fe;
+                color: #4c1d95;
+            }
             """;
 
         internal UIGlassDemo()
@@ -79,6 +132,7 @@ namespace TCYM.UI.Example.Page.component.Glass
                 },
                 CreateHeroSection(),
                 CreateComparisonSection(),
+                CreateSelectorSection(),
                 CreateCodeSection(),
             };
         }
@@ -136,6 +190,295 @@ namespace TCYM.UI.Example.Page.component.Glass
                                     CreateComparisonTile("compact-frosted-glass", "组合磨砂", "blur + saturate + brightness", "blur(12px)"),
                                     CreateComparisonTile("dark-glass", "深色玻璃", "brightness + contrast", "dark material"),
                                 },
+                            },
+                        },
+                    },
+                },
+            };
+        }
+
+        /// <summary>
+        /// 创建交互伪类、结构伪类、函数伪类与兄弟选择器演示区域。
+        /// </summary>
+        private static UIView CreateSelectorSection()
+        {
+            return new UIView
+            {
+                ClassName = "glass-demo-card",
+                Children = new()
+                {
+                    CreateSectionTitle("CSS 交互与高级选择器"),
+                    CreateSectionDescription("前两项观察 :hover / :active；接着依次展示 :first-child、:nth-child(2n)、:not()、:is() 与 :has()；最后两项展示相邻兄弟 + 与通用兄弟 ~。"),
+                    new UIView
+                    {
+                        ClassName = "glass-selector-grid",
+                        Children = new()
+                        {
+                            CreateSelectorStateTile(
+                                ":hover",
+                                "鼠标进入时应用悬停样式",
+                                "glass-hover-surface",
+                                "将鼠标移入此区域"),
+                            CreateSelectorStateTile(
+                                ":active",
+                                "鼠标左键或触摸按住时应用",
+                                "glass-active-surface",
+                                "按住此区域查看状态"),
+                            CreateChildPositionSelectorTile(
+                                ":first-child",
+                                "同一父元素的 4 个直接子元素中，仅第 1 项命中。",
+                                "glass-first-child-item"),
+                            CreateChildPositionSelectorTile(
+                                ":nth-child(2n)",
+                                "按真实 Children 序号匹配偶数项，第 2、4 项命中。",
+                                "glass-nth-child-item"),
+                            CreateFunctionalSelectorTile(
+                                ":not(.disabled)",
+                                "排除带 disabled 类的元素，第 1、3 项命中。",
+                                new (string Text, string ClassName)[]
+                                {
+                                    ("默认 · 命中", "glass-sibling-pill glass-not-item"),
+                                    ("disabled", "glass-sibling-pill glass-not-item glass-not-disabled"),
+                                    ("默认 · 命中", "glass-sibling-pill glass-not-item"),
+                                    ("disabled", "glass-sibling-pill glass-not-item glass-not-disabled"),
+                                }),
+                            CreateFunctionalSelectorTile(
+                                ":is(.primary, .success)",
+                                "匹配 primary 或 success 任一分支，第 1、3 项命中。",
+                                new (string Text, string ClassName)[]
+                                {
+                                    ("primary", "glass-sibling-pill glass-is-item glass-is-primary"),
+                                    ("neutral", "glass-sibling-pill glass-is-item"),
+                                    ("success", "glass-sibling-pill glass-is-item glass-is-success"),
+                                    ("neutral", "glass-sibling-pill glass-is-item"),
+                                }),
+                            CreateHasSelectorTile(),
+                            new UIView
+                            {
+                                ClassName = "glass-selector-example",
+                                Children = new()
+                                {
+                                    new UILabel { Text = "相邻兄弟 +", ClassName = "glass-selector-example-title" },
+                                    new UILabel
+                                    {
+                                        Text = "只有紧跟在源元素后的目标会命中。",
+                                        ClassName = "glass-selector-example-desc",
+                                    },
+                                    new UIView
+                                    {
+                                        ClassName = "glass-sibling-row",
+                                        Children = new()
+                                        {
+                                            new UILabel
+                                            {
+                                                Text = "源元素",
+                                                ClassName = new List<string> { "glass-sibling-pill", "glass-adjacent-source" },
+                                            },
+                                            new UILabel
+                                            {
+                                                Text = "+ 命中",
+                                                ClassName = new List<string> { "glass-sibling-pill", "glass-adjacent-target" },
+                                            },
+                                            new UILabel
+                                            {
+                                                Text = "间隔",
+                                                ClassName = "glass-sibling-pill",
+                                            },
+                                            new UILabel
+                                            {
+                                                Text = "未命中",
+                                                ClassName = new List<string> { "glass-sibling-pill", "glass-adjacent-target" },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                            new UIView
+                            {
+                                ClassName = "glass-selector-example",
+                                Children = new()
+                                {
+                                    new UILabel { Text = "通用兄弟 ~", ClassName = "glass-selector-example-title" },
+                                    new UILabel
+                                    {
+                                        Text = "源元素之后的全部目标都会命中，即使中间存在其它兄弟。",
+                                        ClassName = "glass-selector-example-desc",
+                                    },
+                                    new UIView
+                                    {
+                                        ClassName = "glass-sibling-row",
+                                        Children = new()
+                                        {
+                                            new UILabel
+                                            {
+                                                Text = "源元素",
+                                                ClassName = new List<string> { "glass-sibling-pill", "glass-general-source" },
+                                            },
+                                            new UILabel { Text = "间隔", ClassName = "glass-sibling-pill" },
+                                            new UILabel
+                                            {
+                                                Text = "~ 命中 A",
+                                                ClassName = new List<string> { "glass-sibling-pill", "glass-general-target" },
+                                            },
+                                            new UILabel
+                                            {
+                                                Text = "~ 命中 B",
+                                                ClassName = new List<string> { "glass-sibling-pill", "glass-general-target" },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            };
+        }
+
+        /// <summary>
+        /// 创建单个交互伪类演示卡片。
+        /// </summary>
+        private static UIView CreateSelectorStateTile(
+            string title,
+            string description,
+            string stateClass,
+            string content)
+        {
+            return new UIView
+            {
+                ClassName = "glass-selector-example",
+                Children = new()
+                {
+                    new UILabel { Text = title, ClassName = "glass-selector-example-title" },
+                    new UILabel { Text = description, ClassName = "glass-selector-example-desc" },
+                    new UILabel
+                    {
+                        Text = content,
+                        ClassName = new List<string> { "glass-selector-surface", stateClass },
+                    },
+                },
+            };
+        }
+
+        /// <summary>
+        /// 创建结构伪类演示卡片，四个目标元素共享同一个直接父元素。
+        /// </summary>
+        private static UIView CreateChildPositionSelectorTile(
+            string title,
+            string description,
+            string itemClass)
+        {
+            return new UIView
+            {
+                ClassName = "glass-selector-example",
+                Children = new()
+                {
+                    new UILabel { Text = title, ClassName = "glass-selector-example-title" },
+                    new UILabel { Text = description, ClassName = "glass-selector-example-desc" },
+                    new UIView
+                    {
+                        ClassName = "glass-sibling-row",
+                        Children = new()
+                        {
+                            new UILabel
+                            {
+                                Text = "第 1 项",
+                                ClassName = new List<string> { "glass-sibling-pill", itemClass },
+                            },
+                            new UILabel
+                            {
+                                Text = "第 2 项",
+                                ClassName = new List<string> { "glass-sibling-pill", itemClass },
+                            },
+                            new UILabel
+                            {
+                                Text = "第 3 项",
+                                ClassName = new List<string> { "glass-sibling-pill", itemClass },
+                            },
+                            new UILabel
+                            {
+                                Text = "第 4 项",
+                                ClassName = new List<string> { "glass-sibling-pill", itemClass },
+                            },
+                        },
+                    },
+                },
+            };
+        }
+
+        /// <summary>
+        /// 创建函数伪类演示卡片，并按传入顺序构造同一父元素下的目标项。
+        /// </summary>
+        private static UIView CreateFunctionalSelectorTile(
+            string title,
+            string description,
+            IReadOnlyList<(string Text, string ClassName)> items)
+        {
+            var itemElements = new List<UIElement>(items.Count);
+            foreach (var item in items)
+            {
+                itemElements.Add(new UILabel
+                {
+                    Text = item.Text,
+                    ClassName = item.ClassName,
+                });
+            }
+
+            return new UIView
+            {
+                ClassName = "glass-selector-example",
+                Children = new()
+                {
+                    new UILabel { Text = title, ClassName = "glass-selector-example-title" },
+                    new UILabel { Text = description, ClassName = "glass-selector-example-desc" },
+                    new UIView
+                    {
+                        ClassName = "glass-sibling-row",
+                        Children = itemElements,
+                    },
+                },
+            };
+        }
+
+        /// <summary>
+        /// 创建 <c>:has()</c> 演示卡片，由父容器根据内部状态子项决定自身样式。
+        /// </summary>
+        private static UIView CreateHasSelectorTile()
+        {
+            return new UIView
+            {
+                ClassName = "glass-selector-example",
+                Children = new()
+                {
+                    new UILabel
+                    {
+                        Text = ":has(.status)",
+                        ClassName = "glass-selector-example-title",
+                    },
+                    new UILabel
+                    {
+                        Text = "父容器包含 status 子项，因此父容器自身命中并高亮。",
+                        ClassName = "glass-selector-example-desc",
+                    },
+                    new UIView
+                    {
+                        ClassName = "glass-has-surface",
+                        Children = new()
+                        {
+                            new UILabel
+                            {
+                                Text = "普通子项",
+                                ClassName = "glass-sibling-pill",
+                            },
+                            new UILabel
+                            {
+                                Text = "status",
+                                ClassName = "glass-sibling-pill glass-has-indicator",
+                            },
+                            new UILabel
+                            {
+                                Text = "普通子项",
+                                ClassName = "glass-sibling-pill",
                             },
                         },
                     },

@@ -1,0 +1,260 @@
+.binding-demo-view {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  padding-right: 10px;
+  padding-bottom: 24px;
+}
+
+.binding-demo-view .binding-demo-title {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.binding-demo-view .binding-demo-title-sub {
+  width: 100%;
+  height: 20px;
+  margin-top: 4px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.binding-demo-view .binding-demo-desc {
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+.binding-demo-view .binding-demo-card {
+  width: 100%;
+  margin-top: 10px;
+  padding: 16px;
+  padding-bottom: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+.binding-demo-view .binding-card-title {
+  margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.88);
+}
+
+.binding-demo-view .binding-card-desc {
+  width: calc(100% - 20px);
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.binding-demo-view .binding-showcase {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+}
+
+.binding-demo-view .binding-code-hint {
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: 13px;
+  color: #531dab;
+  background: #f9f0ff;
+  border: 1px solid #d3adf7;
+  border-radius: 6px;
+}
+
+.binding-demo-view .binding-leftview-input {
+  width: 420px;
+  height: 30px;
+}
+
+.binding-demo-view .binding-leftview-input:focus {
+  border-color: #1677ff;
+  box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.12);
+}
+
+.binding-demo-view .binding-leftview-label {
+  width: 100%;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  padding: 7px 12px;
+  font-size: 14px;
+  color: #0958d9;
+  background: #e6f4ff;
+  border: 1px solid #91caff;
+  border-radius: 6px;
+}
+
+.binding-demo-view .binding-leftview-label-alt {
+  color: #ad4e00;
+  background: #fff7e6;
+  border-color: #ffd591;
+}
+
+.binding-demo-view .binding-leftview-label-empty {
+  color: rgba(0, 0, 0, 0.55);
+  background: #fafafa;
+  border-color: #d9d9d9;
+}
+
+.binding-demo-view .binding-result {
+  width: 100%;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  padding: 7px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+.binding-demo-view .binding-result-primary {
+  color: #0958d9;
+  background: #e6f4ff;
+  border: 1px solid #91caff;
+}
+
+.binding-demo-view .binding-result-success {
+  color: #237804;
+  background: #f6ffed;
+  border: 1px solid #b7eb8f;
+}
+
+.binding-demo-view .binding-result-neutral {
+  color: rgba(0, 0, 0, 0.72);
+  background: #fafafa;
+  border: 1px solid #d9d9d9;
+}
+
+.binding-demo-view .binding-action-row {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.binding-demo-view .binding-action-btn {
+  min-width: 168px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.binding-demo-view .binding-action-primary {
+  color: #ffffff;
+  background: #1677ff;
+  border: 1px solid #1677ff;
+}
+
+.binding-demo-view .binding-action-primary:hover {
+  background: #4096ff;
+  border-color: #4096ff;
+}
+
+.binding-demo-view .binding-action-default {
+  color: rgba(0, 0, 0, 0.88);
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
+}
+
+.binding-demo-view .binding-action-default:hover {
+  color: #1677ff;
+  border-color: #4096ff;
+}
+
+.binding-demo-view .binding-base-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.binding-demo-view .binding-control-grid {
+  width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.binding-demo-view .binding-control-row {
+  width: 100%;
+  height: 44px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.binding-demo-view .binding-control-label {
+  width: 104px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.72);
+}
+
+.binding-demo-view .binding-control-slot {
+  width: 470px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.binding-demo-view .binding-slider {
+  width: 450px;
+/*  background: #f0f0f0;*/
+}
+
+.binding-demo-view .binding-select {
+  width: 320px;
+  height: 34px;
+}
+
+.binding-demo-view .binding-tree {
+  width: 520px;
+  height: 230px;
+  padding: 8px;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+}
+
+.binding-demo-view .binding-explicit-input {
+  width: 420px;
+  height: 34px;
+}

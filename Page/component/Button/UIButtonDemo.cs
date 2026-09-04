@@ -105,7 +105,7 @@ namespace TCYM.UI.Example.Page.component.Button
                         new UIButton
                         { 
                             Text = "Default Button",
-                            ClassName = new List<string> { "btn", "btn-default" },
+                            ClassName = "btn btn-default",
                             Events = new()
                             {
                                 Click = _ =>
@@ -114,9 +114,9 @@ namespace TCYM.UI.Example.Page.component.Button
                                 }
                             }
                         },
-                        new UIButton { Text = "Dashed Button", ClassName = new List<string> { "btn", "btn-dashed" } },
-                        new UIButton { Text = "Text Button", ClassName = new List<string> { "btn", "btn-text" } },
-                        new UIButton { Text = "Link Button", ClassName = new List<string> { "btn", "btn-link" } },
+                        new UIButton { Text = "Dashed Button", ClassName = "btn btn-dashed" },
+                        new UIButton { Text = "Text Button", ClassName = "btn btn-text" },
+                        new UIButton { Text = "Link Button", ClassName = "btn btn-link" },
                     }
                 };
 
@@ -361,37 +361,37 @@ namespace TCYM.UI.Example.Page.component.Button
                 };
                 var buttonRow = new UIView
                 {
-                    ClassName = new List<string> { "btn-box" },
+                    ClassName = "btn-box",
                     Children = new()
                     {
                         new UIButton
                         {
                             Text = "Primary Button",
-                            ClassName = new List<string> { "btn", "btn-primary" },
+                            ClassName = "btn btn-primary",
                             Disabled = true,
                         },
                         new UIButton
                         {
                             Text = "Default Button",
-                            ClassName = new List<string> { "btn", "btn-default" },
+                            ClassName = "btn btn-default",
                             Disabled = true,
                         },
                         new UIButton
                         {
                             Text = "Dashed Button",
-                            ClassName = new List<string> { "btn", "btn-dashed" },
+                            ClassName = "btn btn-dashed",
                             Disabled = true,
                         },
                         new UIButton
                         {
                             Text = "Text Button",
-                            ClassName = new List<string> { "btn", "btn-text" },
+                            ClassName = "btn btn-text",
                             Disabled = true,
                         },
                         new UIButton
                         {
                             Text = "Link Button",
-                            ClassName = new List<string> { "btn", "btn-link" },
+                            ClassName = "btn btn-link",
                             Disabled = true,
                         },
                     }
@@ -399,7 +399,7 @@ namespace TCYM.UI.Example.Page.component.Button
 
                 var toolbar = new UIView
                 {
-                    ClassName = new List<string> { "code-toolbar" },
+                    ClassName = "code-toolbar",
                     Children = new()
                     {
                         new UITooltip

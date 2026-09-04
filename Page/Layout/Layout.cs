@@ -51,6 +51,7 @@ namespace TCYM.UI.Example.Page.Layout
                             "colorPicker" => "/demo/color-picker",
                             "switch" => "/demo/switch",
                             "input" => "/demo/input",
+                            "binding" => "/demo/binding",
                             "codeEditor" => "/demo/code-editor",
                             "badge" => "/demo/badge",
                             "tooltip" => "/demo/tooltip",

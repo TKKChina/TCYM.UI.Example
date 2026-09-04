@@ -24,12 +24,14 @@ internal static class Program
 
         // 是否启用GPU初始化日志（输出GPU相关的初始化信息和错误日志）。启用后会在控制台输出GPU设备的相关信息、驱动版本、支持的功能等，以及在GPU初始化过程中遇到的任何错误。这对于调试和优化GPU渲染性能非常有帮助，尤其是在不同平台和设备上运行时。
         UISystem.EnableGpuInitLog = true;
+        // Windows 11 向 DWM 提交原生圆角偏好；Windows 10 使用 Region 与分层外阴影回退。
+        // macOS/Linux 当前保留窗口管理器的默认圆角与阴影外观。
+        UISystem.DefaultWindowCornerPreference = UIWindowCornerPreference.Round;
+        UISystem.DefaultWindowShadowPreference = UIWindowShadowPreference.Enabled;
         UISystem.Initialize("TCYM", 1200, 800, true, 30, resizable: true);
 
         var manager = UISystem.Manager;
         if (manager == null) return;
-        // 支持AOT 环境下的属性访问
-        TCYM.UI.Binding.Generated.GeneratedBindingAccessors_TCYM_UI_Example.InitGenerated();
         //manager.OnAnyJoystickEvent += (e) =>
         //{
         //    switch (e.Type)

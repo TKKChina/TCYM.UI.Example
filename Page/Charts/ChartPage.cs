@@ -7,7 +7,7 @@ namespace Page.Charts
     /// <summary>承载图表示例二级导航和独立内容路由的页面。</summary>
     internal sealed class ChartPage : UIView
     {
-        /// <summary>创建 Line/Bar/Pie/Gauge 导航、路由视图并打开默认的基础折线图。</summary>
+        /// <summary>创建 Line/Bar/Pie/Gauge/Scatter 导航、路由视图并打开默认的基础折线图。</summary>
         internal ChartPage()
         {
             UISystem.LoadStyleFile("res://TCYM.UI.Example/Page.Charts.style.css");

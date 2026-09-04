@@ -41,6 +41,7 @@ using TCYM.UI.Example.Page.component.ColorPicker;
 using TCYM.UI.Example.Page.component.Anchor;
 using TCYM.UI.Example.Page.component.Glass;
 using TCYM.UI.Example.Page.component.Timeline;
+using TCYM.UI.Example.Page.component.Binding;
 using TCYM.UI.Elements;
 
 namespace TCYM.UI.Example.Page.Layout
@@ -83,6 +84,7 @@ namespace TCYM.UI.Example.Page.Layout
                         new() { Id = "demo_color_picker", Path = "color-picker", Name = "ColorPicker", Element = UIRoute.LazyLoad(() => new UIColorPickerDemo()) },
                         new() { Id = "demo_switch", Path = "switch", Name = "Switch", Element = UIRoute.LazyLoad(() => new UISwitchDemo()) },
                         new() { Id = "demo_input", Path = "input", Name = "Input", Element = UIRoute.LazyLoad(() => new UIInputDemo()) },
+                        new() { Id = "demo_binding", Path = "binding", Name = "Binding", Element = UIRoute.LazyLoad(() => new UIBindingDemo()), KeepAlive = false },
                         new() { Id = "demo_code_editor", Path = "code-editor", Name = "CodeEditor", Element = UIRoute.LazyLoad(() => new UICodeEditorDemo()) },
                         new() { Id = "demo_tree", Path = "tree", Name = "Tree", Element = UIRoute.LazyLoad(() => new UITreeDemo()) },
                         new() { Id = "demo_tooltip", Path = "tooltip", Name = "Tooltip", Element = UIRoute.LazyLoad(() => new UITooltipDemo()) },

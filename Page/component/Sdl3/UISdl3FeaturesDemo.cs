@@ -2,12 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using SkiaSharp;
 using TCYM.UI.Core;
 using TCYM.UI.Elements;
 using TCYM.UI.Enums;
 using TCYM.UI.Events;
 using TCYM.UI.Helpers;
 using TCYM.UI.SDL3;
+using TCYM.UI.Storage;
 
 namespace TCYM.UI.Example.Page.component.Sdl3
 {
@@ -45,6 +48,7 @@ namespace TCYM.UI.Example.Page.component.Sdl3
 
         private UIPenBoard _penBoard = null!;
         private UILabel _penStatus = null!;
+        private bool _savingPenImage;
 
         private UIView BuildPenSection()
         {
@@ -146,12 +150,74 @@ namespace TCYM.UI.Example.Page.component.Sdl3
                     ToolButton("撤销", () => _penBoard.Undo()),
                     ToolButton("重做", () => _penBoard.Redo()),
                     ToolButton("清空", () => _penBoard.Clear()),
+                    ToolButton("保存图片", () => _ = SavePenBoardImageAsync()),
                 },
             };
 
             return Card("压感笔画板（Pen）",
                 "SDL3 新增独立的笔子系统，事件带压力 / 倾斜 / 橡皮擦端 / 笔身按钮。",
                 toolbar, _penBoard, _penStatus);
+        }
+
+        private async Task SavePenBoardImageAsync()
+        {
+            if (_savingPenImage)
+            {
+                return;
+            }
+
+            _savingPenImage = true;
+            try
+            {
+                string fileName = $"UIPenBoard-{DateTime.Now:yyyyMMdd-HHmmss}.png";
+                string picturesDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+                string suggestedPath = string.IsNullOrWhiteSpace(picturesDirectory)
+                    ? fileName
+                    : Path.Combine(picturesDirectory, fileName);
+
+                string? filePath = await UISystem.SaveFilePickerSdlAsync(
+                    suggestedPath,
+                    new[]
+                    {
+                        new FilePickerFileType("PNG 图片", "*.png"),
+                        new FilePickerFileType("JPEG 图片", "*.jpg", "*.jpeg"),
+                        new FilePickerFileType("WebP 图片", "*.webp"),
+                    });
+                if (string.IsNullOrWhiteSpace(filePath))
+                {
+                    SetPenStatus("已取消保存图片。");
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(Path.GetExtension(filePath)))
+                {
+                    filePath += ".png";
+                }
+
+                SKEncodedImageFormat format = Path.GetExtension(filePath).ToLowerInvariant() switch
+                {
+                    ".jpg" or ".jpeg" => SKEncodedImageFormat.Jpeg,
+                    ".webp" => SKEncodedImageFormat.Webp,
+                    _ => SKEncodedImageFormat.Png,
+                };
+
+                _penBoard.SaveImage(filePath, format, quality: 100, scale: 1f, includeBackground: true);
+                SetPenStatus($"图片已保存：{filePath}");
+            }
+            catch (Exception ex)
+            {
+                SetPenStatus($"保存图片失败：{ex.Message}");
+            }
+            finally
+            {
+                _savingPenImage = false;
+            }
+        }
+
+        private void SetPenStatus(string text)
+        {
+            _penStatus.Text = text;
+            _penStatus.RequestRedraw();
         }
 
         private static string GetSdlVersionText()

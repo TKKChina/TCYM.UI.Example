@@ -82,6 +82,15 @@ namespace Page.Charts
                             new("chart_gauge_custom", "自定义仪表"),
                             new("chart_gauge_pie", "饼仪图"),
                         }, new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") }),
+                        MenuItem.Group("group-scatter", "Scatter 散点图", new List<MenuItem>
+                        {
+                            MenuItem.Divider("group-scatter-divider-top"),
+                            new("chart_scatter_basic", "基础散点图"),
+                            new("chart_scatter_anscombe", "安斯库姆四重奏"),
+                            new("chart_scatter_clustering", "数据聚合"),
+                            new("chart_scatter_effect", "涟漪特效散点图"),
+                            new("chart_scatter_special_relation", "特殊关系图"),
+                        }, new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") }),
                         MenuItem.Divider("charts-navigation-divider-bottom"),
                         new("app", "返回上一级") { Icon = "&#xe7ed;", Danger = true }
                     },
