@@ -1,8 +1,8 @@
 # TCYM.UI.Example
 
-TCYM.UI.Example 是一个可独立构建和运行的 TCYM.UI 示例工程，用于对外展示基础组件、声明式路由、Chart 图表、布局与样式、SDL3 输入事件及跨平台窗口能力。
+TCYM.UI.Example 是一个可独立构建和运行的 TCYM.UI 示例工程，用于对外展示基础组件、声明式路由、Chart 图表、数据绑定、布局与样式、SDL3 输入事件及跨平台窗口能力。
 
-这个仓库通过 NuGet 引用 `TCYM.UI 0.1.1.23` 和 `TCYM.UI.Chart 0.1.1.24`，不依赖上级源码目录中的项目，因此可以单独复制、构建和发布。`TCYM.UI 0.1.1.23` 已内置 Generator analyzer，可直接使用 Binding V2 编译期绑定。公开仓库不包含 `TCYM.UI.Pro`、Player、PlayerDetection、MvGigECamera 等 Pro 示例源码及其运行依赖。
+这个仓库通过 NuGet 引用 `TCYM.UI 0.1.1.24` 和 `TCYM.UI.Chart 0.1.1.25`，不依赖上级源码目录中的项目，因此可以单独复制、构建和发布。`TCYM.UI` 已内置 Generator analyzer，可直接使用 Binding V2 编译期绑定。公开仓库不包含 `TCYM.UI.Pro`、Player、PlayerDetection、MvGigECamera 等 Pro 示例源码及其运行依赖。
 
 ## 文档地址
 
@@ -16,28 +16,28 @@ TCYM.UI.Example 是一个可独立构建和运行的 TCYM.UI 示例工程，用�
 
 ## 环境要求
 
-- 构建需要 .NET 8 SDK，也可使用兼容的更高版本 SDK（如 .NET 10）
-- 运行框架依赖版本需要 .NET 8 Runtime；自包含或 Native AOT 发布包无需单独安装 Runtime
+- 项目同时面向 .NET 8 和 .NET 10，推荐使用 .NET 10 SDK 构建
+- 运行框架依赖版本需要对应的 .NET Desktop Runtime；自包含或 Native AOT 发布包无需单独安装 Runtime
 - Windows、Linux 或 macOS 桌面环境
-- `TCYM.UI` NuGet 包已包含 Windows、Linux 和 macOS 对应的 SDL3 与 SkiaSharp 4.151.2 本地运行库
+- `TCYM.UI` NuGet 包已包含 Windows、Linux 和 macOS 对应的 SDL3 与 SkiaSharp 4.152.1 本地运行库
 
 ## 演示内容
 
-- 应用结构：登录演示、同级页面切换、声明式路由、延迟加载、KeepAlive 页面预加载与退出登录
-- 基础组件：按钮、锚点、Glass CSS（含 `:has()` 等高级选择器）、图标、文本、图片、菜单、分页、标签页、表格、树等
-- 样式与窗口：支持 CSS `@import`、`:has()` 等选择器，并可设置 Windows 原生窗口圆角与阴影偏好
+- 应用结构：登录演示、声明式路由、加载动画、延迟加载、页面预加载与退出登录
+- 基础组件：Button、Cascader、Loading、Popconfirm、Anchor、Menu、Tabs、Table、Tree、TreeSelect 等
 - 数据绑定：Binding V2 强类型属性、双向绑定、集合绑定与编译期访问器生成
-- 数据录入：Input、Checkbox、Radio、Select、TreeSelect、DatePicker、TimePicker、ColorPicker、Slider 等
-- 数据展示与反馈：Badge、Carousel、Timeline、Notification、进度条、消息、对话框、水印等
-- Chart 图表：折线图、实时/大数据图、柱状图、堆叠/极坐标图、饼图、环形图、玫瑰图、Gauge 仪表盘，以及支持 VisualMap 聚类着色的 Scatter 散点图等
-- SDL3 能力：触控笔事件、文件拖放位置更新、手柄/摇杆输入可视化
+- 数据录入：Input、Checkbox、Radio、Select、DatePicker、TimePicker、ColorPicker、Slider 等
+- 数据展示与反馈：Badge、Carousel、Timeline、Notification、Message、Modal、Progress、Watermark 等
+- CSS 能力：`@import`、变量、`:has()`、结构/函数伪类、动画、过渡、2D/3D transform、text-shadow、user-select 等
+- Chart 图表：Line、Bar、Pie、Gauge、Scatter、Candlestick、Radar、Graph 和 Tree Chart 等公开示例
+- SDL3 能力：触控笔、触摸、文件拖放、手柄/摇杆输入和窗口状态事件
 - 其他组件：分隔面板、虚拟滚动、文件选择、USB 摄像头等
 
 ## 目录说明
 
 - `Assets`：示例所需图片、字体等资源
 - `Page/component`：公开基础组件演示代码
-- `Page/Charts`：TCYM.UI.Chart 图表示例
+- `Page/Charts`：TCYM.UI.Chart 图表示例和公开演示资源
 - `Page/Layout`：登录、全局路由与主布局代码
 - `Libs`：TCYM.UI 相关许可文件
 - `publish-aot.bat`：基于 AotAnywhere 的跨平台 Native AOT 发布脚本
@@ -50,12 +50,18 @@ TCYM.UI.Example 是一个可独立构建和运行的 TCYM.UI 示例工程，用�
 ```bash
 dotnet restore
 dotnet build TCYM.UI.Example.csproj
-dotnet run --project TCYM.UI.Example.csproj
+dotnet run --project TCYM.UI.Example.csproj --framework net10.0
+```
+
+也可以运行 .NET 8 目标：
+
+```bash
+dotnet run --project TCYM.UI.Example.csproj --framework net8.0
 ```
 
 ## Native AOT 发布
 
-项目使用 `StuDev.AotAnywhere 1.0.4`，可在 Windows 上交叉发布 Windows、Linux 和 macOS 的 x64/arm64 版本：
+项目使用 `StuDev.AotAnywhere 1.0.4`，发布脚本默认基于 `net10.0`，可在 Windows 上交叉发布 Windows、Linux 和 macOS 的 x64/arm64 版本：
 
 ```bat
 publish-aot.bat
@@ -67,6 +73,12 @@ publish-aot.bat
 publish-aot.bat win-x64
 publish-aot.bat linux-arm64
 publish-aot.bat osx-arm64
+```
+
+发布结果统一整理到：
+
+```text
+bin/Release/net10.0/publish/<RID>-AOT/
 ```
 
 ## 许可证说明

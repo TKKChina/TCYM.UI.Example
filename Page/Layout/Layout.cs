@@ -6,18 +6,15 @@ using TCYM.UI.Elements.Message;
 
 namespace TCYM.UI.Example.Page.Layout
 {
-    /// <summary>承载主菜单和组件示例内容，并在页面稳定后预加载图表路由。</summary>
-    internal class Layout : UIView, IUIRouteLifecycle
+    /// <summary>承载主菜单和组件示例内容。</summary>
+    internal class Layout : UIView
     {
-        private const int ChartsPreloadDelayMilliseconds = 300;
-        private CancellationTokenSource? _chartsPreloadCancellation;
-
         internal Layout()
         {
             var router = Router.Create();
             ClassName = "main-view";
-            Children = new()
-            {
+            Children =
+            [
                 new Menu
                 {
                     SelectChange = (keys, item) =>
@@ -44,6 +41,7 @@ namespace TCYM.UI.Example.Page.Layout
                             "dropdown" => "/demo/dropdown",
                             "select" => "/demo/select",
                             "treeSelect" => "/demo/tree-select",
+                            "cascader" => "/demo/cascader",
                             "checkbox" => "/demo/checkbox",
                             "radio" => "/demo/radio",
                             "datepicker" => "/demo/datepicker",
@@ -62,7 +60,9 @@ namespace TCYM.UI.Example.Page.Layout
                             "timeline" => "/demo/timeline",
                             "svg" => "/demo/svg",
                             "message" => "/demo/message",
+                            "loading" => "/demo/loading",
                             "notification" => "/demo/notification",
+                            "popconfirm" => "/demo/popconfirm",
                             "modal" => "/demo/modal",
                             "progress" => "/demo/progress",
                             "chart" => "/charts",
@@ -82,64 +82,14 @@ namespace TCYM.UI.Example.Page.Layout
                 {
                    ClassName = "router-view"
                 }
-            };
+            ];
 
             //router.ReplaceById("demo_button");
-        }
-
-        /// <summary>进入主界面后延迟预加载图表页，避免阻塞当前路由的首帧显示。</summary>
-        /// <param name="fromPath">进入主界面前所在的路由路径。</param>
-        public void OnRouteEnter(string? fromPath)
-        {
-            _ = fromPath;
-            CancelChartsPreload();
-            var cancellation = CancellationTokenSource.CreateLinkedTokenSource(LifetimeToken);
-            _chartsPreloadCancellation = cancellation;
-            _ = PreloadChartsAsync(cancellation);
-        }
-
-        /// <summary>离开主界面时取消尚未开始的图表预加载。</summary>
-        /// <param name="toPath">主界面离开后进入的目标路由路径。</param>
-        public void OnRouteLeave(string? toPath)
-        {
-            _ = toPath;
-            CancelChartsPreload();
-        }
-
-        /// <summary>等待主界面首帧完成后，在 UI 线程创建一次性图表预加载页。</summary>
-        private async Task PreloadChartsAsync(CancellationTokenSource cancellation)
-        {
-            try
-            {
-                await Task.Delay(ChartsPreloadDelayMilliseconds, cancellation.Token);
-                cancellation.Token.ThrowIfCancellationRequested();
-                await UIRouterNavigator.PreloadByIdAsync("charts");
-            }
-            catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
-            {
-            }
-            finally
-            {
-                if (ReferenceEquals(_chartsPreloadCancellation, cancellation))
-                {
-                    _chartsPreloadCancellation = null;
-                }
-                cancellation.Dispose();
-            }
-        }
-
-        /// <summary>取消当前尚未完成的图表预加载任务。</summary>
-        private void CancelChartsPreload()
-        {
-            var cancellation = _chartsPreloadCancellation;
-            _chartsPreloadCancellation = null;
-            cancellation?.Cancel();
         }
 
         /// <summary>退出登录，并在登录页显示后释放尚未使用的图表预加载页。</summary>
         private void Logout()
         {
-            CancelChartsPreload();
             UISystem.Manager?.GetElementById<UICaptionBar>("demo-caption-bar")?.AddClass("login-caption-bar");
             UIRouterNavigator.NavigateById("login", replace: true);
             UIDispatcher.Post(() => UIRouterNavigator.DiscardPreloadedById("charts"));

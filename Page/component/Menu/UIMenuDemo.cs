@@ -37,7 +37,8 @@ namespace TCYM.UI.Example.Page.component.Menu
                     ClassName = new List<string> { "menu-demo-desc" }
                 },
                 new BaseMenuDemo(),
-                new CustomMenuDemo()
+                new CustomMenuDemo(),
+                new SemanticMenuDemo()
             };
         }
 
@@ -286,6 +287,164 @@ namespace TCYM.UI.Example.Page.component.Menu
             }
         }
 
+        /// <summary>展示菜单各语义部位的独立样式、CSS 类名和状态回调。</summary>
+        class SemanticMenuDemo : UIView
+        {
+            /// <summary>创建语义样式演示，覆盖内联和纵向模式的子菜单列表。</summary>
+            internal SemanticMenuDemo()
+            {
+                ClassName = new List<string> { "menu-demo-card" };
+                Children = new()
+                {
+                    new UILabel
+                    {
+                        Text = "语义样式 Styles / ClassNames",
+                        ClassName = new List<string> { "menu-card-title", "label-green" }
+                    },
+                    new UILabel
+                    {
+                        Text = "按 Root、Item、ItemContent、GroupTitle、SubMenu.List 等部位独立定制；选中项通过 StylesRender 和 ClassNamesRender 切换绿色主题，禁用项保留禁用行为。",
+                        ClassName = new List<string> { "menu-card-desc" }
+                    },
+                    new UIView
+                    {
+                        Style = new DefaultUIStyle
+                        {
+                            Width = "100%",
+                            Display = "flex",
+                            FlexWrap = "wrap",
+                            Gap = 20,
+                            Padding = [12],
+                            AlignItems = "flex-start"
+                        },
+                        Children = new()
+                        {
+                            CreateModeDemo("内联菜单：展开后查看子列表样式", MenuMode.Inline),
+                            CreateModeDemo("纵向菜单：点击标题查看子列表样式", MenuMode.Vertical)
+                        }
+                    }
+                };
+            }
+
+            /// <summary>创建指定模式的说明和菜单。</summary>
+            /// <param name="caption">模式说明。</param>
+            /// <param name="mode">菜单布局模式。</param>
+            private static UIView CreateModeDemo(string caption, MenuMode mode)
+            {
+                return new UIView
+                {
+                    Style = new DefaultUIStyle
+                    {
+                        Width = 300,
+                        Display = "flex",
+                        FlexDirection = "column",
+                        Gap = 10
+                    },
+                    Children = new()
+                    {
+                        new UILabel
+                        {
+                            Text = caption,
+                            Style = new DefaultUIStyle { FontSize = 13, Color = ColorHelper.ParseColor("#475569") }
+                        },
+                        CreateSemanticMenu(mode)
+                    }
+                };
+            }
+
+            /// <summary>创建包含分组、角标、子菜单、禁用项和危险项的语义样式菜单。</summary>
+            /// <param name="mode">菜单布局模式。</param>
+            private static UIMenu CreateSemanticMenu(MenuMode mode)
+            {
+                return new UIMenu
+                {
+                    Mode = mode,
+                    Style = new UpdateUIStyle { Width = "100%" },
+                    SelectedKeys = new[] { "semantic-overview" },
+                    OpenKeys = mode == MenuMode.Inline ? new[] { "semantic-settings" } : Array.Empty<string>(),
+                    ClassNames = new MenuClassNames
+                    {
+                        Root = "menu-semantic-root",
+                        Item = "menu-semantic-item",
+                        ItemIcon = "menu-semantic-icon",
+                        ItemContent = "menu-semantic-content",
+                        GroupTitle = "menu-semantic-group-title",
+                        Divider = "menu-semantic-divider",
+                        Badge = "menu-semantic-badge",
+                        SubMenu = new MenuSubMenuClassNames
+                        {
+                            ItemTitle = "menu-semantic-submenu-title",
+                            List = "menu-semantic-submenu-list"
+                        }
+                    },
+                    Styles = new MenuStyles
+                    {
+                        Root = new UpdateUIStyle { BorderRadius = 12, Padding = [8] },
+                        List = new UpdateUIStyle { Gap = 4 },
+                        Item = new UpdateUIStyle { BorderRadius = 8 },
+                        Group = new UpdateUIStyle { MarginBottom = 6 },
+                        GroupTitle = new UpdateUIStyle { Color = ColorHelper.ParseColor("#047857"), FontWeight = 600 },
+                        GroupList = new UpdateUIStyle { PaddingBottom = 4 },
+                        Extra = new UpdateUIStyle { Gap = 8 },
+                        ExpandIcon = new UpdateUIStyle { Color = ColorHelper.ParseColor("#059669") },
+                        SubMenu = new MenuSubMenuStyles
+                        {
+                            ItemTitle = new UpdateUIStyle { BorderRadius = 8, FontWeight = 600 },
+                            List = new UpdateUIStyle
+                            {
+                                BackgroundColor = ColorHelper.ParseColor("#f0fdf4"),
+                                BorderRadius = 8
+                            }
+                        }
+                    },
+                    StylesRender = context => context.Selected && !context.Disabled && !context.Danger
+                        ? new MenuStyles
+                        {
+                            ItemTitle = new UpdateUIStyle
+                            {
+                                Color = ColorHelper.ParseColor("#047857"),
+                                BackgroundColor = ColorHelper.ParseColor("#d1fae5"),
+                                FontWeight = 600,
+                                Hover = new DefaultUIStyle
+                                {
+                                    Color = ColorHelper.ParseColor("#065f46"),
+                                    BackgroundColor = ColorHelper.ParseColor("#a7f3d0")
+                                }
+                            }
+                        }
+                        : new MenuStyles(),
+                    ClassNamesRender = context => new MenuClassNames
+                    {
+                        Item = context.Selected ? "menu-semantic-selected" : null
+                    },
+                    Items = new()
+                    {
+                        MenuItem.Group("semantic-workspace", "工作空间", new List<MenuItem>
+                        {
+                            new("semantic-overview", "项目总览") { Icon = "◈" },
+                            new("semantic-inbox", "通知中心")
+                            {
+                                Icon = "✉",
+                                Badge = new UIBadge { Count = 6, ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#10b981") }
+                            }
+                        }, new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#059669") }),
+                        new("semantic-settings", "团队设置")
+                        {
+                            Icon = "⚙",
+                            Children = new()
+                            {
+                                new("semantic-members", "成员管理"),
+                                new("semantic-permissions", "权限配置"),
+                                new("semantic-disabled", "审计日志（未开通）") { Disabled = true }
+                            }
+                        },
+                        MenuItem.Divider("semantic-divider"),
+                        new("semantic-leave", "退出工作空间") { Icon = "↪", Danger = true }
+                    }
+                };
+            }
+        }
+
         class CustomMenuDemo : UIElement
         {
             internal CustomMenuDemo()
@@ -442,7 +601,6 @@ namespace TCYM.UI.Example.Page.component.Menu
                                     {
                                         ItemRender = (item, menu) =>
                                         {
-                                            Console.WriteLine($"当前选中项: {menu.SelectedKeys.FirstOrDefault()}, 当前展开项: {string.Join(",", menu.OpenKeys)}");
                                             return new UIView
                                             {
                                                 Style = new DefaultUIStyle

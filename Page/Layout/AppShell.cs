@@ -31,6 +31,7 @@ namespace TCYM.UI.Example.Page.Layout
                     Id = "app",
                     Path = "/app",
                     Name = "主界面",
+                    //PreloadOnIdle = true,
                     KeepAlive = false,
                     ReclaimMemoryOnLeave = true,
                     Element = UIRoute.LazyLoad(() => new Layout())
@@ -40,6 +41,7 @@ namespace TCYM.UI.Example.Page.Layout
                     Id = "charts",
                     Path = "/charts",
                     Name = "图表",
+                    PreloadOnIdle = true,
                     KeepAlive = false,
                     ReclaimMemoryOnLeave = true,
                     Element = UIRoute.LazyLoad(() => new ChartPage())

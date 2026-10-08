@@ -59,3 +59,50 @@
   flex-direction: column;
   gap: 10px;
 }
+
+/* 按语义类配置部位，菜单状态刷新或重新挂载后仍然有效。 */
+.menu-semantic-root {
+  border: 1px solid #a7f3d0;
+  background-color: #ffffff;
+}
+
+.menu-semantic-item {
+  border-radius: 8px;
+}
+
+.menu-semantic-item:hover {
+  background-color: #ecfdf5;
+}
+
+.menu-semantic-icon {
+  font-size: 17px;
+}
+
+.menu-semantic-content {
+  font-size: 14px;
+}
+
+.menu-semantic-group-title {
+  background-color: #f0fdf4;
+  border-radius: 6px;
+}
+
+.menu-semantic-submenu-title {
+  font-weight: 600;
+}
+
+.menu-semantic-submenu-list {
+  border: 1px solid #d1fae5;
+}
+
+.menu-semantic-divider {
+  background-color: #d1fae5;
+}
+
+.menu-semantic-badge {
+  margin-left: 6px;
+}
+
+.menu-semantic-selected {
+  border-left: 3px solid #10b981;
+}

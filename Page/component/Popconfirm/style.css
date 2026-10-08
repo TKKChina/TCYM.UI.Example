@@ -1,0 +1,194 @@
+.popconfirm-demo-view {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  padding-right: 10px;
+  padding-bottom: 24px;
+}
+
+.popconfirm-demo-view .popconfirm-demo-title {
+  width: 100%;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.88);
+}
+
+.popconfirm-demo-view .popconfirm-demo-title-sub {
+  width: 100%;
+  height: 20px;
+  margin-top: 4px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.popconfirm-demo-view .popconfirm-demo-desc {
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+}
+
+.popconfirm-demo-view .popconfirm-demo-card {
+  width: 100%;
+  margin-top: 10px;
+  padding: 16px;
+  padding-bottom: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.popconfirm-demo-view .popconfirm-card-title {
+  margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.88);
+}
+
+.popconfirm-demo-view .popconfirm-card-desc {
+  width: calc(100% - 20px);
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.popconfirm-demo-view .popconfirm-showcase {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 18px;
+  background: #fafafa;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+}
+
+.popconfirm-demo-view .popconfirm-placement-grid {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 42px 52px;
+  background: #fafafa;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+}
+
+.popconfirm-demo-view .popconfirm-theme-showcase {
+  background: #f5f3ff;
+  border-color: #ddd6fe;
+}
+
+.popconfirm-demo-view .popconfirm-demo-instance {
+  display: inline-flex;
+  position: relative;
+}
+
+.popconfirm-demo-view .popconfirm-trigger-button {
+  min-width: 96px;
+  height: 34px;
+  padding-left: 14px;
+  padding-right: 14px;
+  font-size: 13px;
+  color: #1677ff;
+  background: #ffffff;
+  border: 1px solid #1677ff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.popconfirm-demo-view .popconfirm-trigger-button:hover {
+  color: #4096ff;
+  border-color: #4096ff;
+  background: #f0f7ff;
+}
+
+.popconfirm-demo-view .popconfirm-trigger-danger {
+  color: #ff4d4f;
+  border-color: #ff4d4f;
+}
+
+.popconfirm-demo-view .popconfirm-trigger-danger:hover {
+  color: #ff7875;
+  border-color: #ff7875;
+  background: #fff2f0;
+}
+
+.popconfirm-demo-view .popconfirm-trigger-compact {
+  min-width: 72px;
+  width: 72px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.popconfirm-demo-view .popconfirm-trigger-muted {
+  color: rgba(0, 0, 0, 0.25);
+  background: rgba(0, 0, 0, 0.04);
+  border-color: #d9d9d9;
+  cursor: not-allowed;
+}
+
+.popconfirm-demo-view .popconfirm-state-label {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #0958d9;
+  background: #e6f4ff;
+  border-radius: 6px;
+}
+
+.popconfirm-demo-view .popconfirm-custom-title {
+  width: 100%;
+  font-size: 14px;
+  font-weight: bold;
+  color: #391085;
+}
+
+.popconfirm-demo-view .popconfirm-custom-description {
+  width: 100%;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.popconfirm-demo-view .popconfirm-custom-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffffff;
+  background: #722ed1;
+  border-radius: 50%;
+}
+
+.popconfirm-demo-view .label-title {
+  color: #1677ff;
+}
+
+.popconfirm-demo-view .label-green {
+  color: #389e0d;
+}
+
+.popconfirm-demo-view .label-purple {
+  color: #722ed1;
+}
+
+.popconfirm-demo-view .label-orange {
+  color: #d46b08;
+}

@@ -4,6 +4,7 @@ using TCYM.UI.Core.Routing;
 using TCYM.UI.Elements;
 using TCYM.UI.Elements.Input;
 using TCYM.UI.Elements.Message;
+using TCYM.UI.Events;
 
 namespace TCYM.UI.Example.Page.Layout
 {
@@ -183,7 +184,7 @@ namespace TCYM.UI.Example.Page.Layout
                         ClassName = "login-button",
                         Events = new UIEventBindings
                         {
-                            Click = _ => Login()
+                            Click = _ => Login(),
                         }
                     },
                     new UILabel

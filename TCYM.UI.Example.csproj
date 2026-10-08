@@ -5,7 +5,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <TCYMSourcePreviewComponentRoot>Page/component</TCYMSourcePreviewComponentRoot>
@@ -163,8 +163,56 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="TCYM.UI" Version="0.1.1.23" />
-    <PackageReference Include="TCYM.UI.Chart" Version="0.1.1.24" />
+    <None Remove="Page\Charts\Candlestick\stock-DJI.json" />
+    <None Remove="Page\Charts\Candlestick\style.css" />
+    <None Remove="Page\Charts\Graph\Assets\**\*" />
+    <None Remove="Page\Charts\Graph\style.css" />
+    <None Remove="Page\Charts\Radar\style.css" />
+    <None Remove="Page\Charts\Tree\style.css" />
+    <None Remove="Page\component\Cascader\style.css" />
+    <None Remove="Page\component\Loading\style.css" />
+    <None Remove="Page\component\Popconfirm\style.css" />
   </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Page\Charts\Candlestick\stock-DJI.json" />
+    <EmbeddedResource Include="Page\Charts\Candlestick\style.css" />
+    <EmbeddedResource Include="Page\Charts\Graph\Assets\**\*" />
+    <EmbeddedResource Include="Page\Charts\Graph\style.css" />
+    <EmbeddedResource Include="Page\Charts\Radar\style.css" />
+    <EmbeddedResource Include="Page\Charts\Tree\style.css" />
+    <EmbeddedResource Include="Page\component\Cascader\style.css" />
+    <EmbeddedResource Include="Page\component\Glass\import-demo.css" />
+    <EmbeddedResource Include="Page\component\Loading\style.css" />
+    <EmbeddedResource Include="Page\component\Popconfirm\style.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="TCYM.UI" Version="0.1.1.24" GeneratePathProperty="true" />
+    <PackageReference Include="TCYM.UI.Chart" Version="0.1.1.25" />
+  </ItemGroup>
+
+  <!-- 兼容 TCYM.UI 0.1.1.24 普通 Debug 的原生资产选择；新包中的同名目标会统一接管。 -->
+  <PropertyGroup>
+    <_TCYMUIWindowsSkiaNativeFile>$(PkgTCYM_UI)\buildTransitive\native\win-x64\libSkiaSharp.dll</_TCYMUIWindowsSkiaNativeFile>
+  </PropertyGroup>
+  <Target Name="TCYMUIUseBundledWindowsSkiaNative"
+          AfterTargets="ResolvePackageAssets"
+          BeforeTargets="ResolveLockFileCopyLocalFiles"
+          Condition="Exists('$(_TCYMUIWindowsSkiaNativeFile)')">
+    <ItemGroup>
+      <_TCYMUIStockSkiaRuntime Include="@(RuntimeTargetsCopyLocalItems)"
+          Condition="'%(RuntimeTargetsCopyLocalItems.NuGetPackageId)' == 'SkiaSharp.NativeAssets.Win32' and '%(RuntimeTargetsCopyLocalItems.RuntimeIdentifier)' == 'win-x64' and '%(RuntimeTargetsCopyLocalItems.Filename)%(RuntimeTargetsCopyLocalItems.Extension)' == 'libSkiaSharp.dll'" />
+      <_TCYMUIStockSkiaNative Include="@(NativeCopyLocalItems)"
+          Condition="'$(RuntimeIdentifier)' == 'win-x64' and '%(NativeCopyLocalItems.NuGetPackageId)' == 'SkiaSharp.NativeAssets.Win32' and '%(NativeCopyLocalItems.Filename)%(NativeCopyLocalItems.Extension)' == 'libSkiaSharp.dll'" />
+      <RuntimeTargetsCopyLocalItems Remove="@(_TCYMUIStockSkiaRuntime)" />
+      <NativeCopyLocalItems Remove="@(_TCYMUIStockSkiaNative)" />
+      <RuntimeTargetsCopyLocalItems Include="@(_TCYMUIStockSkiaRuntime->'$(_TCYMUIWindowsSkiaNativeFile)')" />
+      <NativeCopyLocalItems Include="@(_TCYMUIStockSkiaNative->'$(_TCYMUIWindowsSkiaNativeFile)')" />
+      <RuntimeTargetsCopyLocalItems Remove="@(RuntimeTargetsCopyLocalItems)"
+          Condition="'%(RuntimeTargetsCopyLocalItems.NuGetPackageId)' == 'SkiaSharp.NativeAssets.Win32' and '%(RuntimeTargetsCopyLocalItems.RuntimeIdentifier)' == 'win-x64' and '%(RuntimeTargetsCopyLocalItems.Filename)%(RuntimeTargetsCopyLocalItems.Extension)' == 'libSkiaSharp.pdb'" />
+      <NativeCopyLocalItems Remove="@(NativeCopyLocalItems)"
+          Condition="'$(RuntimeIdentifier)' == 'win-x64' and '%(NativeCopyLocalItems.NuGetPackageId)' == 'SkiaSharp.NativeAssets.Win32' and '%(NativeCopyLocalItems.Filename)%(NativeCopyLocalItems.Extension)' == 'libSkiaSharp.pdb'" />
+    </ItemGroup>
+  </Target>
 
 </Project>

@@ -91,6 +91,39 @@ namespace Page.Charts
                             new("chart_scatter_effect", "涟漪特效散点图"),
                             new("chart_scatter_special_relation", "特殊关系图"),
                         }, new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") }),
+                        MenuItem.Group("group-candlestick", "Candlestick K 线图", new List<MenuItem>
+                        {
+                            MenuItem.Divider("group-candlestick-divider-top"),
+                            new("chart_candlestick_shanghai_index", "上证指数"),
+                            new("chart_candlestick_large_data", "大数据量 K 线图"),
+                            new("chart_candlestick_intraday_multiple_days", "断轴上的日内走势图"),
+                            new("chart_candlestick_intraday_single_day", "断轴上的日内走势图 (II)"),
+                            new("chart_candlestick_brush", "K 线图刷选"),
+                        }, new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") }),
+                        MenuItem.Group("group-radar", "Radar 雷达图", new List<MenuItem>
+                        {
+                            MenuItem.Divider("group-radar-divider-top"),
+                            new("chart_radar_basic", "基础雷达图"),
+                            new("chart_radar_customized", "自定义雷达图"),
+                            new("chart_radar_gradient", "渐变色雷达图"),
+                            new("chart_radar_multidimensional", "多维雷达图"),
+                        }, new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") }),
+                        MenuItem.Group("group-graph", "Graph 关系图", new List<MenuItem>
+                        {
+                            MenuItem.Divider("group-graph-divider-top"),
+                            new("chart_graph_relation", "关系图"),
+                            new("chart_graph_dynamic", "动态增加图节点"),
+                            new("chart_graph_complex", "复杂关系图"),
+                            new("chart_graph_distributed", "多节点分布拓扑图"),
+                        }, new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") }),
+                        MenuItem.Group("group-tree", "Tree 树状图", new List<MenuItem>
+                        {
+                            MenuItem.Divider("group-tree-divider-top"),
+                            new("chart_tree_company", "公司架构图"),
+                            new("chart_tree_left_to_right", "从左到右树状图"),
+                            new("chart_tree_top_to_bottom", "从上到下树状图"),
+                            new("chart_tree_right_to_left", "从右到左树状图"),
+                        }, new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") }),
                         MenuItem.Divider("charts-navigation-divider-bottom"),
                         new("app", "返回上一级") { Icon = "&#xe7ed;", Danger = true }
                     },

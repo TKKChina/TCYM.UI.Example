@@ -219,6 +219,8 @@ namespace TCYM.UI.Example.Page.component.Input
                                 {
                                     Width = 160,
                                     Height = 24,
+                                    PaddingLeft = 2,
+                                    PaddingRight = 4,
                                     FontSize = 12,
                                 },
                             },
@@ -233,6 +235,8 @@ namespace TCYM.UI.Example.Page.component.Input
                                 {
                                     Width = 300,
                                     Height = 40,
+                                    PaddingLeft = 6,
+                                    PaddingRight = 8,
                                     FontSize = 18,
                                 },
                             },
@@ -564,6 +568,36 @@ namespace TCYM.UI.Example.Page.component.Input
                                 ClassName = new List<string> { "input-showcase-row" },
                                 Children = new()
                                 {
+                                    new UILabel { Text = "关键词：", ClassName = new List<string> { "input-type-label" } },
+                                    new UIInput
+                                    {
+                                        Text = "TCYM.UI",
+                                        AllowClear = true,
+                                        Count = new CountConfig { Max = 40 },
+                                        // 固定尺寸附属图标与计数、清除区域组合，避免渲染时再扩宽。
+                                        Prefix = new UIIcon
+                                        {
+                                            Content = "&#xe63f;",
+                                            Style = new DefaultUIStyle
+                                            {
+                                                Width = 20,
+                                                Height = 22,
+                                                Display = "flex",
+                                                AlignItems = "center",
+                                                JustifyContent = "center",
+                                                FontSize = 16,
+                                                Color = ColorHelper.ParseColor("rgba(0,0,0,0.45)"),
+                                                FontFamily = UIFontManager.Get("TCYMIconFont"),
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            new UIView
+                            {
+                                ClassName = new List<string> { "input-showcase-row" },
+                                Children = new()
+                                {
                                     new UILabel { Text = "超出截断：", ClassName = new List<string> { "input-type-label" } },
                                     new UIInput
                                     {
@@ -767,6 +801,7 @@ namespace TCYM.UI.Example.Page.component.Input
                             new UITextArea
                             {
                                 Placeholder = "请输入多行内容...",
+                                Text = "待办事项\n确认需求\n整理资料\n编写代码\n检查界面\n运行测试\n提交评审\n安排发布",
                                 Rows = 3,
                             },
                             new UITextArea

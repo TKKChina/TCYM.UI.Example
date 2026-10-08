@@ -89,7 +89,7 @@ namespace TCYM.UI.Example.Page.component.TimePicker
         {
             return BuildCard(
                 "三种尺寸",
-                "Small、Medium 和 Large 分别对应 24、32 和 40 像素高度。",
+                "Small、Medium 和 Large 分别对应 24、30 和 40 像素高度。",
                 new UITimePicker
                 {
                     Size = TimePickerSize.Small,

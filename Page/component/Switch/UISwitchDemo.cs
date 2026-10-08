@@ -166,7 +166,7 @@ namespace TCYM.UI.Example.Page.component.Switch
                                 DefaultChecked = true,
                                 CheckedChildren = "开启测试",
                                 UnCheckedChildren = "关闭测试",
-                            },
+                            }
                         }
                     },
                 };

@@ -1,8 +1,7 @@
-﻿using TCYM.UI.Core;
+using TCYM.UI.Core;
 using TCYM.UI.Elements;
 using TCYM.UI.Elements.Modal;
 using TCYM.UI.Enums;
-using TCYM.UI.Events;
 using TCYM.UI.Example.Page.Layout;
 using TCYM.UI.Helpers;
 
@@ -12,7 +11,7 @@ internal static class Program
     public static void Main()
     {
         // 是否启用帧时间日志（输出每帧的CPU和GPU时间，单位毫秒），可用于性能分析和调优。启用后会在控制台输出每帧的渲染时间信息，帮助开发者了解UI渲染的性能瓶颈。
-        UISystem.EnableFrameTimingLog = true;
+        UISystem.EnableFrameTimingLog = false;
         // 是否启用渲染类型分析日志（输出每帧的渲染类型分析信息）。启用后会在控制台输出每帧的渲染类型分析结果，包括不同渲染类型的占比和性能数据。这对于优化UI渲染性能非常有帮助，尤其是在复杂UI场景下，可以帮助开发者识别哪些渲染类型可能导致性能问题。
         UISystem.EnableRenderTypeProfile = true;
         // 示例调试时不隐藏累计耗时低于默认 0.5ms 的轻量组件，确保新增组件和 Chart 内部图元也会出现在统计中。
@@ -28,36 +27,11 @@ internal static class Program
         // macOS/Linux 当前保留窗口管理器的默认圆角与阴影外观。
         UISystem.DefaultWindowCornerPreference = UIWindowCornerPreference.Round;
         UISystem.DefaultWindowShadowPreference = UIWindowShadowPreference.Enabled;
-        UISystem.Initialize("TCYM", 1200, 800, true, 30, resizable: true);
-
+        var renderBackend = UISystem.DefaultRenderBackend;//UIRenderBackendPreference.OpenGL;
+        // 默认使用 Direct3D12 渲染后端；若不支持则回退到 OpenGL。默认多线程渲染模式，若不支持则回退到单线程渲染模式。若不支持任何后端，则抛出异常。
+        UISystem.Initialize(renderBackend, "TCYM", 1200, 800, 30, resizable: true);
         var manager = UISystem.Manager;
         if (manager == null) return;
-        //manager.OnAnyJoystickEvent += (e) =>
-        //{
-        //    switch (e.Type)
-        //    {
-        //        case UIJoystickEventType.DeviceAdded:
-        //            Console.WriteLine($"[{e.DeviceType}] 设备 {e.DeviceId} 已连接");
-        //            break;
-        //        case UIJoystickEventType.DeviceRemoved:
-        //            Console.WriteLine($"[{e.DeviceType}] 设备 {e.DeviceId} 已断开");
-        //            break;
-        //        case UIJoystickEventType.AxisMotion:
-        //            // AxisNormalized 已归一化到 -1.0 ~ 1.0，直接使用
-        //            Console.WriteLine($"[{e.DeviceType}] 设备 {e.DeviceId} 轴 {e.Axis} = {e.AxisNormalized:F3}");
-        //            break;
-        //        case UIJoystickEventType.HatMotion:
-        //            Console.WriteLine($"[{e.DeviceType}] 设备 {e.DeviceId} 帽子 {e.Hat} = {e.HatState}");
-        //            break;
-        //        case UIJoystickEventType.ButtonDown:
-        //            Console.WriteLine($"[{e.DeviceType}] 设备 {e.DeviceId} 按钮 {e.Button} 按下");
-        //            break;
-        //        case UIJoystickEventType.ButtonUp:
-        //            Console.WriteLine($"[{e.DeviceType}] 设备 {e.DeviceId} 按钮 {e.Button} 抬起");
-        //            break;
-        //    }
-        //    Console.Error.WriteLine($"[{e.DeviceType}] 设备 {e.DeviceId} 事件 {e.Type}");
-        //};
         UISystem.UnhandledException += (_, e) =>
         {
             UIModal.Confirm("发生未处理异常", e.Exception.ToString(), onOk: () =>
@@ -85,7 +59,7 @@ internal static class Program
                 BoxShadowSpread = 10,
                 BoxShadowOffsetY = 2,
                 BoxShadowBlur = 4,
-                Cursor = UICursor.Grab
+                Cursor = UICursor.Move
             },
         });
         root.AddChild(new AppShell());

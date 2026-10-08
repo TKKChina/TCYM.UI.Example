@@ -172,6 +172,7 @@
   font-size: 30px;
   font-weight: bold;
   color: #141414;
+  text-shadow: 2px 3px 4px rgba(0, 0, 0, 0.5);
 }
 
 .label-sample-body {
@@ -239,6 +240,108 @@
   line-height: 1.7;
 }
 
+/* 空白策略采用同一固定预览框，便于直观看出折叠、保留与自动换行的差异。 */
+.label-flow-grid {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.label-flow-box {
+  /* 固定卡片宽度，由外层 flex-wrap 换行；不依赖尚未布局父级的百分比上限。 */
+  width: 300px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fafafa;
+}
+
+.label-flow-note {
+  width: 100%;
+  min-height: 46px;
+  font-size: 12px;
+  color: #666666;
+  margin-bottom: 10px;
+}
+
+.label-flow-sample {
+  width: 100%;
+  height: 160px;
+  padding: 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  background: #ffffff;
+  font-size: 14px;
+  color: #262626;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+.label-white-normal { white-space: normal; }
+.label-white-nowrap { white-space: nowrap; }
+.label-white-pre { white-space: pre; }
+.label-white-pre-wrap { white-space: pre-wrap; }
+.label-white-pre-line { white-space: pre-line; }
+.label-white-break-spaces { white-space: break-spaces; }
+
+/* 两种溢出行为只改变末尾显示方式，共用同一宽度、不换行及裁剪条件。 */
+.label-overflow-sample {
+  height: 48px;
+  white-space: nowrap;
+}
+
+.label-overflow-clip { text-overflow: clip; }
+.label-overflow-ellipsis { text-overflow: ellipsis; }
+
+/* 起始端跟随 direction，避免全局 text-align 影响对比；使用明确的预览高度。 */
+.label-direction-sample {
+  height: 72px;
+  font-size: 18px;
+  white-space: nowrap;
+  writing-mode: horizontal-tb;
+  text-align: start;
+}
+
+.label-direction-ltr { direction: ltr; }
+.label-direction-rtl { direction: rtl; }
+.label-direction-ellipsis { text-overflow: ellipsis; }
+
+/* 三种模式共用物理尺寸与原文；布局完全由文字书写模式决定，不使用旋转容器模拟。 */
+.label-writing-sample {
+  height: 200px;
+  font-size: 20px;
+  white-space: pre;
+  direction: ltr;
+  text-align: start;
+}
+
+.label-writing-horizontal { writing-mode: horizontal-tb; }
+.label-writing-rl { writing-mode: vertical-rl; }
+.label-writing-lr { writing-mode: vertical-lr; }
+
+.label-writing-rtl-ellipsis {
+  writing-mode: vertical-rl;
+  direction: rtl;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.label-flow-code {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 6px;
+  background: #f5f7fa;
+  font-size: 13px;
+  color: #334155;
+  white-space: pre-wrap;
+  text-overflow: clip;
+  overflow: hidden;
+}
+
 .label-inline-row {
   width: 100%;
   font-size: 14px;
@@ -281,4 +384,145 @@
 
 .label-chip-warning .label-inline-chip-text {
   color: #ad4e00;
+}
+
+/* 选择策略预览只作用于当前标签；卡片说明和操作控件不作为拖选目标。 */
+.label-selection-grid {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.label-selection-card {
+  width: 320px;
+  min-height: 210px;
+  padding: 14px;
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+}
+
+.label-selection-note {
+  width: 100%;
+  min-height: 44px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #666666;
+  user-select: none;
+}
+
+.label-selection-sample {
+  width: 100%;
+  min-height: 76px;
+  padding: 12px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #262626;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  white-space: normal;
+}
+
+.label-select-text { user-select: text; }
+.label-select-none { user-select: none; }
+.label-select-all { user-select: all; }
+
+.label-selection-parent-none {
+  width: 100%;
+  user-select: none;
+}
+
+.label-selection-muted {
+  width: 100%;
+  margin-bottom: 8px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.label-selection-actions {
+  width: 100%;
+  margin-top: 14px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.label-selection-button {
+  min-width: 160px;
+  height: 34px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #ffffff;
+  background: #1677ff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.label-selection-button:hover { background: #4096ff; }
+.label-selection-button-secondary { background: #475569; }
+.label-selection-button-secondary:hover { background: #64748b; }
+
+.label-selection-status,
+.label-selection-result {
+  width: 100%;
+  margin-top: 10px;
+  font-size: 13px;
+  color: #334155;
+  user-select: none;
+}
+
+/* 只有此显式 text 容器提供跨标签选择授权，内部空白与段落间隙也属于同一选择区域。 */
+.label-selection-region {
+  width: 100%;
+  margin-top: 16px;
+  padding: 20px 24px;
+  border: 1px dashed #1677ff;
+  border-radius: 10px;
+  background: #f0f7ff;
+  user-select: text;
+}
+
+.label-selection-region-line {
+  width: calc(100% - 80px);
+  min-height: 28px;
+  margin-bottom: 8px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #262626;
+  white-space: normal;
+}
+
+.label-selection-region-gap {
+  width: 100%;
+  height: 24px;
+}
+
+.label-selection-region-excluded {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #64748b;
+  background: #e8eef5;
+  border-radius: 4px;
+  user-select: none;
+}
+
+.label-selection-feedback {
+  width: 100%;
+}
+
+.label-selection-result {
+  height: 28px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }

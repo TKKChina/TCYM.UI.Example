@@ -22,7 +22,7 @@ namespace TCYM.UI.Example.Page.component.Image
                 new UILabel
                 {
                     Text = "Image 图片",
-                    ClassName = new List<string> { "image-demo-title", "label-title" }
+                    ClassName = new List<string> { "image-demo-title" }
                 },
                 new UILabel
                 {

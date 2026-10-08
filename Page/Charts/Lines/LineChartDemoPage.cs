@@ -46,14 +46,7 @@ namespace Page.Charts.Lines
 
             _chart = new UIChart(registry ?? ChartModules.CreateDefaultRegistry())
             {
-                //Width = ChartWidth,
-                //Height = ChartHeight,
                 ClassName = "line-chart-canvas",
-                //Style = new DefaultUIStyle
-                //{
-                //    Width = "100%",
-                //    Height = 550,
-                //},
             };
 
             ClassName = "line-chart-demo";
@@ -101,6 +94,9 @@ namespace Page.Charts.Lines
             _chart.SetOption(option, new ChartSetOptionOptions
             {
                 NotMerge = true,
+                // 页面构造时图表尚未获得真实内容区；延迟到首个布局/绘制只构建一次，
+                // 避免先按0x0生成候选、随后又因实际尺寸重复Layout/Visual。
+                LazyUpdate = true,
             });
         }
 

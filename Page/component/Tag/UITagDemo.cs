@@ -181,8 +181,7 @@ namespace TCYM.UI.Example.Page.component.Tag
                                 Style = new DefaultUIStyle
                                 {
                                     Color = ColorHelper.ParseColor("#f50"),
-                                    PaddingLeft = 4, PaddingRight = 4,
-                                    PaddingTop = 2, PaddingBottom = 2,
+                                    Padding = [2,4],
                                     BorderRadius = 5,
                                 }
                             },

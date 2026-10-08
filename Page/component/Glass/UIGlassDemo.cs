@@ -5,13 +5,16 @@ using TCYM.UI.Elements.CodeEditor;
 namespace TCYM.UI.Example.Page.component.Glass
 {
     /// <summary>
-    /// 展示 CSS backdrop-filter 与 TCYM.UI 液体玻璃边缘折射。
+    /// 展示 CSS 选择器、变量作用域、backdrop-filter 与液体玻璃边缘折射。
     /// </summary>
-    internal sealed class UIGlassDemo : UIScrollView
+    [UIRenderContainer]
+    internal sealed partial class UIGlassDemo : UIScrollView
     {
         private const string DemoCssPath = "res://TCYM.UI.Example/Page.component.Glass.style.css";
 
         private const string GlassCss = """
+            @import "./import-demo.css";
+
             .frosted-glass {
                 backdrop-filter: blur(18px) saturate(145%) brightness(105%);
                 background: rgba(255, 255, 255, 0.13);
@@ -106,6 +109,22 @@ namespace TCYM.UI.Example.Page.component.Glass
                 background-color: #ede9fe;
                 color: #4c1d95;
             }
+
+            .glass-media-surface {
+                border-color: #cbd5e1;
+                background-color: #f8fafc;
+                color: #475569;
+                transition: none;
+            }
+
+            @media screen and (max-width: 1400px) {
+                #glass-media-demo {
+                    border-color: #1d4ed8;
+                    background-color: #dbeafe;
+                    color: #1e40af;
+                    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
+                }
+            }
             """;
 
         internal UIGlassDemo()
@@ -133,6 +152,9 @@ namespace TCYM.UI.Example.Page.component.Glass
                 CreateHeroSection(),
                 CreateComparisonSection(),
                 CreateSelectorSection(),
+                CreateVariableSection(),
+                CreateAnimationSection(),
+                CreateAdvancedMotionSection(),
                 CreateCodeSection(),
             };
         }
@@ -208,7 +230,7 @@ namespace TCYM.UI.Example.Page.component.Glass
                 Children = new()
                 {
                     CreateSectionTitle("CSS 交互与高级选择器"),
-                    CreateSectionDescription("前两项观察 :hover / :active；接着依次展示 :first-child、:nth-child(2n)、:not()、:is() 与 :has()；最后两项展示相邻兄弟 + 与通用兄弟 ~。"),
+                    CreateSectionDescription("前两项观察 :hover / :active；接着依次展示 :first-child、:nth-child(2n)、:not()、:is()、:has()、@media 与 @import；最后两项展示相邻兄弟 + 与通用兄弟 ~。"),
                     new UIView
                     {
                         ClassName = "glass-selector-grid",
@@ -253,6 +275,12 @@ namespace TCYM.UI.Example.Page.component.Glass
                                     ("neutral", "glass-sibling-pill glass-is-item"),
                                 }),
                             CreateHasSelectorTile(),
+                            CreateMediaQueryTile(),
+                            CreateSelectorStateTile(
+                                "@import",
+                                "样式来自 style.css 导入的独立 import-demo.css。",
+                                "glass-import-surface",
+                                "此区域由导入子样式表着色"),
                             new UIView
                             {
                                 ClassName = "glass-selector-example",
@@ -486,6 +514,36 @@ namespace TCYM.UI.Example.Page.component.Glass
             };
         }
 
+        /// <summary>
+        /// 创建 <c>@media</c> 演示卡片，通过窗口逻辑宽度断点切换唯一 Id 元素的视觉样式。
+        /// </summary>
+        private static UIView CreateMediaQueryTile()
+        {
+            return new UIView
+            {
+                ClassName = "glass-selector-example",
+                Children = new()
+                {
+                    new UILabel
+                    {
+                        Text = "@media + #id",
+                        ClassName = "glass-selector-example-title",
+                    },
+                    new UILabel
+                    {
+                        Text = "按整个窗口逻辑宽度（不是右侧内容区）判断：小于等于 1400px 时为蓝色，放宽后恢复灰色。",
+                        ClassName = "glass-selector-example-desc",
+                    },
+                    new UILabel
+                    {
+                        Id = "glass-media-demo",
+                        Text = "先点击右上角还原窗口，再拖动整个窗口边缘跨越 1400px",
+                        ClassName = "glass-selector-surface glass-media-surface",
+                    },
+                },
+            };
+        }
+
         private static UIView CreateCodeSection()
         {
             return new UIView
@@ -494,10 +552,10 @@ namespace TCYM.UI.Example.Page.component.Glass
                 Children = new()
                 {
                     CreateSectionTitle("CSS 用法"),
-                    CreateSectionDescription("backdrop-filter 支持按声明顺序组合与重复函数；-webkit-backdrop-filter 也可作为兼容别名。折射强度为 0 时自动退化为标准磨砂。"),
+                    CreateSectionDescription("包含滤镜、选择器、@import 和局部变量示例；变量部分展示继承、嵌套 var()、calc() 与大小写区分。"),
                     new UICodeEditor
                     {
-                        Text = GlassCss,
+                        Text = GlassCss + "\n\n" + VariablesCss,
                         Language = CodeEditorLanguage.Css,
                         ReadOnly = true,
                         ClassName = "glass-code-editor",

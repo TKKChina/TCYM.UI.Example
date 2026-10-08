@@ -261,12 +261,13 @@
     border-radius: 8px;
     color: #ffffff;
     background: linear-gradient(90deg, #155eef 0%, #2970ff 100%);
-    box-shadow: 0 8px 18px rgba(21, 94, 239, 0.24);
     cursor: pointer;
 }
 
 .login-button:hover {
-    background: #004eeb;
+    transform: translateY(-2px);
+    transition: all 0.1s ease-out;
+    box-shadow: 0 8px 18px rgba(21, 94, 239, 0.24);
 }
 
 .login-security-note {

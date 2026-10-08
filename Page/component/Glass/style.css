@@ -1,3 +1,5 @@
+@import "./import-demo.css";
+
 .glass-demo-view {
   width: 100%;
   height: 100%;
@@ -523,6 +525,10 @@
   color: #ffffff;
 }
 
+.glass-not-item:not(.glass-not-disabled):hover {
+    color: red;
+}
+
 .glass-is-item:is(.glass-is-primary, .glass-is-success) {
   border-color: #0369a1;
   background: #0ea5e9;
@@ -556,6 +562,450 @@
   border-color: #7c3aed;
   background: #ffffff;
   color: #6d28d9;
+}
+
+.glass-media-surface {
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
+  color: #475569;
+  transition: none;
+}
+
+@media screen and (max-width: 1400px) {
+  #glass-media-demo {
+    border-color: #1d4ed8;
+    background-color: #dbeafe;
+    color: #1e40af;
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
+  }
+}
+
+/* 变量只声明在演示作用域中，避免影响本页其他区域。 */
+.css-vars-scope {
+  --accent: #2563eb;
+  --gap: 8px;
+  --alias: var(--accent);
+  --Color: #7c3aed;
+  --color: #ea580c;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.css-vars-card {
+  min-height: 316px;
+}
+
+.css-vars-controls {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.css-vars-button {
+  width: 150px;
+  height: 38px;
+  padding: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 13px;
+  cursor: pointer;
+  transition: none;
+}
+
+.css-vars-status {
+  width: 100%;
+  min-height: 30px;
+  margin-bottom: 8px;
+  color: #475569;
+  font-size: 13px;
+}
+
+/* 固定样本不参与鼠标交互，也不启动默认悬浮或过渡动画。 */
+.css-vars-value {
+  width: 100%;
+  /* 窄窗或增大间距时允许文字换行撑高，避免固定高度裁切内容。 */
+  min-height: 44px;
+  margin-top: 8px;
+  padding: var(--gap) calc(var(--gap) * 2);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--accent);
+  font-size: 13px;
+  transition: none;
+  pointer-events: none;
+}
+
+.css-vars-shadow {
+  --accent: #059669;
+  width: 100%;
+}
+
+.css-vars-composite {
+  width: 100%;
+  min-height: 110px;
+  margin-top: 10px;
+  border: 1px solid var(--accent);
+  padding: var(--gap) calc(var(--gap) * 2);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.css-vars-explanation {
+  width: 100%;
+  color: #475569;
+  font-size: 13px;
+}
+
+.css-vars-meter {
+  width: calc(var(--gap) * 12);
+  height: 12px;
+  margin-top: 12px;
+  background: var(--accent);
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.css-vars-fallback {
+  color: var(--missing, var(--fallback, var(--accent, #334155)));
+}
+
+.css-vars-alias-child {
+  --accent: #059669;
+  color: var(--accent);
+  /* 此别名继承父级计算值，不会重新绑定为子元素的绿色。 */
+  border-color: var(--alias);
+}
+
+.css-vars-case-upper {
+  color: var(--Color);
+  border-color: var(--Color);
+}
+
+.css-vars-case-lower {
+  color: var(--color);
+  border-color: var(--color);
+}
+
+.css-vars-case-missing {
+  color: var(--COLOR, #64748b);
+  border-color: var(--COLOR, #64748b);
+}
+
+.css-vars-code-preview {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* 本节所有关键帧默认暂停且只有两轮，不新增常驻动画或定时器。 */
+.css-motion-status {
+  width: 100%;
+  min-height: 30px;
+  margin-bottom: 8px;
+  color: #475569;
+  font-size: 13px;
+}
+
+.css-motion-card { min-height: 258px; }
+.css-motion-track {
+  position: relative;
+  width: 100%;
+  height: 92px;
+  margin-top: 10px;
+  overflow: hidden;
+  border: 1px solid #dbe3ef;
+  border-radius: 12px;
+  background: #ffffff;
+  pointer-events: none;
+}
+.css-motion-endmark {
+  position: absolute;
+  left: 196px;
+  top: 12px;
+  width: 2px;
+  height: 66px;
+  background: #cbd5e1;
+}
+.css-motion-actor {
+  position: absolute;
+  left: 16px;
+  top: 22px;
+  width: 76px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: bold;
+  pointer-events: none;
+}
+.css-motion-clocks {
+  animation: glass-motion-slide 2s linear 2 alternate both paused, glass-motion-fade 1s linear 2 alternate both paused;
+}
+.css-motion-steps {
+  background: #059669;
+  animation: glass-motion-step 2s steps(5,end) 2 alternate both paused;
+}
+.css-motion-bezier {
+  background: #ea580c;
+  animation: glass-motion-spring 1.6s cubic-bezier(.3,-.5,.7,1.5) 2 alternate both paused;
+}
+@keyframes glass-motion-slide { from { transform:translateX(0px); } to { transform:translateX(180px); } }
+@keyframes glass-motion-fade { from { opacity:.45; } to { opacity:1; } }
+@keyframes glass-motion-step { from { transform:translateX(0px); } to { transform:translateX(180px); } }
+@keyframes glass-motion-spring { from { transform:translateX(0px); } to { transform:translateX(180px); } }
+.css-motion-hover {
+  width: 100%;
+  height: 92px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #c4b5fd;
+  border-radius: 12px;
+  background: #ede9fe;
+  color: #5b21b6;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 1;
+  transform: translateY(0px);
+  transition-property: background-color, transform, opacity, color;
+  transition-duration: .35s, .7s, .4s, .35s;
+  transition-delay: 0s, .12s, .2s, 0s;
+  transition-timing-function: ease, cubic-bezier(.2,.8,.2,1), linear, ease;
+}
+.css-motion-hover:hover {
+  background-color: #7c3aed;
+  color: #ffffff;
+  opacity: .72;
+  transform: translateY(-8px);
+}
+.css-motion-code {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 10px;
+  color: #64748b;
+  font-size: 11px;
+  white-space: pre-wrap;
+  pointer-events: none;
+}
+
+/* 第二阶段演示：滚动时间轴不建立时钟，有限时间动画仅在按钮点击时添加。 */
+.css-motion2-scroll-card { timeline-scope: --glass-progress; }
+.css-motion2-source {
+  width: 100%;
+  height: 180px;
+  margin-top: 10px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  overflow: auto;
+  overflow-x: hidden;
+  background: #eff6ff;
+  scroll-timeline: --glass-progress block;
+  animation: glass-advanced-tint auto linear both;
+  animation-timeline: scroll(self block);
+}
+.css-motion2-scroll-content {
+  position: relative;
+  width: 100%;
+  height: 600px;
+}
+.css-motion2-scroll-hint {
+  position: absolute;
+  top: 24px;
+  left: 16px;
+  right: 16px;
+  color: #334155;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+.css-motion2-view {
+  position: absolute;
+  top: 220px;
+  left: 20px;
+  right: 20px;
+  height: 90px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #7c3aed;
+  color: #ffffff;
+  font-size: 14px;
+  white-space: pre-wrap;
+  animation: glass-advanced-view auto linear both;
+  animation-timeline: view(block);
+  animation-range: entry 0% cover 70%;
+}
+.css-motion2-scroll-end {
+  position: absolute;
+  top: 536px;
+  left: 16px;
+  color: #334155;
+  font-size: 12px;
+}
+.css-motion2-offset {
+  width: 100%;
+  min-height: 26px;
+  margin-top: 10px;
+  color: #64748b;
+  font-size: 12px;
+}
+.css-motion2-meter-track {
+  width: 100%;
+  height: 10px;
+  margin-bottom: 12px;
+  border-radius: 5px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+.css-motion2-meter {
+  width: 100%;
+  height: 10px;
+  background: #2563eb;
+  transform-origin: left center;
+  animation: glass-advanced-meter auto linear both;
+  animation-timeline: --glass-progress;
+  animation-range: 20% 80%;
+}
+.css-motion2-scroll-button {
+  width: 72px;
+  height: 32px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 12px;
+  cursor: pointer;
+  transition: none;
+}
+.css-motion2-scale-row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 8px;
+  margin-top: 14px;
+}
+.css-motion2-scale-cell {
+  width: calc(33.333% - 6px);
+  min-width: 84px;
+}
+.css-motion2-scale-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 132px;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.css-motion2-scale {
+  width: 52px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 9px;
+  transform: scale(1.25);
+}
+.css-motion2-add { background: #059669; }
+.css-motion2-accumulate { background: #7c3aed; }
+.css-motion2-scale-caption {
+  width: 100%;
+  margin-top: 8px;
+  color: #475569;
+  font-size: 12px;
+  text-align: center;
+  white-space: pre-wrap;
+}
+.css-motion2-filter-stage {
+  width: 100%;
+  height: 154px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.css-motion2-filter {
+  position: relative;
+  width: 220px;
+  height: 92px;
+  border-radius: 12px;
+  background: #0f766e;
+  filter: none;
+}
+.css-motion2-filter-title {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  color: #ffffff;
+  font-size: 14px;
+}
+.css-motion2-color {
+  position: absolute;
+  top: 48px;
+  width: 78px;
+  height: 24px;
+  border-radius: 6px;
+}
+.css-motion2-color-blue { left: 16px; background: #38bdf8; }
+.css-motion2-color-pink { left: 112px; background: #f472b6; }
+.css-motion2-log {
+  width: 100%;
+  height: 154px;
+  margin-top: 10px;
+  padding: 10px;
+  background: #0f172a;
+  color: #a7f3d0;
+  font-size: 11px;
+  border-radius: 10px;
+  white-space: pre-wrap;
+  overflow: hidden;
+  user-select: text;
+}
+@keyframes glass-advanced-tint {
+  from { background-color: #eff6ff; }
+  to { background-color: #dcfce7; }
+}
+@keyframes glass-advanced-view {
+  from { opacity: .15; transform: translateX(32px); }
+  to { opacity: 1; transform: translateX(0px); }
+}
+@keyframes glass-advanced-meter {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes glass-advanced-scale {
+  from { transform: scale(1); }
+  to { transform: scale(1.5); }
+}
+@keyframes glass-advanced-filter {
+  from { filter: none; }
+  to { filter: hue-rotate(160deg) saturate(1.5) blur(2px) drop-shadow(6px 8px 4px #0f172a66); }
 }
 
 .glass-code-editor {

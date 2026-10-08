@@ -4,11 +4,15 @@ using TCYM.UI.Elements;
 
 namespace TCYM.UI.Example.Page.component.Label
 {
-    internal class UILabelDemo : UIScrollView
+    internal partial class UILabelDemo : UIScrollView
     {
         private const string DemoCssPath = "res://TCYM.UI.Example/Page.component.Label.style.css";
         private const string LongText = "TCYM.UI 的 UILabel 支持内容测量、自动换行、文本对齐、多行省略以及高亮片段，适合承载标题、描述、状态和辅助说明等文本场景。";
         private const string AlignmentPreviewText = "第一行文本较长，用于观察对齐效果。\n第二行较短。\n第三行中等长度。";
+        // 所有空白策略使用同一份原文：四个连续空格、显式换行，以及一段足以跨行的尾部空格。
+        private const string WhiteSpacePreviewText = "开始    连续空格\n第二行：这段中文比较长，用于观察固定宽度下的自动换行。\n行尾空格                                                \n结束。";
+        private const string DirectionPreviewText = "ABC 123 שלום";
+        private const string WritingModePreviewText = "春江花月夜\n山水映长空\nTCYM.UI 123";
 
         internal UILabelDemo()
         {
@@ -29,12 +33,17 @@ namespace TCYM.UI.Example.Page.component.Label
                 },
                 new UILabel
                 {
-                    Text = "当前 Demo 重点展示 UILabel 的文本样式、对齐换行、多行省略、高亮片段，以及在 flex 行布局下与子元素组合的能力。",
+                    Text = "当前 Demo 展示文本样式、对齐换行、CSS white-space / text-overflow / direction / writing-mode / user-select、多行省略、高亮片段，以及 flex 行布局下与子元素组合的能力。",
                     ClassName = new List<string> { "label-demo-desc" },
                 },
                 CreateBasicSection(),
                 CreatePrioritySection(),
                 CreateAlignmentSection(),
+                CreateWhiteSpaceSection(),
+                CreateTextOverflowSection(),
+                CreateDirectionSection(),
+                CreateWritingModeSection(),
+                CreateUserSelectSection(),
                 CreateEllipsisSection(),
                 CreateHighlightSection(),
                 CreateFlexSection(),
@@ -71,6 +80,7 @@ namespace TCYM.UI.Example.Page.component.Label
                             Text = "高优先级提醒：当前环境检测到 2 项待处理配置。",
                             ClassName = new List<string> { "label-sample-warning" },
                         }
+
                     }
                 }
             );
@@ -167,6 +177,126 @@ namespace TCYM.UI.Example.Page.component.Label
                     }
                 }
             );
+        }
+
+        /// <summary>用相同原文对比六种 CSS 空白与换行策略，固定预览尺寸便于观察差异。</summary>
+        private static UIView CreateWhiteSpaceSection()
+        {
+            return CreateSectionCard(
+                "CSS white-space：空白与换行",
+                "六张卡片使用同一原文：开始后有四个空格，包含显式换行，“行尾空格”后有一段连续空格。预览区固定宽高，超出的内容直接裁剪；观察空格是否保留、换行是否生效，以及“结束。”的位置。",
+                new UIView
+                {
+                    ClassName = new List<string> { "label-flow-grid" },
+                    Children = new()
+                    {
+                        CreateTextFlowPreview("white-space: normal", "折叠连续空格与换行，按可用宽度自动换行。", WhiteSpacePreviewText, "label-white-normal"),
+                        CreateTextFlowPreview("white-space: nowrap", "折叠连续空格与换行，整段保持单行；超出右侧的内容裁剪。", WhiteSpacePreviewText, "label-white-nowrap"),
+                        CreateTextFlowPreview("white-space: pre", "保留空格和原文换行，不自动折行；长行超出右侧时裁剪。", WhiteSpacePreviewText, "label-white-pre"),
+                        CreateTextFlowPreview("white-space: pre-wrap", "保留空格和原文换行，同时允许自动折行；行尾空格可悬挂。", WhiteSpacePreviewText, "label-white-pre-wrap"),
+                        CreateTextFlowPreview("white-space: pre-line", "折叠连续空格，保留原文换行，同时允许自动折行。", WhiteSpacePreviewText, "label-white-pre-line"),
+                        CreateTextFlowPreview("white-space: break-spaces", "保留每个空格并计入换行宽度；行尾空格可占用额外一行。", WhiteSpacePreviewText, "label-white-break-spaces"),
+                    }
+                });
+        }
+
+        /// <summary>在相同受限宽度下对比裁剪与省略；实际行为完全由 CSS 声明控制。</summary>
+        private static UIView CreateTextOverflowSection()
+        {
+            return CreateSectionCard(
+                "CSS text-overflow：裁剪与省略",
+                "两项均设置 width: 100%、white-space: nowrap 和 overflow: hidden。原始 Text 保持完整，clip 直接裁剪，ellipsis 在可见文字末尾显示省略号。",
+                new UIView
+                {
+                    ClassName = new List<string> { "label-flow-grid" },
+                    Children = new()
+                    {
+                        CreateTextFlowPreview("text-overflow: clip", "超出内容区的文字直接裁掉，不显示省略号。", LongText, "label-overflow-sample", "label-overflow-clip"),
+                        CreateTextFlowPreview("text-overflow: ellipsis", "为末尾的“…”预留空间，缩短或放宽容器后重新计算。", LongText, "label-overflow-sample", "label-overflow-ellipsis"),
+                    }
+                },
+                new UILabel
+                {
+                    Text = ".label-title {\n    width: 200px;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}",
+                    ClassName = new List<string> { "label-flow-code" },
+                });
+        }
+
+        /// <summary>对比基础方向和内联起点，并展示 RTL 溢出时左侧的省略号。</summary>
+        private static UIView CreateDirectionSection()
+        {
+            return CreateSectionCard(
+                "CSS direction：文字基础方向",
+                "前两项使用相同的英文、数字和希伯来文，并设置 text-align: start，让起始位置跟随 direction。英文和数字保持各自顺序；第三项演示 RTL 文本超出宽度后的省略效果。",
+                new UIView
+                {
+                    ClassName = new List<string> { "label-flow-grid" },
+                    Children = new()
+                    {
+                        CreateTextFlowPreview("direction: ltr", "从左侧开始，观察英文、数字和希伯来文的排列。", DirectionPreviewText, "label-direction-sample", "label-direction-ltr"),
+                        CreateTextFlowPreview("direction: rtl", "从右侧开始，混合文字按基础方向排列。", DirectionPreviewText, "label-direction-sample", "label-direction-rtl"),
+                        CreateTextFlowPreview("RTL + text-overflow", "超出时在左侧显示“…”；右侧的英文和数字不会倒序。", "ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789", "label-direction-sample", "label-direction-rtl", "label-direction-ellipsis"),
+                    }
+                },
+                new UILabel
+                {
+                    Text = ".rtl-label {\n    width: 200px;\n    direction: rtl;\n    text-align: start;\n    white-space: nowrap;\n    overflow: hidden;\n    text-overflow: ellipsis;\n}",
+                    ClassName = new List<string> { "label-flow-code" },
+                });
+        }
+
+        /// <summary>用同一段中英文对比三种书写模式，并补充竖排 RTL 与省略组合。</summary>
+        private static UIView CreateWritingModeSection()
+        {
+            return CreateSectionCard(
+                "CSS writing-mode：横排与竖排",
+                "前三项使用相同原文：蓝色是第一行（列），绿色是第二行（列）。竖排中文保持直立，英文和数字旋转显示；第四项展示 direction: rtl 从底端开始、溢出时顶部显示省略号。",
+                new UIView
+                {
+                    ClassName = new List<string> { "label-flow-grid" },
+                    Children = new()
+                    {
+                        CreateWritingModePreview("horizontal-tb", "横向书写，各行从上往下排列。", "label-writing-horizontal"),
+                        CreateWritingModePreview("vertical-rl", "纵向书写，蓝色首列在右侧，随后向左分列。", "label-writing-rl"),
+                        CreateWritingModePreview("vertical-lr", "纵向书写，蓝色首列在左侧，随后向右分列。", "label-writing-lr"),
+                        CreateTextFlowPreview("vertical-rl + rtl", "固定高度下不换列；观察顶部省略号和底端对齐。", "甲乙丙丁戊己庚辛壬癸子丑寅卯辰巳午未申酉戌亥", "label-writing-sample", "label-writing-rtl-ellipsis"),
+                    }
+                },
+                new UILabel
+                {
+                    Text = ".vertical-label {\n    height: 200px;\n    writing-mode: vertical-rl;\n    direction: ltr;\n    text-align: start;\n    white-space: pre;\n}",
+                    ClassName = new List<string> { "label-flow-code" },
+                });
+        }
+
+        /// <summary>为前两行设置原文高亮，直观标出横排与两种竖排列顺序。</summary>
+        private static UIView CreateWritingModePreview(string title, string description, string modeClass)
+        {
+            var card = CreateTextFlowPreview(title, description, WritingModePreviewText, "label-writing-sample", modeClass);
+            var sample = card.Children.OfType<UILabel>().Last();
+            sample.Highlights = new List<TextHighlight>
+            {
+                new() { Value = "春江花月夜", Color = "#1677ff" },
+                new() { Value = "山水映长空", Color = "#389e0d" },
+            };
+            return card;
+        }
+
+        /// <summary>创建 CSS 文本对比卡片，保留 UILabel 默认 API 配置，让样式表决定排版。</summary>
+        private static UIView CreateTextFlowPreview(string title, string description, string text, params string[] sampleClasses)
+        {
+            var classes = new List<string> { "label-flow-sample" };
+            classes.AddRange(sampleClasses);
+            return new UIView
+            {
+                ClassName = new List<string> { "label-flow-box" },
+                Children = new()
+                {
+                    new UILabel { Text = title, ClassName = new List<string> { "label-preview-title" } },
+                    new UILabel { Text = description, ClassName = new List<string> { "label-flow-note" } },
+                    new UILabel { Text = text, ClassName = classes },
+                }
+            };
         }
 
         private static UIView CreateEllipsisSection()
@@ -413,7 +543,7 @@ namespace TCYM.UI.Example.Page.component.Label
                         Text = AlignmentPreviewText,
                         TextAlign = align,
                         ClassName = new List<string> { "label-preview-content" },
-                        
+
                     }
                 }
             };

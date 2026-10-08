@@ -32,7 +32,7 @@ REM ============================================================================
 :ScriptMain
 set "PROJECT=%~dp0TCYM.UI.Example.csproj"
 set "CONFIG=Release"
-set "FRAMEWORK=net8.0"
+set "FRAMEWORK=net10.0"
 
 if "%~1"=="" (
     set "TARGETS=win-x64 win-arm64 linux-x64 linux-arm64 osx-x64 osx-arm64"
@@ -56,7 +56,7 @@ echo   All publishes completed.
 echo ==========================================
 echo.
 for %%T in (%TARGETS%) do (
-    echo %%T: %~dp0bin\%CONFIG%\%FRAMEWORK%\%%T\publish\
+    echo %%T: %~dp0bin\%CONFIG%\%FRAMEWORK%\publish\%%T-AOT\
 )
 
 endlocal & exit /b 0
@@ -102,8 +102,10 @@ if errorlevel 1 (
 )
 
 call :CleanPublishOutput %RID%
+call :StagePublishOutput %RID%
+if errorlevel 1 exit /b 1
 echo [ok] %RID% publish completed.
-echo   Output: %~dp0bin\%CONFIG%\%FRAMEWORK%\%RID%\publish\
+echo   Output: %~dp0bin\%CONFIG%\%FRAMEWORK%\publish\%RID%-AOT\
 echo.
 exit /b 0
 
@@ -154,4 +156,24 @@ for /r "%PUBLISH_DIR%" %%F in (*.pdb *.dbg *.xml *.lib) do (
 )
 
 echo [clean] %PUBLISH_DIR%
+exit /b 0
+
+:StagePublishOutput
+set "RID=%~1"
+set "RID_PUBLISH_DIR=%~dp0bin\%CONFIG%\%FRAMEWORK%\%RID%\publish"
+set "AOT_PUBLISH_ROOT=%~dp0bin\%CONFIG%\%FRAMEWORK%\publish"
+set "AOT_DEST_DIR=%AOT_PUBLISH_ROOT%\%RID%-AOT"
+
+if not exist "%RID_PUBLISH_DIR%\" (
+    echo [failed] Publish output not found: %RID_PUBLISH_DIR%
+    exit /b 1
+)
+
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; $source='%RID_PUBLISH_DIR%'; $destination='%AOT_DEST_DIR%'; $null=[IO.Directory]::CreateDirectory('%AOT_PUBLISH_ROOT%'); if (Test-Path -LiteralPath $destination) { Remove-Item -LiteralPath $destination -Recurse -Force }; Copy-Item -LiteralPath $source -Destination $destination -Recurse -Force; $libs=Join-Path $destination 'Libs'; if (Test-Path -LiteralPath $libs) { Remove-Item -LiteralPath $libs -Recurse -Force }"
+if errorlevel 1 (
+    echo [failed] Could not stage %RID% output.
+    exit /b 1
+)
+
+echo [stage] %AOT_DEST_DIR%
 exit /b 0

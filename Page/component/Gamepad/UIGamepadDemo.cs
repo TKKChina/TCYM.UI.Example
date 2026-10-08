@@ -39,7 +39,7 @@ namespace TCYM.UI.Example.Page.component.Gamepad
                 },
                 new UILabel
                 {
-                    Text = "连接手柄后按键 / 推杆即可实时高亮；支持 SDL3 Gamepad、Joystick 与 winmm 后备设备。",
+                    Text = "连接手柄后按键 / 推杆即可实时高亮；SDL3 Gamepad 使用标准映射，Joystick / winmm 保留原始编号回退。",
                     Style = new DefaultUIStyle { FontSize = 13, Color = ColorHelper.ParseColor("#6b7280"), MarginTop = 6, MarginBottom = 16 },
                 },
                 new GamepadView
@@ -85,12 +85,13 @@ namespace TCYM.UI.Example.Page.component.Gamepad
             private static bool s_bodyLoaded;
 
             // 运行时状态（由摇杆事件更新）。
-            private readonly HashSet<int> _connected = new();
+            private readonly Dictionary<int, UIHIDDeviceType> _connectedDevices = new();
             private readonly HashSet<int> _buttons = new();
             private float _lx, _ly, _rx, _ry, _lt, _rt;
             private UIJoystickHatState _hat = UIJoystickHatState.Centered;
             private UIHIDDeviceType _deviceType = UIHIDDeviceType.Gamepad;
             private int _activeId;
+            private bool _hasActiveDevice;
             private bool _subscribed;
 
             public GamepadView()
@@ -98,6 +99,7 @@ namespace TCYM.UI.Example.Page.component.Gamepad
                 var mgr = UISystem.Manager;
                 if (mgr != null)
                 {
+                    InitializeConnectedDevices(mgr.ConnectedJoystickDevices);
                     mgr.OnAnyJoystickEvent += HandleJoystick;
                     _subscribed = true;
                 }
@@ -134,29 +136,66 @@ namespace TCYM.UI.Example.Page.component.Gamepad
                 return s_body;
             }
 
+            private void InitializeConnectedDevices(IReadOnlyList<UIJoystickDeviceInfo> devices)
+            {
+                if (devices == null) return;
+
+                for (int i = 0; i < devices.Count; i++)
+                {
+                    var device = devices[i];
+                    AddOrPromoteConnectedDevice(device.DeviceType, device.DeviceId);
+                }
+
+                SelectPreferredConnectedDevice();
+            }
+
             private void HandleJoystick(UIJoystickEvent e)
             {
                 if (e == null) return;
+
+                if (e.Type == UIJoystickEventType.DeviceRemoved)
+                {
+                    RemoveConnectedDevice(e.DeviceType, e.DeviceId);
+                    bool activeRemoved = _hasActiveDevice &&
+                        _activeId == e.DeviceId &&
+                        (!_connectedDevices.TryGetValue(e.DeviceId, out var remainingType) || remainingType != _deviceType);
+                    if (activeRemoved)
+                    {
+                        ResetInputs();
+                        SelectPreferredConnectedDevice();
+                    }
+
+                    RequestRedraw();
+                    return;
+                }
+
+                // DeviceAdded 可能早于此懒加载页面；任一后续输入也足以证明设备仍连接。
+                AddOrPromoteConnectedDevice(e.DeviceType, e.DeviceId);
+
+                if (e.Type == UIJoystickEventType.DeviceAdded)
+                {
+                    ConsiderConnectedDevice(e.DeviceType, e.DeviceId);
+                    RequestRedraw();
+                    return;
+                }
+
+                if (!ActivateInputDevice(e.DeviceType, e.DeviceId))
+                {
+                    RequestRedraw();
+                    return;
+                }
+
+                // Gamepad 编号是 SDL 标准映射；仅在没有标准映射的设备上保留
+                // 原始 Joystick / winmm 的旧编号回退，避免破坏已有示例行为。
                 switch (e.Type)
                 {
-                    case UIJoystickEventType.DeviceAdded:
-                        _connected.Add(e.DeviceId);
-                        _activeId = e.DeviceId;
-                        _deviceType = e.DeviceType;
-                        break;
-                    case UIJoystickEventType.DeviceRemoved:
-                        _connected.Remove(e.DeviceId);
-                        if (_connected.Count == 0) ResetInputs();
-                        break;
                     case UIJoystickEventType.ButtonDown:
-                        _activeId = e.DeviceId;
                         _buttons.Add(e.Button);
                         break;
                     case UIJoystickEventType.ButtonUp:
                         _buttons.Remove(e.Button);
                         break;
                     case UIJoystickEventType.AxisMotion:
-                        _activeId = e.DeviceId;
                         ApplyAxis(e.Axis, e.AxisNormalized);
                         break;
                     case UIJoystickEventType.HatMotion:
@@ -164,6 +203,99 @@ namespace TCYM.UI.Example.Page.component.Gamepad
                         break;
                 }
                 RequestRedraw();
+            }
+
+            private void AddOrPromoteConnectedDevice(UIHIDDeviceType deviceType, int deviceId)
+            {
+                if (_connectedDevices.TryGetValue(deviceId, out var existingType) &&
+                    existingType == UIHIDDeviceType.Gamepad &&
+                    deviceType == UIHIDDeviceType.Joystick)
+                {
+                    return;
+                }
+
+                _connectedDevices[deviceId] = deviceType;
+            }
+
+            private void RemoveConnectedDevice(UIHIDDeviceType deviceType, int deviceId)
+            {
+                if (_connectedDevices.TryGetValue(deviceId, out var existingType) &&
+                    (existingType == deviceType || deviceType == UIHIDDeviceType.Gamepad))
+                {
+                    _connectedDevices.Remove(deviceId);
+                }
+            }
+
+            private void ConsiderConnectedDevice(UIHIDDeviceType deviceType, int deviceId)
+            {
+                if (!_hasActiveDevice ||
+                    (_deviceType != UIHIDDeviceType.Gamepad && deviceType == UIHIDDeviceType.Gamepad))
+                {
+                    ActivateDevice(deviceType, deviceId);
+                }
+            }
+
+            private bool ActivateInputDevice(UIHIDDeviceType deviceType, int deviceId)
+            {
+                if (!_hasActiveDevice)
+                {
+                    ActivateDevice(deviceType, deviceId);
+                    return true;
+                }
+
+                if (_activeId == deviceId)
+                {
+                    // SDL 会为支持标准映射的同一物理设备产生 Joystick 与 Gamepad 两路事件；
+                    // 已选中 Gamepad 后忽略原始编号，反向则提升为 Gamepad。
+                    if (_deviceType == UIHIDDeviceType.Gamepad && deviceType == UIHIDDeviceType.Joystick)
+                        return false;
+
+                    if (_deviceType == UIHIDDeviceType.Joystick && deviceType == UIHIDDeviceType.Gamepad)
+                        ActivateDevice(deviceType, deviceId);
+
+                    return _deviceType == deviceType;
+                }
+
+                // 标准映射设备优先；同类型设备则以最近实际操作的设备为活动设备。
+                if (deviceType == UIHIDDeviceType.Gamepad || _deviceType != UIHIDDeviceType.Gamepad)
+                {
+                    ActivateDevice(deviceType, deviceId);
+                    return true;
+                }
+
+                return false;
+            }
+
+            private void ActivateDevice(UIHIDDeviceType deviceType, int deviceId)
+            {
+                if (_hasActiveDevice && _deviceType == deviceType && _activeId == deviceId) return;
+
+                ResetInputs();
+                _deviceType = deviceType;
+                _activeId = deviceId;
+                _hasActiveDevice = true;
+            }
+
+            private void SelectPreferredConnectedDevice()
+            {
+                _hasActiveDevice = false;
+
+                foreach (var device in _connectedDevices)
+                {
+                    if (device.Value != UIHIDDeviceType.Gamepad) continue;
+                    _deviceType = device.Value;
+                    _activeId = device.Key;
+                    _hasActiveDevice = true;
+                    return;
+                }
+
+                foreach (var device in _connectedDevices)
+                {
+                    _deviceType = device.Value;
+                    _activeId = device.Key;
+                    _hasActiveDevice = true;
+                    return;
+                }
             }
 
             private void ResetInputs()
@@ -203,6 +335,7 @@ namespace TCYM.UI.Example.Page.component.Gamepad
                 canvas.Scale(scale);
 
                 DrawBody(canvas);
+                DrawBumpers(canvas);
                 DrawTriggers(canvas);
                 DrawGuide(canvas);
                 DrawCenterButtons(canvas);
@@ -225,20 +358,76 @@ namespace TCYM.UI.Example.Page.component.Gamepad
                     new SKSamplingOptions(SKFilterMode.Linear, SKMipmapMode.None));
             }
 
+            // LB / RB 肩键：按钮 9 / 10。几何对齐参考工程 IceXboxLBRB。
+            private void DrawBumpers(SKCanvas canvas)
+            {
+                DrawBumper(canvas, mirrored: false, _buttons.Contains(9));
+                DrawBumper(canvas, mirrored: true, _buttons.Contains(10));
+            }
+
+            private static void DrawBumper(SKCanvas canvas, bool mirrored, bool pressed)
+            {
+                int save = canvas.Save();
+                if (mirrored)
+                {
+                    canvas.Translate(VW, 0f);
+                    canvas.Scale(-1f, 1f);
+                }
+
+                // 参考控件在 517×357 画布中的实际布局位置：x=75.5, y=1。
+                canvas.Translate(75.5f, 1f);
+                using var builder = new SKPathBuilder();
+                builder.MoveTo(3f, 42f);
+                builder.CubicTo(4.609f, 41.01f, 28.332f, 25.304f, 52f, 19f);
+                builder.CubicTo(76.139f, 12.57f, 100.233f, 15.525f, 102f, 13f);
+                builder.CubicTo(105.5f, 8f, 88f, 2f, 88f, 2f);
+                builder.CubicTo(88f, 2f, 45f, 2f, 28f, 16f);
+                builder.CubicTo(11f, 30f, -0.25f, 44f, 3f, 42f);
+                builder.Close();
+                using var path = builder.Detach();
+
+                if (pressed)
+                {
+                    using var fill = new SKPaint
+                    {
+                        IsAntialias = true,
+                        Style = SKPaintStyle.Fill,
+                        Color = SKColors.Orange,
+                    };
+                    canvas.DrawPath(path, fill);
+                }
+
+                using var stroke = new SKPaint
+                {
+                    IsAntialias = true,
+                    Style = SKPaintStyle.Stroke,
+                    StrokeWidth = 1f,
+                    Color = White,
+                };
+                canvas.DrawPath(path, stroke);
+                canvas.RestoreToCount(save);
+            }
+
             // LT / RT 扳机徽标（顶部两角），按力度橙色填充。
             private void DrawTriggers(SKCanvas canvas)
             {
-                DrawTrigger(canvas, 30f, 30f, "LT", Math.Max(_lt, _buttons.Contains(9) ? 1f : 0f));
-                DrawTrigger(canvas, 487f, 30f, "RT", Math.Max(_rt, _buttons.Contains(10) ? 1f : 0f));
+                DrawTrigger(canvas, 30f, 30f, "LT", _lt);
+                DrawTrigger(canvas, 487f, 30f, "RT", _rt);
             }
 
             private void DrawTrigger(SKCanvas canvas, float cx, float cy, string label, float amount)
             {
                 const float r = 20f;
-                if (amount > 0.01f)
+                float level = Math.Clamp(amount, 0f, 1f);
+                if (level > 0.01f)
                 {
-                    using var glow = new SKPaint { IsAntialias = true, Style = SKPaintStyle.Fill, Color = Orange.WithAlpha((byte)(70 + 170 * Math.Clamp(amount, 0f, 1f))) };
-                    canvas.DrawCircle(cx, cy, r, glow);
+                    const float innerR = r - 2f;
+                    float fillHeight = innerR * 2f * level;
+                    int save = canvas.Save();
+                    canvas.ClipRect(SKRect.Create(cx - innerR, cy + innerR - fillHeight, innerR * 2f, fillHeight));
+                    using var fill = new SKPaint { IsAntialias = true, Style = SKPaintStyle.Fill, Color = Orange };
+                    canvas.DrawCircle(cx, cy, innerR, fill);
+                    canvas.RestoreToCount(save);
                 }
                 using var ring = new SKPaint { IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2.5f, Color = White };
                 canvas.DrawCircle(cx, cy, r, ring);
@@ -320,40 +509,58 @@ namespace TCYM.UI.Example.Page.component.Gamepad
                 canvas.DrawCircle(kx + dd, ky, 1.6f, dot);
             }
 
-            // 十字方向键（单一轮廓），按方向键或帽子（POV）点亮对应臂。
+            // 十字方向键：Gamepad 使用标准 D-pad 按钮，原始设备兼容 POV Hat。
             private void DrawDpad(SKCanvas canvas, float cx, float cy)
             {
-                const float arm = 24f, half = 9f;
                 bool up = _buttons.Contains(11) || _hat.HasFlag(UIJoystickHatState.Up);
                 bool down = _buttons.Contains(12) || _hat.HasFlag(UIJoystickHatState.Down);
                 bool left = _buttons.Contains(13) || _hat.HasFlag(UIJoystickHatState.Left);
                 bool right = _buttons.Contains(14) || _hat.HasFlag(UIJoystickHatState.Right);
 
-                using (var fill = new SKPaint { IsAntialias = true, Style = SKPaintStyle.Fill, Color = AGreen })
+                // 复刻参考 IceXboxkeyLRTB：四个独立圆头方向瓣在中心形成 X 形分隔。
+                DrawDpadArm(canvas, cx, cy, 0f, up);
+                DrawDpadArm(canvas, cx, cy, 90f, right);
+                DrawDpadArm(canvas, cx, cy, 180f, down);
+                DrawDpadArm(canvas, cx, cy, 270f, left);
+            }
+
+            private static void DrawDpadArm(SKCanvas canvas, float cx, float cy, float rotation, bool pressed)
+            {
+                int save = canvas.Save();
+                canvas.Translate(cx, cy);
+                canvas.RotateDegrees(rotation);
+
+                using var builder = new SKPathBuilder();
+                builder.MoveTo(0f, 0f);
+                builder.LineTo(-12.07f, -11.85f);
+                builder.LineTo(-12.07f, -34.5f);
+                builder.CubicTo(-12.07f, -34.5f, -12f, -40f, 0f, -40f);
+                builder.CubicTo(12f, -40f, 12.07f, -34.5f, 12.07f, -34.5f);
+                builder.LineTo(12.07f, -11.85f);
+                builder.Close();
+                using var path = builder.Detach();
+
+                if (pressed)
                 {
-                    if (up) canvas.DrawRect(SKRect.Create(cx - half, cy - arm, half * 2, arm), fill);
-                    if (down) canvas.DrawRect(SKRect.Create(cx - half, cy, half * 2, arm), fill);
-                    if (left) canvas.DrawRect(SKRect.Create(cx - arm, cy - half, arm, half * 2), fill);
-                    if (right) canvas.DrawRect(SKRect.Create(cx, cy - half, arm, half * 2), fill);
+                    using var fill = new SKPaint
+                    {
+                        IsAntialias = true,
+                        Style = SKPaintStyle.Fill,
+                        Color = SKColors.Orange,
+                    };
+                    canvas.DrawPath(path, fill);
                 }
 
-                using var b = new SKPathBuilder();
-                b.MoveTo(cx - half, cy - arm);
-                b.LineTo(cx + half, cy - arm);
-                b.LineTo(cx + half, cy - half);
-                b.LineTo(cx + arm, cy - half);
-                b.LineTo(cx + arm, cy + half);
-                b.LineTo(cx + half, cy + half);
-                b.LineTo(cx + half, cy + arm);
-                b.LineTo(cx - half, cy + arm);
-                b.LineTo(cx - half, cy + half);
-                b.LineTo(cx - arm, cy + half);
-                b.LineTo(cx - arm, cy - half);
-                b.LineTo(cx - half, cy - half);
-                b.Close();
-                using var path = b.Detach();
-                using var stroke = new SKPaint { IsAntialias = true, Style = SKPaintStyle.Stroke, StrokeWidth = 2.5f, Color = White, StrokeJoin = SKStrokeJoin.Round };
+                using var stroke = new SKPaint
+                {
+                    IsAntialias = true,
+                    Style = SKPaintStyle.Stroke,
+                    StrokeWidth = 1.6f,
+                    StrokeJoin = SKStrokeJoin.Round,
+                    Color = White,
+                };
                 canvas.DrawPath(path, stroke);
+                canvas.RestoreToCount(save);
             }
 
             // ABXY 按钮簇（Y上 / X左 / B右 / A下）。
@@ -384,7 +591,7 @@ namespace TCYM.UI.Example.Page.component.Gamepad
             // 底部连接状态。
             private void DrawStatus(SKCanvas canvas)
             {
-                bool connected = _connected.Count > 0;
+                bool connected = _hasActiveDevice;
                 string text = connected
                     ? $"已连接 · {(_deviceType == UIHIDDeviceType.Gamepad ? "手柄" : "摇杆")} #{_activeId}"
                     : "未连接";
