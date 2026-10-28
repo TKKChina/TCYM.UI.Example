@@ -34,7 +34,7 @@ namespace TCYM.UI.Example.Page.component.Dropdown
                 new BasicSection(),
                 new ArrowSection(),
                 new CustomStyleSection(),
-                new EventSection(),
+                new EventSection(), 
                 new PlacementSection(),
             };
         }

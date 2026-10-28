@@ -48,8 +48,10 @@ echo   Targets: %TARGETS%
 echo ==========================================
 echo.
 
-for %%T in (%TARGETS%) do call :PublishOne %%T
-if errorlevel 1 goto :ScriptFailed
+for %%T in (%TARGETS%) do (
+    call :PublishOne %%T
+    if errorlevel 1 goto :ScriptFailed
+)
 
 echo ==========================================
 echo   All publishes completed.
