@@ -87,7 +87,7 @@ namespace TCYM.UI.Example.Page.component.Select
                     new UISelect
                     {
                         Options = CreateBasicOptions(),
-                        SelectedValue = "option2",
+                        Value = "option2",
                         AllowClear = true,
                         Style = new UpdateUIStyle { Width = 180, Height = 30 }
                     },
@@ -167,7 +167,7 @@ namespace TCYM.UI.Example.Page.component.Select
                     new UISelect
                     {
                         Options = CreateBasicOptions(),
-                        Values = new List<object?> { "option2", "option3" },
+                        Value = new List<object?> { "option2", "option3" },
                         ShowSearch = true,
                         Placeholder = "Tags 模式",
                         MaxTagCount = 2,
@@ -193,7 +193,7 @@ namespace TCYM.UI.Example.Page.component.Select
             new SelectOption("home", "首页") { CustomFields = { ["icon"] = "&#xe8c7;" } },
             new SelectOption("search", "搜索") { CustomFields = { ["icon"] = "&#xe63f;" } },
             new SelectOption("settings", "设置") { CustomFields = { ["icon"] = "&#xe60f;" } },
-            new SelectOption("user", "用户") { CustomFields = { ["icon"] = "&#xe68a;" } },
+            new SelectOption("user", "用户") { CustomFields = { ["icon"] = "&#xe604;" } },
         };
 
         Children = new()
@@ -233,7 +233,7 @@ namespace TCYM.UI.Example.Page.component.Select
                                     FlexDirection = "row",
                                     AlignItems = "center",
                                     JustifyContent = "flex-start",
-                                    Gap = 8,
+                                    Gap = 4,
                                     PointerEvents = "box-only",
                                 },
                                 Children = new()
@@ -257,6 +257,25 @@ namespace TCYM.UI.Example.Page.component.Select
                                 }
                             };
                         },
+                        TagRender = (option, uiSelect) => new UITag
+                        {
+                            Icon = new UIIcon {
+                                Content = option.CustomFields["icon"]?.ToString() ?? string.Empty,
+                                Style = new DefaultUIStyle
+                                {
+                                    FontFamily = UIFontManager.Get("TCYMIconFont"),
+                                    Color = ColorHelper.ParseColor("#555"),
+                                    FontSize = 20,
+                                    Width = 20,
+                                    Height = 20,
+                                    Display = "flex",
+                                    AlignItems = "center",
+                                    JustifyContent = "center",
+                                }
+                            },
+                            Text = option.Label,
+                            ClassColor = TagClassColor.Blue
+                        }
                     },
                     new UISelect
                     {

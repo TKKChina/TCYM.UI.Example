@@ -153,7 +153,7 @@ namespace TCYM.UI.Example.Page.component.UsbCamera
         Options = _devices
             .Select(device => new SelectOption(device.DeviceId, device.DisplayName))
             .ToList(),
-        SelectedValue = defaultDeviceId,
+        Value = defaultDeviceId,
         Placeholder = _devices.Length == 0 ? "当前没有可用设备" : "请选择摄像头设备",
         ShowSearch = _devices.Length > 6,
         Disabled = _devices.Length == 0,
@@ -227,7 +227,7 @@ namespace TCYM.UI.Example.Page.component.UsbCamera
 
       _selectedDeviceId = selectedDevice.DeviceId;
       _preview.PreferredDeviceId = _selectedDeviceId;
-      _deviceSelect.SelectedValue = _selectedDeviceId;
+      _deviceSelect.Value = _selectedDeviceId;
 
       RefreshDeviceInfo();
       RefreshStatus();

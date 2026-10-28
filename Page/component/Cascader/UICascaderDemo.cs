@@ -124,7 +124,7 @@ namespace TCYM.UI.Example.Page.component.Cascader
                 {
                     Data = CreateRegionData(),
                     Multiple = true,
-                    DefaultValues = new[] { "zj-hz-xh", "zj-hz-bj", "gd-gz-th" },
+                    DefaultValue = new[] { "zj-hz-xh", "zj-hz-bj", "gd-gz-th" },
                     AllowClear = true,
                     MaxTagCount = 2,
                     MaxTagTextLength = 10,

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using TCYM.UI.Core;
 using TCYM.UI.Core.Routing;
@@ -123,6 +123,13 @@ namespace Page.Charts
                             new("chart_tree_left_to_right", "从左到右树状图"),
                             new("chart_tree_top_to_bottom", "从上到下树状图"),
                             new("chart_tree_right_to_left", "从右到左树状图"),
+                        }, new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") }),
+                        MenuItem.Group("group-treemap", "TreeMap 矩形树图", new List<MenuItem>
+                        {
+                            MenuItem.Divider("group-treemap-divider-top"),
+                            new("chart_treemap_disk", "磁盘占用"),
+                            new("chart_treemap_parent", "显示父层级"),
+                            new("chart_treemap_gradient", "映射为渐变色"),
                         }, new UIBadge { CountText = "NEW", ShowOutline = false, BadgeColor = ColorHelper.ParseColor("#34f50d") }),
                         MenuItem.Divider("charts-navigation-divider-bottom"),
                         new("app", "返回上一级") { Icon = "&#xe7ed;", Danger = true }

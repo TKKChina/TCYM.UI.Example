@@ -23,7 +23,7 @@ namespace TCYM.UI.Example.Page.Layout
             ClassName = "login-page";
             _usernameInput = new UIInput
             {
-                Text = "admin",
+                Value = "admin",
                 Prefix = new UIIcon
                 {
                     Style = new DefaultUIStyle
@@ -40,7 +40,7 @@ namespace TCYM.UI.Example.Page.Layout
             };
             _passwordInput = new UIInput
             {
-                Text = "123456",
+                Value = "123456",
                 Prefix = new UIIcon
                 {
                     Style = new DefaultUIStyle
@@ -203,7 +203,15 @@ namespace TCYM.UI.Example.Page.Layout
                 ClassName = "login-feature",
                 Children =
                 [
-                    new UILabel { Text = "✓", ClassName = "login-feature-icon" },
+                    new UIIcon
+                    {
+                        Content = "&#xe62b;",
+                        ClassName = "login-feature-icon",
+                        Style = new DefaultUIStyle
+                        {
+                            FontFamily = UIFontManager.Get("TCYMIconFont")
+                        }
+                    },
                     new UIView
                     {
                         ClassName = "login-feature-copy",
@@ -219,8 +227,8 @@ namespace TCYM.UI.Example.Page.Layout
 
         private void Login()
         {
-            var username = _usernameInput.Text;
-            var password = _passwordInput.Text;
+            var username = _usernameInput.Value;
+            var password = _passwordInput.Value;
             // 仅用于演示。实际项目应在这里调用登录服务。
             if (!string.Equals(username.Trim(), "admin", StringComparison.OrdinalIgnoreCase)
                 || password != "123456")

@@ -1,0 +1,128 @@
+/* 原生网页宿主及祖先保持不透明矩形；不会要求原生窗口参与圆角或透明混合。 */
+.webview-demo-view {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+  padding-right: 8px;
+  background: #ffffff;
+}
+
+.webview-demo-title {
+  width: 100%;
+  height: 40px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #172b4d;
+}
+
+.webview-demo-description {
+  width: 100%;
+  font-size: 13px;
+  color: #526178;
+  margin-bottom: 10px;
+}
+
+.webview-demo-hint {
+  width: 100%;
+  font-size: 13px;
+  padding: 10px 12px;
+  background: #eff6ff;
+  color: #285488;
+  margin-top: 6px;
+  margin-bottom: 4px;
+}
+
+.webview-demo-card {
+  width: 100%;
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid #dce4ef;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.webview-demo-section-title {
+  width: 100%;
+  height: 26px;
+  margin-bottom: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #172b4d;
+}
+
+.webview-demo-toolbar {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  margin-bottom: 10px;
+}
+
+.webview-demo-button {
+  height: 32px;
+  padding-left: 12px;
+  padding-right: 12px;
+  border: 1px solid #c2d1e5;
+  border-radius: 4px;
+  background: #f8faff;
+  color: #254e85;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.webview-demo-status {
+  width: 100%;
+  font-size: 13px;
+  color: #254e85;
+  margin-bottom: 4px;
+}
+
+.webview-demo-metadata {
+  width: 100%;
+  font-size: 12px;
+  color: #68788f;
+  margin-bottom: 4px;
+}
+
+.webview-demo-browser-shell {
+  width: 100%;
+  border: 1px solid #c2d1e5;
+  margin-top: 8px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.webview-demo-browser {
+  width: 100%;
+  height: 700px;
+  background: #ffffff;
+}
+
+.webview-demo-textarea {
+  width: 100%;
+  min-height: 84px;
+  font-size: 13px;
+}
+
+.webview-demo-input {
+  width: 100%;
+  height: 34px;
+  font-size: 13px;
+}
+
+.webview-demo-output, .webview-demo-log {
+  width: 100%;
+  padding: 10px;
+  background: #f6f8fc;
+  border: 1px solid #e3e9f2;
+  color: #42536b;
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.webview-demo-log {
+  min-height: 90px;
+}

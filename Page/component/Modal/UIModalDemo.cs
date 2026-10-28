@@ -316,12 +316,12 @@ namespace TCYM.UI.Example.Page.component.Modal
                 OnOk = () =>
                 {
                     // 简单校验：姓名不能为空
-                    if (string.IsNullOrWhiteSpace(nameInput.Text))
+                    if (string.IsNullOrWhiteSpace(nameInput.Value))
                     {
                         UIMessage_Like("姓名不能为空");
                         return false; // 阻止关闭
                     }
-                    UIMessage_Like($"已保存：{nameInput.Text}");
+                    UIMessage_Like($"已保存：{nameInput.Value}");
                     return true;
                 },
             });

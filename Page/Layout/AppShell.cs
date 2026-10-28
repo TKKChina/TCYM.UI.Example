@@ -43,6 +43,7 @@ namespace TCYM.UI.Example.Page.Layout
                     Name = "图表",
                     PreloadOnIdle = true,
                     KeepAlive = false,
+                    ShowLoading = true,
                     ReclaimMemoryOnLeave = true,
                     Element = UIRoute.LazyLoad(() => new ChartPage())
                 }

@@ -1,6 +1,7 @@
 using SkiaSharp;
 using TCYM.UI.Core;
 using TCYM.UI.Elements;
+using TCYM.UI.Enums;
 
 namespace TCYM.UI.Example.Page.component.Label
 {
@@ -33,10 +34,11 @@ namespace TCYM.UI.Example.Page.component.Label
                 },
                 new UILabel
                 {
-                    Text = "当前 Demo 展示文本样式、对齐换行、CSS white-space / text-overflow / direction / writing-mode / user-select、多行省略、高亮片段，以及 flex 行布局下与子元素组合的能力。",
+                    Text = "当前 Demo 展示文本样式、CSS :link 伪类超链接、对齐换行、CSS white-space / text-overflow / direction / writing-mode / user-select、多行省略、高亮片段，以及 flex 行布局下与子元素组合的能力。",
                     ClassName = new List<string> { "label-demo-desc" },
                 },
                 CreateBasicSection(),
+                CreateLinkSection(),
                 CreatePrioritySection(),
                 CreateAlignmentSection(),
                 CreateWhiteSpaceSection(),
@@ -82,6 +84,142 @@ namespace TCYM.UI.Example.Page.component.Label
                         }
 
                     }
+                }
+            );
+        }
+
+        private static UIView CreateLinkSection()
+        {
+            var dynamicLinkLabel = new UILabel
+            {
+                Text = "链接状态：已设置 Href（应用 :link 样式）",
+                Href = "https://github.com/TCYM/TCYM.UI",
+                ClassName = new List<string> { "label-link-sample", "label-link-toggle" }
+            };
+
+            return CreateSectionCard(
+                "CSS :link 超链接样式",
+                "UILabel 设置 Href 或 IsLink=true 时处于链接状态。在 CSS 中通过 :link 伪类定义链接样式，并与 :hover、:active 遵循标准 LVHA 交互层叠。",
+                new UIView
+                {
+                    ClassName = new List<string> { "label-flow-grid" },
+                    Children = new()
+                    {
+                        new UIView
+                        {
+                            ClassName = new List<string> { "label-flow-box" },
+                            Children = new()
+                            {
+                                new UILabel { Text = "标准链接（Href）", ClassName = new List<string> { "label-preview-title" } },
+                                new UILabel { Text = "设置 Href 后激活 :link 样式，悬停与按压有不同反馈。", ClassName = new List<string> { "label-flow-note" } },
+                                new UILabel
+                                {
+                                    Text = "TCYM.UI 官方代码仓库",
+                                    Href = "https://github.com/TCYM/TCYM.UI",
+                                    ClassName = new List<string> { "label-link-sample", "label-link-primary" }
+                                }
+                            }
+                        },
+                        new UIView
+                        {
+                            ClassName = new List<string> { "label-flow-box" },
+                            Children = new()
+                            {
+                                new UILabel { Text = "普通文本（对比）", ClassName = new List<string> { "label-preview-title" } },
+                                new UILabel { Text = "拥有相同 Class 但未设置 Href / IsLink，不触发 :link 伪类。", ClassName = new List<string> { "label-flow-note" } },
+                                new UILabel
+                                {
+                                    Text = "TCYM.UI 官方文档（非链接文本）",
+                                    ClassName = new List<string> { "label-link-sample", "label-link-primary" }
+                                }
+                            }
+                        },
+                        new UIView
+                        {
+                            ClassName = new List<string> { "label-flow-box" },
+                            Children = new()
+                            {
+                                new UILabel { Text = "自定义链接（IsLink）", ClassName = new List<string> { "label-preview-title" } },
+                                new UILabel { Text = "通过 IsLink=true 声明链接，适用于站内语义或交互触发器。", ClassName = new List<string> { "label-flow-note" } },
+                                new UILabel
+                                {
+                                    Text = "删除此项数据 (危险操作)",
+                                    IsLink = true,
+                                    ClassName = new List<string> { "label-link-sample", "label-link-danger" }
+                                }
+                            }
+                        },
+                        new UIView
+                        {
+                            ClassName = new List<string> { "label-flow-box" },
+                            Children = new()
+                            {
+                                new UILabel { Text = "无下划线链接", ClassName = new List<string> { "label-preview-title" } },
+                                new UILabel { Text = "通过 text-decoration: none 可显式移除超链接自带的下划线。", ClassName = new List<string> { "label-flow-note" } },
+                                new UILabel
+                                {
+                                    Text = "无下划线清新超链接",
+                                    Href = "https://github.com/TCYM/TCYM.UI",
+                                    ClassName = new List<string> { "label-link-sample", "label-link-none" }
+                                }
+                            }
+                        },
+                        new UIView
+                        {
+                            ClassName = new List<string> { "label-flow-box" },
+                            Children = new()
+                            {
+                                new UILabel { Text = "动态切换状态", ClassName = new List<string> { "label-preview-title" } },
+                                new UILabel { Text = "运行时动态改变 Href 或 IsLink，即时生效或撤销 :link 样式。", ClassName = new List<string> { "label-flow-note" } },
+                                dynamicLinkLabel,
+                                new UIView
+                                {
+                                    Style = new DefaultUIStyle { MarginTop = 8 },
+                                    Children = new()
+                                    {
+                                        new UIButton
+                                        {
+                                            Text = "切换 Href / 链接状态",
+                                            Style = new DefaultUIStyle
+                                            {
+                                                PaddingTop = 6,
+                                                PaddingBottom = 6,
+                                                PaddingLeft = 12,
+                                                PaddingRight = 12,
+                                                BackgroundColor = SKColor.Parse("#1677ff"),
+                                                Color = SKColors.White,
+                                                BorderRadius = 4,
+                                                Cursor = UICursor.Pointer,
+                                                FontSize = 12,
+                                            },
+                                            Events = new()
+                                            {
+                                                Click = _ =>
+                                                {
+                                                    if (dynamicLinkLabel.IsLink)
+                                                    {
+                                                        dynamicLinkLabel.Href = null;
+                                                        dynamicLinkLabel.IsLink = false;
+                                                        dynamicLinkLabel.Text = "普通状态：Href 已置空（无 :link 样式）";
+                                                    }
+                                                    else
+                                                    {
+                                                        dynamicLinkLabel.Href = "https://github.com/TCYM/TCYM.UI";
+                                                        dynamicLinkLabel.Text = "链接状态：已设置 Href（应用 :link 样式）";
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                new UILabel
+                {
+                    Text = ".nav-link:link {\n    color: #1677ff;\n    text-decoration: underline;\n    cursor: pointer;\n}\n.nav-link:hover {\n    color: #4096ff;\n}\n.nav-link:active {\n    color: #0958d9;\n}\n\n/* 移除下划线 */\n.nav-link.clean:link {\n    text-decoration: none;\n}",
+                    ClassName = new List<string> { "label-flow-code" }
                 }
             );
         }

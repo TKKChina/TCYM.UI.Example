@@ -7,6 +7,7 @@ using Page.Charts.Pie;
 using Page.Charts.Radar;
 using Page.Charts.Scatter;
 using Page.Charts.Tree;
+using Page.Charts.TreeMap;
 using TCYM.UI.Core.Routing;
 
 namespace Page.Charts
@@ -15,7 +16,7 @@ namespace Page.Charts
     internal static class ChartRouter
     {
 
-        /// <summary>创建 Line、Bar、Pie、Gauge、Scatter、Candlestick、Radar、Graph 与 Tree 分类示例路由。</summary>
+        /// <summary>创建 Line、Bar、Pie、Gauge、Scatter、Candlestick、Radar、Graph、Tree 与 TreeMap 示例路由。</summary>
         /// <returns>按图表类型分组、按需加载各独立案例的路由器。</returns>
         internal static UIRouter Create()
         {
@@ -539,6 +540,29 @@ namespace Page.Charts
                     {
                         Id = "chart_tree_right_to_left", Path = "right-to-left", Name = "从右到左树状图",
                         KeepAlive = false, ShowLoading = true, Element = UIRoute.LazyLoad(TreeChartDemoPage.CreateRightToLeft),
+                    },
+                ],
+            }];
+            routes = [.. routes, new UIRouteRecord
+            {
+                Id = "treemap", Path = "treemaps", Name = "TreeMap 矩形树图", KeepAlive = false,
+                Element = UIRoute.LazyLoad(TreeMapChartDemoPage.CreateDisk),
+                Children =
+                [
+                    new()
+                    {
+                        Id = "chart_treemap_disk", Path = "disk", Name = "磁盘占用",
+                        KeepAlive = false, Element = UIRoute.LazyLoad(TreeMapChartDemoPage.CreateDisk),
+                    },
+                    new()
+                    {
+                        Id = "chart_treemap_parent", Path = "parent", Name = "显示父层级",
+                        KeepAlive = false, Element = UIRoute.LazyLoad(TreeMapChartDemoPage.CreateParent),
+                    },
+                    new()
+                    {
+                        Id = "chart_treemap_gradient", Path = "gradient", Name = "映射为渐变色",
+                        KeepAlive = false, Element = UIRoute.LazyLoad(TreeMapChartDemoPage.CreateGradient),
                     },
                 ],
             }];

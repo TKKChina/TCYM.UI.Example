@@ -50,6 +50,7 @@ internal sealed class UIBindingDemo : UIScrollView
             CreateViewBindingCard(),
             CreateAutomaticPropertyCard(),
             CreateBasePropertyBindingCard(),
+            CreateStylePropertyBindingCard(),
             CreateTwoWayControlsCard(),
             CreateSelectionAndPagingCard(),
             CreateCollectionBindingCard(),
@@ -64,6 +65,26 @@ internal sealed class UIBindingDemo : UIScrollView
     /// </summary>
     private UIView CreateAutomaticPropertyCard()
     {
+        // 宽度预览和“更新”触发器必须是两个按钮。若让同一个按钮在按下/悬停期间
+        // 修改自己的尺寸，交互态会掩盖布局变化，也不利于观察 WidthProperty 的结果。
+        var widthPreview = new UIButton
+        {
+            Text = "WidthProperty 绑定目标",
+            ClassName = new List<string>
+            {
+                "binding-action-btn",
+                "binding-action-primary"
+            },
+            Binding = new()
+            {
+                new()
+                {
+                    TargetProperty = UIButton.WidthProperty,
+                    SourceProperty = (BindingDemoViewModel vm) => vm.ControlWidth
+                }
+            }
+        };
+
         return Card(
             "所有组件属性自动 Binding",
             "未手写 [BindingProperty] 的普通组件属性也会生成 XxxProperty；公共 UIElement 属性可通过派生组件类型直接使用。",
@@ -100,31 +121,27 @@ internal sealed class UIBindingDemo : UIScrollView
                     }
                 }
             },
-            new UIButton
+            widthPreview,
+            new UILabel
             {
-                Text = "更新进度、日期和按钮宽度",
-                ClassName = new List<string>
-                {
-                    "binding-action-btn",
-                    "binding-action-primary"
-                },
+                ClassName = new List<string> { "binding-result", "binding-result-neutral" },
                 Binding = new()
                 {
                     new()
                     {
-                        TargetProperty = UIButton.WidthProperty,
-                        SourceProperty = (BindingDemoViewModel vm) => vm.ControlWidth
-                    }
-                },
-                Events = new()
-                {
-                    Click = _ =>
-                    {
-                        if (BindingContext is BindingDemoViewModel model)
-                            model.AdvanceAutomaticProperties();
+                        TargetProperty = UILabel.TextProperty,
+                        SourceProperty = (BindingDemoViewModel vm) => vm.ControlWidthSummary
                     }
                 }
-            });
+            },
+            ActionButton(
+                "更新进度、日期和按钮宽度",
+                "binding-action-default",
+                () =>
+                {
+                    if (BindingContext is BindingDemoViewModel model)
+                        model.AdvanceAutomaticProperties();
+                }));
     }
 
     /// <summary>
@@ -146,37 +163,37 @@ internal sealed class UIBindingDemo : UIScrollView
                 },
                 new()
                 {
-                    TargetProperty = WidthProperty,
+                    TargetProperty = UILabel.WidthProperty,
                     SourceProperty = (BindingDemoViewModel vm) => vm.AppearanceWidth
                 },
                 new()
                 {
-                    TargetProperty = HeightProperty,
+                    TargetProperty = UILabel.HeightProperty,
                     SourceProperty = (BindingDemoViewModel vm) => vm.AppearanceHeight
                 },
                 new()
                 {
-                    TargetProperty = BackgroundColorProperty,
+                    TargetProperty = UILabel.BackgroundColorProperty,
                     SourceProperty = (BindingDemoViewModel vm) => vm.AppearanceBackground
                 },
                 new()
                 {
-                    TargetProperty = TextColorProperty,
+                    TargetProperty = UILabel.TextColorProperty,
                     SourceProperty = (BindingDemoViewModel vm) => vm.AppearanceForeground
                 },
                 new()
                 {
-                    TargetProperty = BorderColorProperty,
+                    TargetProperty = UILabel.BorderColorProperty,
                     SourceProperty = (BindingDemoViewModel vm) => vm.AppearanceBorder
                 },
                 new()
                 {
-                    TargetProperty = BorderRadiusProperty,
+                    TargetProperty = UILabel.BorderRadiusProperty,
                     SourceProperty = (BindingDemoViewModel vm) => vm.AppearanceRadius
                 },
                 new()
                 {
-                    TargetProperty = OpacityProperty,
+                    TargetProperty = UILabel.OpacityProperty,
                     SourceProperty = (BindingDemoViewModel vm) => vm.AppearanceOpacity
                 }
             }
@@ -198,6 +215,56 @@ internal sealed class UIBindingDemo : UIScrollView
                 {
                     if (BindingContext is BindingDemoViewModel model)
                         model.CycleAppearance();
+                }));
+    }
+
+    /// <summary>
+    /// 演示 StyleProperty 整体替换。ViewModel 每次都发布新的 UIStyle 实例，
+    /// 因此宽高、颜色、边框和圆角会作为同一个绑定值一起更新。
+    /// </summary>
+    private UIView CreateStylePropertyBindingCard()
+    {
+        var stylePreview = new UIButton
+        {
+            Text = "StyleProperty 整体样式目标",
+            Binding = new()
+            {
+                new()
+                {
+                    TargetProperty = UIButton.StyleProperty,
+                    SourceProperty = (BindingDemoViewModel vm) => vm.DynamicButtonStyle
+                }
+            }
+        };
+
+        return Card(
+            "StyleProperty 整体样式绑定",
+            "适合由 ViewModel 一次替换一组相关样式。请发布新的 UIStyle 实例；只修改旧实例内部字段不会触发 PropertyChanged。",
+            new UILabel
+            {
+                Text = "UIButton.StyleProperty ← vm.DynamicButtonStyle",
+                ClassName = new List<string> { "binding-code-hint" }
+            },
+            stylePreview,
+            new UILabel
+            {
+                ClassName = new List<string> { "binding-result", "binding-result-success" },
+                Binding = new()
+                {
+                    new()
+                    {
+                        TargetProperty = UILabel.TextProperty,
+                        SourceProperty = (BindingDemoViewModel vm) => vm.DynamicStyleSummary
+                    }
+                }
+            },
+            ActionButton(
+                "整体替换 Style",
+                "binding-action-default",
+                () =>
+                {
+                    if (BindingContext is BindingDemoViewModel model)
+                        model.CycleDynamicButtonStyle();
                 }));
     }
 
@@ -521,7 +588,7 @@ internal sealed class UIBindingDemo : UIScrollView
             {
                 new()
                 {
-                    TargetProperty = UIInput.TextProperty,
+                    TargetProperty = UIInput.ValueProperty,
                     SourceProperty = (BindingDemoViewModel vm) => vm.ExplicitText,
                     Mode = BindingMode.TwoWay,
                     UpdateSourceTrigger = BindingUpdateSourceTrigger.Explicit
@@ -534,7 +601,7 @@ internal sealed class UIBindingDemo : UIScrollView
             "UpdateSourceTrigger.Explicit 不会在每次输入时更新 ViewModel；调用 UpdateBindingSource 后，下面的 Source 标签才变化。",
             new UILabel
             {
-                Text = "UpdateSourceTrigger = Explicit / UpdateBindingSource(UIInput.TextProperty)",
+                Text = "UpdateSourceTrigger = Explicit / UpdateBindingSource(UIInput.ValueProperty)",
                 ClassName = new List<string> { "binding-code-hint" }
             },
             explicitInput,
@@ -559,7 +626,7 @@ internal sealed class UIBindingDemo : UIScrollView
                     ActionButton(
                         "提交到 Source",
                         "binding-action-primary",
-                        () => explicitInput.UpdateBindingSource(UIInput.TextProperty)),
+                        () => explicitInput.UpdateBindingSource(UIInput.ValueProperty)),
                     ActionButton(
                         "从 Source 重置",
                         "binding-action-default",
@@ -577,7 +644,7 @@ internal sealed class UIBindingDemo : UIScrollView
     {
         return Card(
             "组合绑定",
-            "UILabel 绑定 ClassName 与 Text，UIInput 绑定 Text 与颜色，UIButton 绑定 Name。",
+            "UILabel 绑定 ClassName 与 Text，UIInput 绑定 Value 与颜色，UIButton 绑定 Name。",
             new UILabel
             {
                 Text = "ClassNameProperty + UILabel.TextProperty",
@@ -589,7 +656,7 @@ internal sealed class UIBindingDemo : UIScrollView
                 {
                     new()
                     {
-                        TargetProperty = ClassNameProperty,
+                        TargetProperty = UILabel.ClassNameProperty,
                         SourceProperty = (BindingDemoViewModel vm) => vm.ClassNames
                     },
                     new()
@@ -601,7 +668,7 @@ internal sealed class UIBindingDemo : UIScrollView
             },
             new UILabel
             {
-                Text = "UIInput.TextProperty + InputTextColorProperty + InputFocusBorderColorProperty",
+                Text = "UIInput.ValueProperty + InputTextColorProperty + InputFocusBorderColorProperty",
                 ClassName = new List<string> { "binding-code-hint" }
             },
             new UIInput
@@ -633,7 +700,7 @@ internal sealed class UIBindingDemo : UIScrollView
                 {
                     new()
                     {
-                        TargetProperty = UIInput.TextProperty,
+                        TargetProperty = UIInput.ValueProperty,
                         SourceProperty = (BindingDemoViewModel vm) => vm.InputText,
                         Mode = BindingMode.TwoWay
                     },

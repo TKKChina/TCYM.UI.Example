@@ -11,12 +11,13 @@ namespace TCYM.UI.Example.Page.component.CodeEditor
 
         private static readonly Dictionary<CodeEditorLanguage, string> CodeSamples = new()
         {
-            [CodeEditorLanguage.CSharp] = "using System;\n\nnamespace Demo\n{\n    public class Program\n    {\n        public static void Main()\n        {\n            Console.WriteLine(\"Hello TCYM.UI CodeEditor\");\n        }\n    }\n}",
+            [CodeEditorLanguage.CSharp] = "using System;\n\nnamespace Demo\n{\n    public class Program\n    {\n        public static void Main()\n        {\n            Console.WriteLine(\"Hello TCYM.UI CodeEditor\");\n            // 横向滚动混排：中文文字 English text，中文标点「引号」（括号）【方括号】、逗号；分号：冒号！感叹号？问号。English punctuation: (parentheses), [brackets], {braces}; colon: question? exclamation!\tTab 后继续中文与 English，再检查中文标点“完整显示”，英文 symbols + - * / = _ @ # % &；最后确认这一超长行的行尾完整可见：混排结束 END\n        }\n    }\n}",
             [CodeEditorLanguage.Java] = "package demo;\n\npublic class App {\n    public static void main(String[] args) {\n        System.out.println(\"Hello TCYM.UI CodeEditor\");\n    }\n}",
             [CodeEditorLanguage.JavaScript] = "const greeting = 'Hello TCYM.UI CodeEditor';\n\nfunction runDemo() {\n  console.log(greeting);\n}\n\nrunDemo();",
             [CodeEditorLanguage.TypeScript] = "type User = {\n  id: number;\n  name: string;\n};\n\nconst currentUser: User = { id: 1, name: 'TCYM' };\nconsole.log(currentUser.name);",
             [CodeEditorLanguage.Css] = ".editor-card {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n  padding: 16px;\n  border-radius: 12px;\n}",
-            [CodeEditorLanguage.Json] = "{\n  \"name\": \"TCYM.UI\",\n  \"framework\": \"net8.0\",\n  \"features\": [\n    \"syntax-highlight\",\n    \"find-replace\",\n    \"minimap\"\n  ]\n}"
+            [CodeEditorLanguage.Json] = "{\n  \"name\": \"TCYM.UI\",\n  \"framework\": \"net8.0\",\n  \"features\": [\n    \"syntax-highlight\",\n    \"find-replace\",\n    \"minimap\"\n  ]\n}",
+            [CodeEditorLanguage.Markdown] = "# Markdown 中文与 English\n\n编辑 Markdown 源码：**加粗 bold**、*斜体 italic*、~~删除线~~ 与 `inline code 中文`。\n\n## 引用与列表\n\n> 引用文字，中文标点“完整显示”与 English punctuation!\n> 第二行引用。\n\n- 无序列表 item\n- [ ] 待办任务 task\n- [x] 已完成任务 done\n\n1. 有序列表 first\n2. 有序列表 second\n\n[中文链接 Documentation](https://example.com/docs)\n![图片说明 Image](https://example.com/image.png)\n\nSetext 一级标题 English\n======================\n\nSetext 二级标题\n----------------\n\n```csharp\n// 中文注释与 English comment\nConsole.WriteLine(\"Hello Markdown 中文\");\n```\n\n~~~text\n围栏代码中的 **原始源码** 与 `inline text`\n~~~\n\n## 表格与注释\n\n| 功能 Feature | 状态 Status |\n| :--- | ---: |\n| 源码高亮 | enabled |\n| 文本编辑 | enabled |\n\n<!-- HTML 注释：中文与 English\n第二行 comment -->\n\n---\n\n## 折叠验证\n\n点击标题或代码围栏旁的折叠标记，验证标题与代码块折叠。"
         };
 
         internal UICodeEditorDemo()
@@ -38,7 +39,7 @@ namespace TCYM.UI.Example.Page.component.CodeEditor
                 },
                 new UILabel
                 {
-                    Text = "支持 C#、Java、JavaScript、TypeScript、CSS、JSON。内置快捷键包括 Ctrl+F 查找、Ctrl+H 替换、F3/Shift+F3 匹配跳转，以及 Alt+0 系列代码折叠。",
+                    Text = "支持 C#、Java、JavaScript、TypeScript、CSS、JSON、Markdown。内置快捷键包括 Ctrl+F 查找、Ctrl+H 替换、F3/Shift+F3 匹配跳转，以及 Alt+0 系列代码折叠。",
                     ClassName = new List<string> { "code-editor-demo-desc" }
                 },
                 new PlaygroundSection(),
@@ -79,7 +80,7 @@ namespace TCYM.UI.Example.Page.component.CodeEditor
                 Children = new()
                 {
                     CreateSectionTitle("基础编辑与语言切换"),
-                    CreateSectionDescription("这一块直接对应 TCYM.UI 内已有的 UICodeEditorDome，用于演示语言高亮、文本编辑、行号与最小地图切换。"),
+                    CreateSectionDescription("这一块直接对应 TCYM.UI 内已有的 UICodeEditorDome，用于演示语言高亮、文本编辑、行号与最小地图切换。将横向滚动条拉到最右，确认 C# 长行末尾“混排结束 END”完整显示。切换 Markdown 验证源码高亮与编辑、标题及代码块折叠。"),
                     CreateToolbar(
                         CreateLanguageButton("C#", CodeEditorLanguage.CSharp, editor, statusLabel),
                         CreateLanguageButton("Java", CodeEditorLanguage.Java, editor, statusLabel),
@@ -87,6 +88,7 @@ namespace TCYM.UI.Example.Page.component.CodeEditor
                         CreateLanguageButton("TypeScript", CodeEditorLanguage.TypeScript, editor, statusLabel),
                         CreateLanguageButton("CSS", CodeEditorLanguage.Css, editor, statusLabel),
                         CreateLanguageButton("JSON", CodeEditorLanguage.Json, editor, statusLabel),
+                        CreateLanguageButton("Markdown", CodeEditorLanguage.Markdown, editor, statusLabel),
                         CreateToggleButton("切换行号", () =>
                         {
                             editor.ShowLineNumbers = !editor.ShowLineNumbers;
@@ -176,7 +178,8 @@ namespace TCYM.UI.Example.Page.component.CodeEditor
                 {
                     CreateSectionTitle("能力说明"),
                     CreateSectionDescription("当前示例页主要覆盖已经在框架里实现完成的编辑器能力，便于在 Example 工程里直接回归验证。"),
-                    CreateHintItem("语法高亮：内置 C# / Java / JavaScript / TypeScript / CSS / JSON 六种语言。"),
+                    CreateHintItem("语法高亮：内置 C# / Java / JavaScript / TypeScript / CSS / JSON / Markdown 七种语言。"),
+                    CreateHintItem("Markdown：支持源码高亮与编辑、标题及代码块折叠。"),
                     CreateHintItem("编辑能力：支持键盘输入、选区、剪贴板、撤销栈以及粘贴后自动格式化。"),
                     CreateHintItem("辅助能力：支持查找替换、代码折叠、最小地图、横向滚动和只读模式。"),
                     CreateHintItem("适用场景：代码片段编辑、脚本配置、日志预览、DSL 输入和结果回显。")
@@ -271,6 +274,7 @@ namespace TCYM.UI.Example.Page.component.CodeEditor
                 CodeEditorLanguage.TypeScript => "TypeScript",
                 CodeEditorLanguage.Css => "CSS",
                 CodeEditorLanguage.Json => "JSON",
+                CodeEditorLanguage.Markdown => "Markdown",
                 _ => "PlainText"
             };
         }

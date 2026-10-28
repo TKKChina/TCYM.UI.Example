@@ -187,8 +187,14 @@
     <EmbeddedResource Include="Page\component\Popconfirm\style.css" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="TCYM.UI" Version="0.1.1.24" GeneratePathProperty="true" />
-    <PackageReference Include="TCYM.UI.Chart" Version="0.1.1.25" />
+    <PackageReference Include="TCYM.UI" Version="0.1.1.25" GeneratePathProperty="true" />
+    <PackageReference Include="TCYM.UI.Chart" Version="0.1.1.26" />
+    <PackageReference Include="TCYM.UI.WebView" Version="0.1.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Page\Charts\TreeMap\style.css;Page\Charts\TreeMap\Assets\**\*;Page\component\Autocomplete\style.css;Page\component\WebView\style.css;Page\component\WebView\home.html;Page\component\WebView\next.html" />
+    <EmbeddedResource Include="Page\Charts\TreeMap\style.css;Page\Charts\TreeMap\Assets\**\*;Page\component\Autocomplete\style.css;Page\component\WebView\style.css;Page\component\WebView\home.html;Page\component\WebView\next.html" />
   </ItemGroup>
 
   <!-- 兼容 TCYM.UI 0.1.1.24 普通 Debug 的原生资产选择；新包中的同名目标会统一接管。 -->

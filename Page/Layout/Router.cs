@@ -15,6 +15,7 @@ using TCYM.UI.Example.Page.component.DatePicker;
 using TCYM.UI.Example.Page.component.TimePicker;
 using TCYM.UI.Example.Page.component.Switch;
 using TCYM.UI.Example.Page.component.Input;
+using TCYM.UI.Example.Page.component.Autocomplete;
 using TCYM.UI.Example.Page.component.Tree;
 using TCYM.UI.Example.Page.component.TreeSelect;
 using TCYM.UI.Example.Page.component.Tooltip;
@@ -45,6 +46,7 @@ using TCYM.UI.Example.Page.component.Glass;
 using TCYM.UI.Example.Page.component.Timeline;
 using TCYM.UI.Example.Page.component.Loading;
 using TCYM.UI.Example.Page.component.Binding;
+using TCYM.UI.Example.Page.component.WebView;
 using TCYM.UI.Elements;
 
 namespace TCYM.UI.Example.Page.Layout
@@ -88,6 +90,7 @@ namespace TCYM.UI.Example.Page.Layout
                         new() { Id = "demo_color_picker", Path = "color-picker", Name = "ColorPicker", Element = UIRoute.LazyLoad(() => new UIColorPickerDemo()), ShowLoading = true },
                         new() { Id = "demo_switch", Path = "switch", Name = "Switch", Element = UIRoute.LazyLoad(() => new UISwitchDemo()), ShowLoading = true },
                         new() { Id = "demo_input", Path = "input", Name = "Input", Element = UIRoute.LazyLoad(() => new UIInputDemo()), ShowLoading = true },
+                        new() { Id = "demo_autocomplete", Path = "autocomplete", Name = "Autocomplete", Element = UIRoute.LazyLoad(() => new UIAutocompleteDemo()), KeepAlive = false, ShowLoading = true },
                         new() { Id = "demo_binding", Path = "binding", Name = "Binding", Element = UIRoute.LazyLoad(() => new UIBindingDemo()), KeepAlive = false },
                         new() { Id = "demo_code_editor", Path = "code-editor", Name = "CodeEditor", Element = UIRoute.LazyLoad(() => new UICodeEditorDemo()), ShowLoading = true },
                         new() { Id = "demo_tree", Path = "tree", Name = "Tree", Element = UIRoute.LazyLoad(() => new UITreeDemo()), ShowLoading = true },
@@ -107,6 +110,8 @@ namespace TCYM.UI.Example.Page.Layout
                         new() { Id = "demo_virtual_scroll_view", Path = "virtual-scroll-view", Name = "VirtualScrollView", Element = UIRoute.LazyLoad(() => new UIVirtualScrollViewDemo()), ShowLoading = true },
                         new() { Id = "demo_file_picker", Path = "file-picker", Name = "FilePicker", Element = UIRoute.LazyLoad(() => new UIFilePickerDemo()), ShowLoading = true },
                         new() { Id = "demo_sdl3", Path = "sdl3", Name = "SDL3", Element = UIRoute.LazyLoad(() => new UISdl3FeaturesDemo()), ShowLoading = true },
+                        // 网页及其异步事件归当前页面所有；离页时释放，重新进入会创建独立的新实例。
+                        new() { Id = "demo_web_view", Path = "web-view", Name = "WebView 网页视图", Element = UIRoute.LazyLoad(() => new UIWebViewDemo()), KeepAlive = false, ShowLoading = true },
                         new() { Id = "demo_gamepad", Path = "gamepad", Name = "Gamepad", Element = UIRoute.LazyLoad(() => new UIGamepadDemo()), ShowLoading = true },
                         new() { Id = "demo_usb_camera", Path = "usb-camera", Name = "UsbCamera", Element = UIRoute.LazyLoad(() => new UIUsbCameraDemo()), ShowLoading = true }
                     ]

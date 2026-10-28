@@ -175,13 +175,13 @@ namespace TCYM.UI.Example.Page.component.Icon
                             Before = new DefaultUIStyle
                             {
                                Content = icon.name,
-                               Opacity = 0.1f,
+                               Opacity = 0.5f,
+                                FontFamily = DefaultTypeface,
                                Position = "absolute",
                                FontSize = 14,
-                               Top= "30%",
                                Left = "50%",
                                TransformCss = "translateX(-50%)",
-                               Bottom = 8
+                               Bottom = 12
                             }
                         },
                         Events = new()

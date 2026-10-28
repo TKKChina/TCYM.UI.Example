@@ -78,7 +78,7 @@ namespace TCYM.UI.Example.Page.component.Input
                             },
                             new UIInput
                             {
-                                Text = "已有默认内容",
+                                Value = "已有默认内容",
                             },
                             new UIInput
                             {
@@ -279,7 +279,7 @@ namespace TCYM.UI.Example.Page.component.Input
                                     new UILabel { Text = "禁用：", ClassName = new List<string> { "input-type-label" } },
                                     new UIInput
                                     {
-                                        Text = "禁用状态的输入框",
+                                        Value = "禁用状态的输入框",
                                         Disabled = true,
                                     },
                                 }
@@ -292,7 +292,7 @@ namespace TCYM.UI.Example.Page.component.Input
                                     new UILabel { Text = "只读：", ClassName = new List<string> { "input-type-label" } },
                                     new UIInput
                                     {
-                                        Text = "只读状态，可选中复制",
+                                        Value = "只读状态，可选中复制",
                                         ReadOnly = true,
                                     },
                                 }
@@ -432,12 +432,12 @@ namespace TCYM.UI.Example.Page.component.Input
                             },
                             new UIInput
                             {
-                                Text = "已有内容，点 × 清除",
+                                Value = "已有内容，点 × 清除",
                                 AllowClear = true,
                             },
                             new UIInput
                             {
-                                Text = "自定义清除图标颜色",
+                                Value = "自定义清除图标颜色",
                                 AllowClear = true,
                                 ClearIconColor = ColorHelper.ParseColor("#ff4d4f"),
                             },
@@ -509,7 +509,7 @@ namespace TCYM.UI.Example.Page.component.Input
                                     new UIInput
                                     {
                                         Type = UIInputType.Password,
-                                        Text = "visible123",
+                                        Value = "visible123",
                                         PasswordVisible = true,
                                         PasswordVisibilityToggle = true,
                                     },
@@ -571,7 +571,7 @@ namespace TCYM.UI.Example.Page.component.Input
                                     new UILabel { Text = "关键词：", ClassName = new List<string> { "input-type-label" } },
                                     new UIInput
                                     {
-                                        Text = "TCYM.UI",
+                                        Value = "TCYM.UI",
                                         AllowClear = true,
                                         Count = new CountConfig { Max = 40 },
                                         // 固定尺寸附属图标与计数、清除区域组合，避免渲染时再扩宽。
@@ -732,13 +732,13 @@ namespace TCYM.UI.Example.Page.component.Input
                         {
                             new UIInput
                             {
-                                Text = "自定义边框颜色",
+                                Value = "自定义边框颜色",
                                 InputBorderColor = ColorHelper.ParseColor("#52c41a"),
                                 InputFocusBorderColor = ColorHelper.ParseColor("#73d13d"),
                             },
                             new UIInput
                             {
-                                Text = "深色背景模式",
+                                Value = "深色背景模式",
                                 InputBackground = ColorHelper.ParseColor("#1f1f1f"),
                                 InputTextColor = SKColors.White,
                                 InputBorderColor = ColorHelper.ParseColor("#434343"),
@@ -748,7 +748,7 @@ namespace TCYM.UI.Example.Page.component.Input
                             },
                             new UIInput
                             {
-                                Text = "粉色主题",
+                                Value = "粉色主题",
                                 InputBorderColor = ColorHelper.ParseColor("#eb2f96"),
                                 InputFocusBorderColor = ColorHelper.ParseColor("#f759ab"),
                                 CursorColor = ColorHelper.ParseColor("#eb2f96"),
@@ -801,7 +801,7 @@ namespace TCYM.UI.Example.Page.component.Input
                             new UITextArea
                             {
                                 Placeholder = "请输入多行内容...",
-                                Text = "待办事项\n确认需求\n整理资料\n编写代码\n检查界面\n运行测试\n提交评审\n安排发布",
+                                Value = "待办事项\n确认需求\n整理资料\n编写代码\n检查界面\n运行测试\n提交评审\n安排发布",
                                 Rows = 3,
                             },
                             new UITextArea
@@ -816,7 +816,7 @@ namespace TCYM.UI.Example.Page.component.Input
                             },
                             new UITextArea
                             {
-                                Text = "禁用状态的多行文本框",
+                                Value = "禁用状态的多行文本框",
                                 Rows = 3,
                                 Disabled = true,
                             },

@@ -86,7 +86,7 @@ namespace TCYM.UI.Example.Page.component.TreeSelect
                 {
                     Multiple = true,
                     TreeData = CreateDepartmentData(),
-                    DefaultValues = new[] { "platform-web", "sales-east", "finance" },
+                    DefaultValue = new[] { "platform-web", "sales-east", "finance" },
                     AllowClear = true,
                     MaxTagCount = 2,
                     MaxTagTextLength = 8,
@@ -115,7 +115,7 @@ namespace TCYM.UI.Example.Page.component.TreeSelect
                             TreeData = CreateDepartmentData(),
                             TreeCheckable = true,
                             ShowCheckedStrategy = TreeSelectShowCheckedStrategy.ShowParent,
-                            DefaultValues = new[] { "platform-web", "platform-api" },
+                            DefaultValue = new[] { "platform-web", "platform-api" },
                             AllowClear = true,
                             TreeDefaultExpandAll = true,
                             Style = new UpdateUIStyle { Width = 300 }
@@ -138,7 +138,7 @@ namespace TCYM.UI.Example.Page.component.TreeSelect
                             TreeCheckable = true,
                             TreeCheckStrictly = true,
                             ShowCheckedStrategy = TreeSelectShowCheckedStrategy.ShowAll,
-                            DefaultValues = new[] { "platform", "sales-east" },
+                            DefaultValue = new[] { "platform", "sales-east" },
                             AllowClear = true,
                             TreeDefaultExpandAll = true,
                             Style = new UpdateUIStyle { Width = 300 }

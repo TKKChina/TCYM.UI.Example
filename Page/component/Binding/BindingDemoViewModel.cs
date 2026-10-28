@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using SkiaSharp;
 using TCYM.UI.Binding;
+using TCYM.UI.Core;
 using TCYM.UI.Elements.Select;
 using TCYM.UI.Elements.Tree;
 
@@ -33,6 +34,8 @@ internal sealed class BindingDemoViewModel : ObservableObject
     private SKColor _appearanceForeground = new(9, 88, 217);
     private SKColor _appearanceBorder = new(145, 202, 255);
     private string _appearanceText = "公共属性由 ViewModel 驱动";
+    private int _dynamicStyleIndex;
+    private UIStyle _dynamicButtonStyle = CreateDynamicButtonStyle(0);
 
     // 交互组件 TwoWay 案例。
     private bool _enabled = true;
@@ -133,8 +136,15 @@ internal sealed class BindingDemoViewModel : ObservableObject
     public float ControlWidth
     {
         get => _controlWidth;
-        set => SetProperty(ref _controlWidth, value);
+        set
+        {
+            if (SetProperty(ref _controlWidth, value))
+                RaisePropertyChanged(nameof(ControlWidthSummary));
+        }
     }
+
+    /// <summary>显示 WidthProperty 当前绑定值，便于对照实际按钮几何。</summary>
+    public string ControlWidthSummary => $"当前 UIButton.Width：{ControlWidth:0}px";
 
     /// <summary>DatePicker 当前日期。</summary>
     public DateTime? SelectedDate
@@ -198,6 +208,24 @@ internal sealed class BindingDemoViewModel : ObservableObject
         get => _appearanceText;
         set => SetProperty(ref _appearanceText, value);
     }
+
+    /// <summary>
+    /// 绑定到 UIButton.StyleProperty 的完整样式对象。
+    /// 轮换时替换整个实例，让 ObservableObject 能发出明确的属性变化通知。
+    /// </summary>
+    public UIStyle DynamicButtonStyle
+    {
+        get => _dynamicButtonStyle;
+        set => SetProperty(ref _dynamicButtonStyle, value);
+    }
+
+    /// <summary>说明当前 StyleProperty 示例所使用的整组样式。</summary>
+    public string DynamicStyleSummary => _dynamicStyleIndex switch
+    {
+        1 => "Style B：380 × 56，绿色胶囊按钮",
+        2 => "Style C：310 × 50，橙色小圆角按钮",
+        _ => "Style A：260 × 48，蓝色圆角按钮"
+    };
 
     /// <summary>Switch 的 TwoWay 状态。</summary>
     public bool Enabled
@@ -368,8 +396,79 @@ internal sealed class BindingDemoViewModel : ObservableObject
     internal void AdvanceAutomaticProperties()
     {
         Progress = Progress >= 90f ? 15f : Progress + 15f;
-        ControlWidth = ControlWidth >= 320f ? 220f : ControlWidth + 25f;
+        // 使用明显的 60px 步长，便于直接观察目标按钮的布局变化。
+        ControlWidth = ControlWidth >= 340f ? 220f : ControlWidth + 60f;
         SelectedDate = (SelectedDate ?? DateTime.Today).AddDays(1);
+    }
+
+    /// <summary>
+    /// 轮换完整 UIStyle 实例。Style 本身不是 ObservableObject，因此不要原地修改旧实例；
+    /// 重新赋值可保证 StyleProperty Binding 收到通知并完整替换目标样式。
+    /// </summary>
+    internal void CycleDynamicButtonStyle()
+    {
+        _dynamicStyleIndex = (_dynamicStyleIndex + 1) % 3;
+        DynamicButtonStyle = CreateDynamicButtonStyle(_dynamicStyleIndex);
+        RaisePropertyChanged(nameof(DynamicStyleSummary));
+    }
+
+    /// <summary>创建 StyleProperty 示例使用的独立样式实例。</summary>
+    private static UIStyle CreateDynamicButtonStyle(int index)
+    {
+        return index switch
+        {
+            1 => new DefaultUIStyle
+            {
+                Width = 380,
+                Height = 56,
+                Display = "flex",
+                AlignItems = "center",
+                JustifyContent = "center",
+                PaddingLeft = 20,
+                PaddingRight = 20,
+                FontSize = 16,
+                FontWeight = 600,
+                Color = new SKColor(19, 82, 34),
+                BackgroundColor = new SKColor(246, 255, 237),
+                BorderColor = new SKColor(149, 222, 100),
+                BorderWidth = 1,
+                BorderRadius = 28
+            },
+            2 => new DefaultUIStyle
+            {
+                Width = 310,
+                Height = 50,
+                Display = "flex",
+                AlignItems = "center",
+                JustifyContent = "center",
+                PaddingLeft = 18,
+                PaddingRight = 18,
+                FontSize = 15,
+                FontWeight = 600,
+                Color = new SKColor(173, 78, 0),
+                BackgroundColor = new SKColor(255, 247, 230),
+                BorderColor = new SKColor(255, 169, 64),
+                BorderWidth = 1,
+                BorderRadius = 8
+            },
+            _ => new DefaultUIStyle
+            {
+                Width = 260,
+                Height = 48,
+                Display = "flex",
+                AlignItems = "center",
+                JustifyContent = "center",
+                PaddingLeft = 18,
+                PaddingRight = 18,
+                FontSize = 15,
+                FontWeight = 600,
+                Color = new SKColor(9, 88, 217),
+                BackgroundColor = new SKColor(230, 244, 255),
+                BorderColor = new SKColor(105, 177, 255),
+                BorderWidth = 1,
+                BorderRadius = 10
+            }
+        };
     }
 
     /// <summary>轮换公共 UIElement 属性，验证布局和重绘失效策略。</summary>

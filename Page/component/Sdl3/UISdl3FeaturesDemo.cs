@@ -27,10 +27,7 @@ namespace TCYM.UI.Example.Page.component.Sdl3
                 Width = "100%",
                 Height = "100%",
                 BackgroundColor = ColorHelper.ParseColor("#f5f7fa"),
-                PaddingLeft = 24,
-                PaddingRight = 24,
-                PaddingTop = 20,
-                PaddingBottom = 40,
+                Padding = [20,24,40,24],
                 Display = "flex",
                 FlexDirection = "column",
             };

@@ -100,9 +100,11 @@ internal sealed class DistributedTopologyGraphDemo : GraphChartDemoPage
 
     private static ChartOption CreateOption(SKSize viewport = default)
     {
-        var data = new ChartGraphData();
         // 原图的 [0, 0] 汇聚点没有可见图标，这里用不可见节点承载连线端点。
-        data.Add(new ChartGraphNode { Id = "hub", Name = "汇聚中心", X = viewport.Width / 2, Y = viewport.Height / 2, Symbol = "none" });
+        var data = new ChartGraphData()
+        {
+            new ChartGraphNode { Id = "hub", Name = "汇聚中心", X = viewport.Width / 2, Y = viewport.Height / 2, Symbol = "none" }
+        };
         for (var index = 0; index < Groups.Length; index++)
         {
             var name = Groups[index];

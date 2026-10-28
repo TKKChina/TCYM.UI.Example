@@ -4,14 +4,17 @@ using TCYM.UI.Elements.Modal;
 using TCYM.UI.Enums;
 using TCYM.UI.Example.Page.Layout;
 using TCYM.UI.Helpers;
+using TCYM.UI.WebView;
 
 internal static class Program
 {
     /// <summary>初始化 UI 系统、挂接默认页面并运行桌面消息循环。</summary>
     public static void Main()
     {
+        // 原生 Wayland 的 GTK/SDL 必须共享在窗口创建前准备的连接；Windows/X11 保持原启动行为。在win 和 linux x11 上，UIWebViewRuntime.PrepareNativeHosting() 会在 UISystem.Initialize() 内部被调用；在 Wayland 上，必须在 UISystem.Initialize() 之前调用 UIWebViewRuntime.PrepareNativeHosting()。
+        UIWebViewRuntime.PrepareNativeHosting();
         // 是否启用帧时间日志（输出每帧的CPU和GPU时间，单位毫秒），可用于性能分析和调优。启用后会在控制台输出每帧的渲染时间信息，帮助开发者了解UI渲染的性能瓶颈。
-        UISystem.EnableFrameTimingLog = false;
+        UISystem.EnableFrameTimingLog = true;
         // 是否启用渲染类型分析日志（输出每帧的渲染类型分析信息）。启用后会在控制台输出每帧的渲染类型分析结果，包括不同渲染类型的占比和性能数据。这对于优化UI渲染性能非常有帮助，尤其是在复杂UI场景下，可以帮助开发者识别哪些渲染类型可能导致性能问题。
         UISystem.EnableRenderTypeProfile = true;
         // 示例调试时不隐藏累计耗时低于默认 0.5ms 的轻量组件，确保新增组件和 Chart 内部图元也会出现在统计中。
@@ -29,7 +32,7 @@ internal static class Program
         UISystem.DefaultWindowShadowPreference = UIWindowShadowPreference.Enabled;
         var renderBackend = UISystem.DefaultRenderBackend;//UIRenderBackendPreference.OpenGL;
         // 默认使用 Direct3D12 渲染后端；若不支持则回退到 OpenGL。默认多线程渲染模式，若不支持则回退到单线程渲染模式。若不支持任何后端，则抛出异常。
-        UISystem.Initialize(renderBackend, "TCYM", 1200, 800, 30, resizable: true);
+        UISystem.Initialize(renderBackend, "TCYM", 1200, 800,60, resizable: true);
         var manager = UISystem.Manager;
         if (manager == null) return;
         UISystem.UnhandledException += (_, e) =>

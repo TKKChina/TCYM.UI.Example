@@ -47,7 +47,7 @@ namespace TCYM.UI.Example.Page.component.Menu
             internal BaseMenuDemo()
             {
                 // 已经在 com.css 中注册了 IconFont 字体，这里不需要再次注册
-                // UIFontFaceRegistry.Register("IconFont",UIFileHelper.ResolveAssetPath("Assets", "Fonts", "iconfont.ttf"));
+                // UIFontManager.Register("IconFont",UIFileHelper.ResolveAssetPath("Assets", "Fonts", "iconfont.ttf"));
                 ClassName = new List<string> { "menu-demo-card" };
                 Children = new()
                 {

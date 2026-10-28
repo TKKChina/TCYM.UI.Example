@@ -24,7 +24,7 @@ namespace TCYM.UI.Example.Page.component.Splitter
                 new UILabel
                 {
                     Text = "Splitter 分隔面板",
-                    ClassName = new List<string> { "splitter-demo-title", "label-title" }
+                    ClassName = new List<string> { "splitter-demo-title" }
                 },
                 new UILabel
                 {

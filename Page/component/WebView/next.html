@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN" data-page="next">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="tcym-demo-document" content="__TCYM_DEMO_DOCUMENT__">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; frame-src 'none'; object-src 'none'; form-action 'none'; base-uri 'none'">
+  <title>TCYM.UI 离线第二页</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 24px; background: #f3f7ff; color: #172b4d; font: 14px/1.65 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+    h1 { margin: 0 0 8px; font-size: 25px; }
+    p { margin: 8px 0; }
+    .tag { display: inline-block; padding: 2px 9px; background: #dbeafe; color: #1d4ed8; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
+    button { display: inline-block; border: 1px solid #b8c9e4; padding: 8px 12px; background: #fff; color: #234b82; font: inherit; cursor: pointer; }
+    pre { padding: 12px; background: #fff; border: 1px solid #d6e1f0; white-space: pre-wrap; overflow-wrap: anywhere; }
+    code { font-family: Consolas, monospace; }
+  </style>
+</head>
+<body>
+  <span class="tag">内嵌 HTML · 无网络资源</span>
+  <h1>TCYM.UI 离线第二页</h1>
+  <p>这是程序集中的另一份 HTML。内嵌页通过工具栏切换；后退、前进和停止按钮使用浏览器真实导航能力。</p>
+  <div class="actions">
+    <button id="offline-link" type="button">返回内嵌首页</button>
+    <button id="send-string" type="button">向宿主发送字符串</button>
+    <button id="send-json" type="button">向宿主发送 JSON</button>
+  </div>
+  <p>宿主最近发送的消息：</p>
+  <pre id="host-message">等待宿主消息</pre>
+  <p>页面标识：<code>next</code>；收到的消息也会回传宿主日志。</p>
+  <script>
+    // 两个内嵌页面各自保留消息状态，重新加载时不会继承之前文档的 JavaScript 对象。
+    (() => {
+      const page = document.documentElement.dataset.page;
+      let count = 0;
+      const bridge = window.chrome && window.chrome.webview;
+      if (!bridge) {
+        document.getElementById('host-message').textContent = '当前环境未提供网页消息通道';
+        return;
+      }
+      document.getElementById('offline-link').addEventListener('click', () => bridge.postMessage({type: 'demo-navigate', page: 'home'}));
+      document.getElementById('send-string').addEventListener('click', () => bridge.postMessage('网页字符串：' + page));
+      document.getElementById('send-json').addEventListener('click', () => bridge.postMessage({type: 'page-json', page, count: ++count}));
+      bridge.addEventListener('message', event => {
+        window.lastHostMessage = event.data;
+        document.getElementById('host-message').textContent = JSON.stringify(event.data, null, 2);
+        bridge.postMessage({type: 'host-ack', page, received: event.data});
+      });
+      bridge.postMessage({type: 'ready', page});
+    })();
+  </script>
+</body>
+</html>

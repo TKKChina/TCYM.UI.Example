@@ -1,5 +1,6 @@
 using SkiaSharp;
 using TCYM.UI.Chart.Core;
+using TCYM.UI.Chart.Components.DataZoom;
 using TCYM.UI.Chart.Model;
 using TCYM.UI.Core;
 using TCYM.UI.Elements;
@@ -27,6 +28,8 @@ namespace Page.Charts.Candlestick
         private Viewport? _displayedViewport;
         private PendingFrame? _pendingFrame;
         private Func<ChartEngine, bool>? _pendingMove;
+        private List<ChartDataZoomWheelInput>? _pendingWheels;
+        private bool _wheelWakeQueued; // 由_gate保护；同一轮UI输入只安排一次后台唤醒。
         private string? _pendingMessage;
         private string? _pendingError;
         private SKImage? _image; // 只由 UI 线程读取、替换和释放。
@@ -34,6 +37,7 @@ namespace Page.Charts.Candlestick
         private int _disposed;
         private int _memoryCleanupScheduled;
         private bool _pointerPressed; // 只由后台图表线程访问。
+        private bool _inputPointerPressed; // 只由 UI 输入线程访问；按压期间滚轮沿用原事件路径。
 
         internal bool IsReady { get; private set; }
         internal string? Error { get; private set; }
@@ -140,10 +144,21 @@ namespace Page.Charts.Candlestick
         public override void OnMouseEvent(UIMouseEvent e)
         {
             base.OnMouseEvent(e);
-            if (!IsReady || Volatile.Read(ref _disposed) != 0
-                || _displayedViewport != _viewport
-                || !TryScreenToLocal(e.X, e.Y, out var local))
+            if (e.Type is UIMouseEventType.Up or UIMouseEventType.Leave) _inputPointerPressed = false;
+            if (!IsReady || Volatile.Read(ref _disposed) != 0) return;
+            if (_displayedViewport != _viewport || !TryScreenToLocal(e.X, e.Y, out var local))
+            {
+                // 尺寸换代期间不能用旧画面坐标产生点击，但 Up/Leave 必须终止后台捕获。
+                if (e.Type is UIMouseEventType.Up or UIMouseEventType.Leave)
+                    Enqueue(engine =>
+                    {
+                        engine.PointerCancel(0, 0);
+                        engine.PointerLeave(0, 0);
+                        _pointerPressed = false;
+                        return true;
+                    });
                 return;
+            }
 
             var content = ContentRect();
             var point = new SKPoint(
@@ -158,6 +173,7 @@ namespace Page.Charts.Candlestick
                     Enqueue(engine => engine.PointerMove(point.X, point.Y, modifiers), isMove: true);
                     break;
                 case UIMouseEventType.Down:
+                    _inputPointerPressed = true;
                     Enqueue(engine =>
                     {
                         _pointerPressed = true;
@@ -172,7 +188,10 @@ namespace Page.Charts.Candlestick
                     });
                     break;
                 case UIMouseEventType.Wheel:
-                    Enqueue(engine => engine.PointerWheel(point.X, point.Y, wheel, modifiers));
+                    if ((modifiers & UIKeyModifiers.Ctrl) != 0 && !_inputPointerPressed)
+                        EnqueueWheel(new(point.X, point.Y, wheel, modifiers));
+                    else
+                        Enqueue(engine => engine.PointerWheel(point.X, point.Y, wheel, modifiers));
                     break;
                 case UIMouseEventType.DoubleClick:
                     Enqueue(engine => engine.DoubleClick(point.X, point.Y, button, modifiers));
@@ -223,17 +242,71 @@ namespace Page.Charts.Candlestick
                 if (_disposed != 0) return;
                 if (isMove)
                 {
+                    if (_inputPointerPressed) FlushPendingWheels();
                     // 重建期间只保留最新鼠标位置，防止旧 Tooltip 事件越积越多。
                     _pendingMove = command;
                 }
                 else
                 {
+                    FlushPendingWheels();
                     if (_pendingMove is not null) _commands.Enqueue(_pendingMove);
                     _pendingMove = null;
                     _commands.Enqueue(command);
                 }
             }
             Wake();
+        }
+
+        /// <summary>连续滚轮保持每步锚点、方向与倍率，但不为已过时的中间范围重建十万条数据。</summary>
+        private void EnqueueWheel(ChartDataZoomWheelInput input)
+        {
+            var wakeNow = !UIDispatcher.HasUIThread;
+            var postWake = false;
+            lock (_gate)
+            {
+                if (_disposed != 0) return;
+                if (_pendingMove is not null)
+                {
+                    // 宿主每次 Wheel 后都会刷新 hover；批次中只需最终位置在新窗口上重新命中。
+                    // 首次 Wheel 之前的移动仍先执行，离散命令和按压拖动仍保持原始顺序。
+                    if (_pendingWheels is null) _commands.Enqueue(_pendingMove);
+                    _pendingMove = null;
+                }
+                _pendingWheels ??= new();
+                _pendingWheels.Add(input);
+                if (_pendingWheels.Count == ChartDataZoomWheelAction.MaximumInputCount)
+                {
+                    FlushPendingWheels();
+                    wakeNow = true;
+                }
+                if (!wakeNow && !_wheelWakeQueued)
+                {
+                    _wheelWakeQueued = true;
+                    postWake = true;
+                }
+            }
+            if (postWake) UIDispatcher.Post(WakeAfterWheelInputBatch);
+            if (wakeNow) Wake();
+        }
+
+        /// <summary>当前UI输入批结束后交接滚轮；不增加定时延迟，退出后也不触碰已释放的等待句柄。</summary>
+        private void WakeAfterWheelInputBatch()
+        {
+            lock (_gate)
+            {
+                _wheelWakeQueued = false;
+                if (_disposed != 0) return;
+            }
+            Wake();
+        }
+
+        /// <summary>在锁内封存滚轮批次；点击、拖动、按钮命令等仍保持原有先后顺序。</summary>
+        private void FlushPendingWheels()
+        {
+            if (_pendingWheels is not { Count: > 0 } inputs) return;
+            var action = new ChartDataZoomWheelAction(inputs);
+            _pendingWheels = null;
+            _commands.Enqueue(engine => { engine.DispatchAction(action); return true; });
         }
 
         /// <summary>从生成数据到释放场景，所有内核调用都在本工作线程内完成。</summary>
@@ -284,8 +357,14 @@ namespace Page.Charts.Candlestick
                                 viewport = latest;
                                 dirty = true;
                             }
-                            if (_pendingMove is not null) _commands.Enqueue(_pendingMove);
-                            _pendingMove = null;
+                            // Progressive可让worker自行进入本轮；UI批尚未交接时不能抢先重建其中间范围。
+                            // 对应hover一起保留，离散命令则仍由Enqueue立即刷入并按原顺序执行。
+                            if (!_wheelWakeQueued || _pendingWheels is not { Count: > 0 })
+                            {
+                                FlushPendingWheels();
+                                if (_pendingMove is not null) _commands.Enqueue(_pendingMove);
+                                _pendingMove = null;
+                            }
                             commands = _commands.ToArray();
                             _commands.Clear();
                         }
@@ -448,6 +527,7 @@ namespace Page.Charts.Candlestick
             {
                 _commands.Clear();
                 _pendingMove = null;
+                _pendingWheels = null;
                 _pendingFrame?.Image.Dispose();
                 _pendingFrame = null;
                 _pendingMessage = _pendingError = null;
