@@ -1,4 +1,5 @@
 @echo off
+rem Keep this file UTF-8 without BOM and use CRLF line endings.
 chcp 65001 >nul
 setlocal
 goto :ScriptMain

@@ -1,0 +1,3 @@
+# Preserve CRLF in Git blobs so downloaded batch files run correctly in cmd.exe.
+/publish-aot.bat -text
+/publish-.net8-aot.bat -text
